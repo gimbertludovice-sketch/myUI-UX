@@ -1,1191 +1,1369 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LUDOVICE RMS - Premium Restaurant Management System 2026</title>
-    <style>
-        /* ========================= DESIGN SYSTEM & CSS VARIABLES ========================= */
-        :root {
-            --bg-dark: #0a0e27;
-            --bg-card: #1a1f3a;
-            --bg-light: #2a3050;
-            --text-main: #f8fafc;
-            --text-muted: #a0aec0;
-            --primary: #ff6b35;
-            --primary-light: #ff8555;
-            --primary-dark: #e55a25;
-            --success: #10b981;
-            --success-light: #34d399;
-            --alert: #ef4444;
-            --warning: #f59e0b;
-            --accent-gold: #fbbf24;
-            --accent-teal: #14b8a6;
-            --font-stack: 'Poppins', 'Inter', 'Segoe UI', sans-serif;
-            --shadow-sm: 0 2px 8px rgba(0,0,0,0.2);
-            --shadow-md: 0 4px 16px rgba(0,0,0,0.3);
-            --shadow-lg: 0 8px 32px rgba(0,0,0,0.4);
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        html, body {
-            font-family: var(--font-stack);
-            background: linear-gradient(135deg, var(--bg-dark) 0%, #1a1f3a 100%);
-            color: var(--text-main);
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        /* ========================= LOGIN PAGE ========================= */
-        #login-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            width: 100%;
-            background: linear-gradient(135deg, var(--bg-dark) 0%, #1a1f3a 100%);
-        }
-
-        .login-box {
-            background: linear-gradient(135deg, var(--bg-card) 0%, rgba(26, 31, 58, 0.9) 100%);
-            border: 2px solid rgba(255, 107, 53, 0.3);
-            border-radius: 20px;
-            padding: 50px;
-            width: 100%;
-            max-width: 450px;
-            box-shadow: var(--shadow-lg);
-        }
-
-        .login-header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
-        .login-logo {
-            color: var(--primary);
-            font-size: 3rem;
-            margin-bottom: 15px;
-        }
-
-        .login-title {
-            color: var(--primary);
-            font-size: 1.8rem;
-            margin-bottom: 8px;
-            font-weight: 800;
-        }
-
-        .login-subtitle {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
-
-        .login-form {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .form-group label {
-            color: var(--text-main);
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-
-        .form-group input {
-            background: rgba(255, 255, 255, 0.05);
-            border: 2px solid rgba(255, 107, 53, 0.2);
-            color: var(--text-main);
-            padding: 12px 16px;
-            border-radius: 10px;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: var(--primary);
-            background: rgba(255, 107, 53, 0.1);
-        }
-
-        .login-btn {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-            color: white;
-            border: none;
-            padding: 14px 24px;
-            border-radius: 10px;
-            font-size: 1rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .login-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(255, 107, 53, 0.3);
-        }
-
-        .login-footer {
-            text-align: center;
-            margin-top: 25px;
-            color: var(--text-muted);
-            font-size: 0.85rem;
-        }
-
-        .signup-link {
-            color: var(--primary);
-            cursor: pointer;
-            text-decoration: underline;
-            margin-left: 5px;
-        }
-
-        .error-message {
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid var(--alert);
-            color: #fca5a5;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            display: none;
-        }
-
-        .error-message.show {
-            display: block;
-        }
-
-        .success-message {
-            background: rgba(16, 185, 129, 0.1);
-            border: 1px solid var(--success);
-            color: #86efac;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            display: none;
-        }
-
-        .success-message.show {
-            display: block;
-        }
-
-        /* ========================= MAIN APP ========================= */
-        .app-container {
-            display: none;
-            width: 100%;
-            height: 100vh;
-            flex: 1;
-            display: flex;
-        }
-
-        .app-container.show {
-            display: flex;
-        }
-
-        /* ========================= SIDEBAR NAVIGATION ========================= */
-        aside {
-            width: 280px;
-            background: linear-gradient(180deg, var(--bg-card) 0%, rgba(26, 31, 58, 0.8) 100%);
-            border-right: 2px solid rgba(255, 107, 53, 0.2);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 25px;
-            flex-shrink: 0;
-            overflow-y: auto;
-            box-shadow: var(--shadow-lg);
-        }
-
-        .brand {
-            margin-bottom: 35px;
-        }
-
-        .brand h2 {
-            color: var(--primary);
-            font-size: 1.6rem;
-            margin-bottom: 8px;
-            letter-spacing: 1px;
-            font-weight: 800;
-            text-shadow: 0 2px 4px rgba(255, 107, 53, 0.3);
-        }
-
-        .brand p {
-            color: var(--text-muted);
-            font-size: 0.75rem;
-            letter-spacing: 0.5px;
-        }
-
-        .user-profile {
-            background: rgba(255, 107, 53, 0.1);
-            border: 1px solid rgba(255, 107, 53, 0.2);
-            padding: 12px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            font-size: 0.8rem;
-        }
-
-        .user-profile .username {
-            color: var(--primary);
-            font-weight: 700;
-            margin-bottom: 4px;
-        }
-
-        .user-profile .role {
-            color: var(--text-muted);
-            font-size: 0.75rem;
-        }
-
-        .nav-links {
-            list-style: none;
-            flex-grow: 1;
-            margin-bottom: 20px;
-        }
-
-        .nav-section-title {
-            font-size: 0.7rem;
-            color: var(--primary);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-top: 20px;
-            margin-bottom: 12px;
-            font-weight: 700;
-        }
-
-        .nav-links li {
-            padding: 12px 14px;
-            border-radius: 10px;
-            margin-bottom: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 500;
-            color: var(--text-muted);
-            border-left: 3px solid transparent;
-            font-size: 0.9rem;
-            display: none;
-        }
-
-        .nav-links li.visible {
-            display: block;
-        }
-
-        .nav-links li:hover {
-            background-color: rgba(255, 107, 53, 0.15);
-            color: var(--primary-light);
-            border-left-color: var(--primary);
-        }
-
-        .nav-links li.active {
-            background: linear-gradient(90deg, rgba(255, 107, 53, 0.2) 0%, rgba(255, 107, 53, 0) 100%);
-            color: var(--primary);
-            border-left-color: var(--primary);
-            font-weight: 600;
-        }
-
-        .owner-info {
-            border-top: 1px solid rgba(255, 107, 53, 0.2);
-            padding-top: 15px;
-            font-size: 0.8rem;
-            color: var(--text-muted);
-        }
-
-        .logout-btn {
-            background: rgba(239, 68, 68, 0.15);
-            color: var(--alert);
-            border: 1px solid var(--alert);
-            padding: 10px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            margin-top: 10px;
-            width: 100%;
-        }
-
-        .logout-btn:hover {
-            background: rgba(239, 68, 68, 0.25);
-        }
-
-        /* ========================= MAIN CONTENT ========================= */
-        main {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        .view-content {
-            display: none;
-            flex-grow: 1;
-            padding: 30px;
-            overflow-y: auto;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .view-content.active-view {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        h2 {
-            font-size: 1.8rem;
-            font-weight: 800;
-            margin-bottom: 20px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--accent-gold) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        /* ========================= ACCOUNT MANAGEMENT ========================= */
-        #accounts-view {
-            max-width: 1000px;
-        }
-
-        .accounts-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 10px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(255, 107, 53, 0.3);
-        }
-
-        .accounts-table {
-            width: 100%;
-            border-collapse: collapse;
-            background: var(--bg-card);
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: var(--shadow-md);
-        }
-
-        .accounts-table thead {
-            background: linear-gradient(135deg, rgba(255, 107, 53, 0.2) 0%, rgba(255, 107, 53, 0.1) 100%);
-        }
-
-        .accounts-table th {
-            padding: 16px;
-            text-align: left;
-            color: var(--primary);
-            font-weight: 700;
-            border-bottom: 2px solid rgba(255, 107, 53, 0.2);
-        }
-
-        .accounts-table td {
-            padding: 14px 16px;
-            border-bottom: 1px solid rgba(255, 107, 53, 0.1);
-            color: var(--text-main);
-        }
-
-        .accounts-table tbody tr:hover {
-            background: rgba(255, 107, 53, 0.05);
-        }
-
-        .role-badge {
-            display: inline-block;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-
-        .role-manager {
-            background: rgba(59, 130, 246, 0.2);
-            color: #93c5fd;
-        }
-
-        .role-cashier {
-            background: rgba(16, 185, 129, 0.2);
-            color: #6ee7b7;
-        }
-
-        .role-kitchen {
-            background: rgba(249, 115, 22, 0.2);
-            color: #fdba74;
-        }
-
-        .role-server {
-            background: rgba(139, 92, 246, 0.2);
-            color: #d8b4fe;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 8px;
-        }
-
-        .btn-sm {
-            padding: 6px 12px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.75rem;
-            font-weight: 600;
-            transition: all 0.2s ease;
-        }
-
-        .btn-edit {
-            background: rgba(59, 130, 246, 0.2);
-            color: #93c5fd;
-        }
-
-        .btn-edit:hover {
-            background: rgba(59, 130, 246, 0.4);
-        }
-
-        .btn-delete {
-            background: rgba(239, 68, 68, 0.2);
-            color: #fca5a5;
-        }
-
-        .btn-delete:hover {
-            background: rgba(239, 68, 68, 0.4);
-        }
-
-        .btn-reset {
-            background: rgba(249, 115, 22, 0.2);
-            color: #fdba74;
-        }
-
-        .btn-reset:hover {
-            background: rgba(249, 115, 22, 0.4);
-        }
-
-        /* ========================= MODAL ========================= */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .modal.show {
-            display: flex;
-        }
-
-        .modal-content {
-            background: var(--bg-card);
-            border: 2px solid rgba(255, 107, 53, 0.3);
-            border-radius: 16px;
-            padding: 40px;
-            max-width: 500px;
-            width: 90%;
-            box-shadow: var(--shadow-lg);
-        }
-
-        .modal-header {
-            font-size: 1.6rem;
-            font-weight: 800;
-            margin-bottom: 30px;
-            color: var(--primary);
-        }
-
-        .modal-form {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .modal-form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .modal-form-group label {
-            color: var(--text-main);
-            font-weight: 600;
-        }
-
-        .modal-form-group input,
-        .modal-form-group select {
-            background: rgba(255, 255, 255, 0.05);
-            border: 2px solid rgba(255, 107, 53, 0.2);
-            color: var(--text-main);
-            padding: 12px 16px;
-            border-radius: 10px;
-            font-family: var(--font-stack);
-            transition: all 0.3s ease;
-        }
-
-        .modal-form-group input:focus,
-        .modal-form-group select:focus {
-            outline: none;
-            border-color: var(--primary);
-            background: rgba(255, 107, 53, 0.1);
-        }
-
-        .modal-buttons {
-            display: flex;
-            gap: 12px;
-            margin-top: 20px;
-        }
-
-        .btn-cancel {
-            flex: 1;
-            background: rgba(160, 174, 192, 0.1);
-            color: var(--text-muted);
-            border: 1px solid rgba(160, 174, 192, 0.2);
-            padding: 12px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .btn-cancel:hover {
-            background: rgba(160, 174, 192, 0.2);
-        }
-
-        .btn-submit {
-            flex: 1;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .btn-submit:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
-        }
-
-        /* ========================= DASHBOARD ========================= */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .stat-card {
-            background: linear-gradient(135deg, var(--bg-card) 0%, rgba(26, 31, 58, 0.8) 100%);
-            border: 2px solid rgba(255, 107, 53, 0.2);
-            padding: 24px;
-            border-radius: 12px;
-            box-shadow: var(--shadow-md);
-        }
-
-        .stat-label {
-            color: var(--text-muted);
-            font-size: 0.85rem;
-            margin-bottom: 12px;
-            text-transform: uppercase;
-        }
-
-        .stat-value {
-            color: var(--primary);
-            font-size: 2.2rem;
-            font-weight: 800;
-        }
-
-        /* ========================= RESTRICTED VIEW ========================= */
-        .restricted-message {
-            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(239, 68, 68, 0.05) 100%);
-            border: 2px solid var(--alert);
-            padding: 40px;
-            border-radius: 12px;
-            text-align: center;
-            margin-top: 50px;
-        }
-
-        .restricted-message h3 {
-            color: var(--alert);
-            margin-bottom: 10px;
-        }
-
-        .restricted-message p {
-            color: var(--text-muted);
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gimbert Ludovice | BSIT Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ── TOKENS ─────────────────────────────────────────────────────── */
+    :root {
+      --navy:       #001a38;
+      --navy-mid:   #002e5e;
+      --navy-light: #0a4080;
+      --gold:       #f0a500;
+      --gold-soft:  #ffd166;
+      --cream:      #f4f7fb;
+      --white:      #ffffff;
+      --text-main:  #1c2b3a;
+      --text-mute:  #5a7393;
+      --glass:      rgba(255,255,255,0.08);
+      --glass-border: rgba(255,255,255,0.15);
+      --shadow-deep: 0 30px 80px rgba(0,0,0,0.4);
+      --shadow-card: 0 8px 32px rgba(0,26,56,0.18);
+      --transition:  0.45s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    /* ── RESET ───────────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background: var(--navy);
+      color: var(--white);
+      overflow-x: hidden;
+      cursor: default;
+    }
+
+    /* ── ANIMATED BACKGROUND ────────────────────────────────────────── */
+    .bg-scene {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .bg-scene::before {
+      content: '';
+      position: absolute;
+      width: 900px; height: 900px;
+      background: radial-gradient(circle, rgba(0,78,146,0.35) 0%, transparent 70%);
+      top: -200px; left: -200px;
+      animation: orb1 18s ease-in-out infinite alternate;
+    }
+    .bg-scene::after {
+      content: '';
+      position: absolute;
+      width: 700px; height: 700px;
+      background: radial-gradient(circle, rgba(240,165,0,0.12) 0%, transparent 70%);
+      bottom: -100px; right: -100px;
+      animation: orb2 22s ease-in-out infinite alternate;
+    }
+    @keyframes orb1 { to { transform: translate(120px, 80px); } }
+    @keyframes orb2 { to { transform: translate(-80px, -60px); } }
+
+    /* Floating grid lines */
+    .grid-lines {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+
+    /* ── NAV ─────────────────────────────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 900;
+      padding: 0 40px;
+      height: 70px;
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(0,26,56,0.75);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--glass-border);
+    }
+    .nav-logo {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.1rem;
+      color: var(--gold);
+      text-decoration: none;
+      letter-spacing: 0.05em;
+    }
+    .nav-logo span { color: var(--white); }
+    .nav-links {
+      display: flex; list-style: none; gap: 8px;
+    }
+    .nav-links a {
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      padding: 8px 18px;
+      border-radius: 50px;
+      transition: all 0.3s ease;
+      border: 1px solid transparent;
+    }
+    .nav-links a:hover, .nav-links a.active {
+      color: var(--white);
+      background: var(--glass);
+      border-color: var(--glass-border);
+    }
+    .nav-links a.active { color: var(--gold); }
+
+    /* ── WINDOW SYSTEM ───────────────────────────────────────────────── */
+    .window-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      z-index: 800;
+      background: rgba(0,10,26,0.7);
+      backdrop-filter: blur(8px);
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      animation: fadeIn 0.3s ease;
+    }
+    .window-overlay.open { display: flex; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .window-panel {
+      background: linear-gradient(160deg, #031c38 0%, #011428 100%);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      width: 100%; max-width: 860px;
+      max-height: 88vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-deep), 0 0 0 1px rgba(240,165,0,0.08);
+      animation: panelIn 0.45s cubic-bezier(0.23, 1, 0.32, 1);
+      scrollbar-width: thin;
+      scrollbar-color: var(--navy-light) transparent;
+    }
+    @keyframes panelIn {
+      from { opacity: 0; transform: scale(0.92) translateY(30px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    /* Window titlebar */
+    .window-titlebar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 28px;
+      border-bottom: 1px solid var(--glass-border);
+      position: sticky; top: 0;
+      background: rgba(3,28,56,0.97);
+      backdrop-filter: blur(10px);
+      border-radius: 20px 20px 0 0;
+      z-index: 2;
+    }
+    .window-dots { display: flex; gap: 8px; }
+    .window-dot {
+      width: 13px; height: 13px; border-radius: 50%;
+      cursor: pointer;
+    }
+    .dot-close  { background: #ff5f57; }
+    .dot-min    { background: #febc2e; }
+    .dot-max    { background: #28c840; }
+    .window-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.5);
+      letter-spacing: 0.05em;
+    }
+    .window-close-btn {
+      background: none; border: none;
+      color: rgba(255,255,255,0.4);
+      font-size: 1.3rem;
+      cursor: pointer;
+      transition: color 0.2s;
+      line-height: 1;
+    }
+    .window-close-btn:hover { color: var(--white); }
+
+    .window-body { padding: 36px; }
+
+    /* ── HERO ────────────────────────────────────────────────────────── */
+    .hero {
+      position: relative; z-index: 1;
+      min-height: 100vh;
+      display: flex; align-items: center;
+      padding: 100px 60px 60px;
+      gap: 60px;
+    }
+    .hero-left { flex: 1.2; }
+
+    .hero-eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--gold);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      opacity: 0;
+      animation: slideUp 0.8s 0.2s ease forwards;
+    }
+    .hero-name {
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      font-weight: 700;
+      line-height: 1.08;
+      color: var(--white);
+      margin-bottom: 12px;
+      opacity: 0;
+      animation: slideUp 0.8s 0.35s ease forwards;
+    }
+    .hero-name em {
+      font-style: normal;
+      color: var(--gold);
+    }
+    .hero-role {
+      font-size: 1.2rem;
+      color: var(--text-mute);
+      font-weight: 400;
+      margin-bottom: 28px;
+      opacity: 0;
+      animation: slideUp 0.8s 0.5s ease forwards;
+    }
+    .hero-desc {
+      font-size: 1.05rem;
+      color: rgba(255,255,255,0.65);
+      line-height: 1.75;
+      max-width: 520px;
+      margin-bottom: 44px;
+      opacity: 0;
+      animation: slideUp 0.8s 0.65s ease forwards;
+    }
+    .hero-cta {
+      display: flex; gap: 16px; flex-wrap: wrap;
+      opacity: 0;
+      animation: slideUp 0.8s 0.8s ease forwards;
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .btn-gold {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: linear-gradient(135deg, var(--gold) 0%, #e09000 100%);
+      color: var(--navy);
+      font-weight: 700;
+      font-size: 0.95rem;
+      padding: 14px 30px;
+      border-radius: 50px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: 0 4px 24px rgba(240,165,0,0.3);
+    }
+    .btn-gold:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 36px rgba(240,165,0,0.45);
+    }
+    .btn-outline {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: transparent;
+      color: var(--white);
+      font-weight: 600;
+      font-size: 0.95rem;
+      padding: 14px 30px;
+      border-radius: 50px;
+      text-decoration: none;
+      border: 1.5px solid var(--glass-border);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .btn-outline:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+      transform: translateY(-3px);
+    }
+
+    /* Hero 3D Avatar */
+    .hero-right {
+      flex: 0.8;
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+      opacity: 0;
+      animation: fadeInScale 1s 0.5s ease forwards;
+    }
+    @keyframes fadeInScale {
+      from { opacity: 0; transform: scale(0.85); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+
+    .avatar-ring {
+      width: 360px; height: 360px;
+      position: relative;
+      perspective: 1000px;
+    }
+    .avatar-ring::before {
+      content: '';
+      position: absolute;
+      inset: -20px;
+      border-radius: 50%;
+      background: conic-gradient(from 0deg, var(--gold), var(--navy-light), var(--gold));
+      animation: spin 8s linear infinite;
+      opacity: 0.6;
+    }
+    .avatar-ring::after {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      background: var(--navy);
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .avatar-img {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      width: 100%; height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 6px solid rgba(255,255,255,0.12);
+      transition: transform 0.6s ease;
+      transform: rotateY(-12deg) rotateX(8deg);
+    }
+    .avatar-ring:hover .avatar-img {
+      transform: rotateY(0deg) rotateX(0deg) scale(1.03);
+    }
+
+    /* Floating badge */
+    .hero-badge {
+      position: absolute;
+      bottom: 10px; right: -20px;
+      background: linear-gradient(135deg, var(--navy-mid), var(--navy-light));
+      border: 1px solid var(--glass-border);
+      border-radius: 14px;
+      padding: 14px 20px;
+      z-index: 10;
+      box-shadow: var(--shadow-card);
+      animation: float 4s ease-in-out infinite;
+    }
+    .hero-badge .badge-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--gold);
+      line-height: 1;
+    }
+    .hero-badge .badge-label {
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.55);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    /* ── SECTION SHARED ──────────────────────────────────────────────── */
+    .section {
+      position: relative; z-index: 1;
+      padding: 100px 60px;
+    }
+    .section-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--gold);
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    .section-heading {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 60px;
+      line-height: 1.15;
+    }
+    .section-heading span { color: var(--gold); }
+
+    /* ── SKILLS SECTION ──────────────────────────────────────────────── */
+    #skills { background: linear-gradient(to bottom, transparent, rgba(0,46,94,0.2), transparent); }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 24px;
+    }
+    .skill-card {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 32px 28px;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      transition: var(--transition);
+      transform-style: preserve-3d;
+    }
+    .skill-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(240,165,0,0.08) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .skill-card:hover {
+      border-color: rgba(240,165,0,0.4);
+      transform: translateY(-8px) rotateX(6deg) rotateY(-3deg);
+      box-shadow: -6px 20px 40px rgba(0,0,0,0.3), 0 0 0 1px rgba(240,165,0,0.15);
+    }
+    .skill-card:hover::before { opacity: 1; }
+
+    .skill-icon {
+      width: 50px; height: 50px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--navy-mid), var(--navy-light));
+      border: 1px solid var(--glass-border);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 20px;
+      font-size: 1.4rem;
+    }
+    .skill-card h3 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--white);
+      margin-bottom: 10px;
+    }
+    .skill-card p {
+      font-size: 0.88rem;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.65;
+    }
+    .skill-bar-wrap {
+      margin-top: 18px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 50px;
+      height: 4px;
+      overflow: hidden;
+    }
+    .skill-bar {
+      height: 100%;
+      border-radius: 50px;
+      background: linear-gradient(90deg, var(--gold), var(--gold-soft));
+      transition: width 1.2s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    /* ── PROJECTS SECTION ────────────────────────────────────────────── */
+    #projects { background: linear-gradient(to bottom, transparent, rgba(0,26,56,0.4), transparent); }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 28px;
+    }
+    .project-card {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: var(--transition);
+      transform-style: preserve-3d;
+      perspective: 1000px;
+      display: flex;
+      flex-direction: column;
+    }
+    .project-card:hover {
+      transform: translateY(-12px) rotateY(6deg) rotateX(3deg);
+      border-color: rgba(240,165,0,0.35);
+      box-shadow: -12px 28px 60px rgba(0,0,0,0.35);
+    }
+    .project-thumb {
+      height: 190px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1rem;
+      color: rgba(255,255,255,0.4);
+      letter-spacing: 0.1em;
+      position: relative;
+      overflow: hidden;
+    }
+    .project-thumb::after {
+      content: '';
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 60px;
+      background: linear-gradient(to top, var(--glass) 0%, transparent 100%);
+    }
+    .project-thumb-icon {
+      font-size: 2.5rem;
+      position: absolute;
+      z-index: 1;
+    }
+    .project-body {
+      padding: 24px 26px 26px;
+      flex: 1;
+      display: flex; flex-direction: column;
+    }
+    .project-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--gold);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .project-body h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--white);
+      margin-bottom: 10px;
+    }
+    .project-body p {
+      font-size: 0.88rem;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.65;
+      flex: 1;
+      margin-bottom: 20px;
+    }
+    .project-footer {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .tech-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+    .tech-tag {
+      font-size: 0.72rem;
+      background: rgba(255,255,255,0.07);
+      color: rgba(255,255,255,0.5);
+      padding: 4px 10px;
+      border-radius: 50px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .project-link {
+      color: var(--gold);
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-decoration: none;
+      display: flex; align-items: center; gap: 6px;
+      white-space: nowrap;
+      transition: gap 0.2s ease;
+    }
+    .project-link:hover { gap: 10px; }
+
+    /* "Open Window" btn on project cards */
+    .btn-window {
+      background: none; border: none;
+      color: rgba(255,255,255,0.4);
+      font-size: 0.8rem;
+      cursor: pointer;
+      padding: 6px 14px;
+      border-radius: 50px;
+      border: 1px solid rgba(255,255,255,0.1);
+      transition: all 0.25s ease;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    .btn-window:hover {
+      color: var(--white);
+      border-color: var(--glass-border);
+      background: var(--glass);
+    }
+
+    /* ── CONTACT SECTION ─────────────────────────────────────────────── */
+    #contact {
+      background: linear-gradient(135deg, rgba(0,46,94,0.3) 0%, rgba(0,26,56,0.8) 100%);
+      border-top: 1px solid var(--glass-border);
+    }
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: start;
+    }
+    .contact-info p {
+      font-size: 1rem;
+      color: rgba(255,255,255,0.55);
+      line-height: 1.8;
+      margin-bottom: 36px;
+    }
+    .contact-item {
+      display: flex; align-items: center; gap: 16px;
+      padding: 18px 22px;
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 14px;
+      margin-bottom: 14px;
+      transition: var(--transition);
+      cursor: pointer;
+    }
+    .contact-item:hover {
+      border-color: rgba(240,165,0,0.3);
+      transform: translateX(6px);
+    }
+    .contact-item-icon {
+      width: 42px; height: 42px;
+      background: linear-gradient(135deg, var(--navy-mid), var(--navy-light));
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+    .contact-item-text h4 {
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.4);
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 3px;
+    }
+    .contact-item-text p { font-size: 0.92rem; color: var(--white); margin: 0; }
+
+    .contact-form-area {
+      display: flex; flex-direction: column; gap: 16px;
+    }
+    .form-field {
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .form-field label {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.45);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .form-field input,
+    .form-field textarea {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 10px;
+      padding: 14px 18px;
+      color: var(--white);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.3s ease;
+      resize: none;
+    }
+    .form-field input:focus,
+    .form-field textarea:focus {
+      border-color: var(--gold);
+    }
+    .form-field textarea { height: 130px; }
+
+    /* ── FOOTER ──────────────────────────────────────────────────────── */
+    footer {
+      position: relative; z-index: 1;
+      text-align: center;
+      padding: 40px 20px;
+      border-top: 1px solid var(--glass-border);
+    }
+    .footer-logo {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.1rem;
+      color: var(--gold);
+      margin-bottom: 14px;
+    }
+    footer p {
+      font-size: 0.83rem;
+      color: rgba(255,255,255,0.3);
+      margin-bottom: 6px;
+    }
+    footer a { color: var(--gold); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* ── SCROLL REVEAL ───────────────────────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── WINDOW CONTENT STYLES ──────────────────────────────────────── */
+    .win-header {
+      margin-bottom: 28px;
+    }
+    .win-header h2 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 8px;
+    }
+    .win-header p { color: rgba(255,255,255,0.5); font-size: 0.95rem; }
+
+    .win-preview {
+      width: 100%;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--glass-border);
+      background: #0a0e1a;
+      margin-bottom: 28px;
+    }
+    .win-preview-bar {
+      background: rgba(255,255,255,0.06);
+      padding: 12px 16px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .win-preview-bar .dot { width: 10px; height: 10px; border-radius: 50%; }
+    .win-url {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.35);
+      margin-left: 10px;
+    }
+    .win-preview-frame {
+      height: 320px;
+      background: linear-gradient(160deg, #0d1a2d, #081222);
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(255,255,255,0.2);
+      font-size: 0.9rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .win-preview-frame iframe {
+      width: 100%; height: 100%;
+      border: none;
+    }
+    .win-details {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+    .win-detail-box {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 18px 20px;
+    }
+    .win-detail-box h4 {
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.35);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 8px;
+    }
+    .win-detail-box p { font-size: 0.9rem; color: var(--white); }
+    .win-actions { display: flex; gap: 12px; }
+
+    /* ── ABOUT WINDOW ────────────────────────────────────────────────── */
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 28px; }
+    .about-stat {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+    }
+    .about-stat .num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 2.2rem;
+      color: var(--gold);
+      font-weight: 700;
+      line-height: 1;
+    }
+    .about-stat .lbl {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.4);
+      margin-top: 6px;
+    }
+    .about-skills-list { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+    .about-skill-pill {
+      padding: 7px 16px;
+      border-radius: 50px;
+      font-size: 0.82rem;
+      background: rgba(240,165,0,0.1);
+      border: 1px solid rgba(240,165,0,0.25);
+      color: var(--gold-soft);
+    }
+
+    /* ── RESPONSIVE ──────────────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      nav { padding: 0 20px; }
+      .hero { flex-direction: column; padding: 100px 24px 60px; text-align: center; }
+      .hero-right { order: -1; }
+      .avatar-ring { width: 260px; height: 260px; }
+      .hero-badge { right: 0; bottom: -10px; }
+      .section { padding: 70px 24px; }
+      .contact-grid { grid-template-columns: 1fr; gap: 40px; }
+      .win-details { grid-template-columns: 1fr; }
+      .about-grid { grid-template-columns: 1fr 1fr; }
+      .window-body { padding: 24px; }
+    }
+    @media (max-width: 600px) {
+      .nav-links { display: none; }
+      .hero-name { font-size: 2.4rem; }
+      .about-grid { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
-    <!-- ========================= LOGIN PAGE ========================= -->
-    <div id="login-container">
-        <div class="login-box">
-            <div class="login-header">
-                <div class="login-logo">🍽️</div>
-                <h1 class="login-title">LUDOVICE</h1>
-                <p class="login-subtitle">Restaurant Management System</p>
-            </div>
 
-            <div class="error-message" id="loginError"></div>
-            <div class="success-message" id="loginSuccess"></div>
+  <!-- Background Atmosphere -->
+  <div class="bg-scene"></div>
+  <div class="grid-lines"></div>
 
-            <div class="login-form">
-                <div class="form-group">
-                    <label for="loginUsername">📧 Username / Email</label>
-                    <input type="text" id="loginUsername" placeholder="Enter your username">
-                </div>
-                <div class="form-group">
-                    <label for="loginPassword">🔐 Password</label>
-                    <input type="password" id="loginPassword" placeholder="Enter your password">
-                </div>
-                <button class="login-btn" onclick="handleLogin()">🔓 Login</button>
-            </div>
+  <!-- ══ NAV ══════════════════════════════════════════════════════════ -->
+  <nav>
+    <a href="#" class="nav-logo">GL<span>.dev</span></a>
+    <ul class="nav-links">
+      <li><a href="#" class="active" onclick="scrollTo(0,0);return false">Home</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#contact">Contact</a></li>
+      <li><a href="#" onclick="openWindow('about-window');return false">About Me</a></li>
+    </ul>
+  </nav>
 
-            <div class="login-footer">
-                Don't have an account? <span class="signup-link" onclick="showSignup()">Sign Up</span>
-            </div>
+  <!-- ══ HERO ══════════════════════════════════════════════════════════ -->
+  <header class="hero" id="home">
+    <div class="hero-left">
+      <p class="hero-eyebrow">&#x2726; BSIT Student &bull; Web Developer</p>
+      <h1 class="hero-name">Gimbert<br><em>Ludovice</em></h1>
+      <p class="hero-role">Mobile & Website Development Specialist</p>
+      <p class="hero-desc">
+        Focused on HTML5 and CSS3 simple and clean, structurally precise, and highly accessible web experiences.
+        Passionate about 3D UI systems, responsive layouts, and modern development standards.
+      </p>
+      <div class="hero-cta">
+        <a href="#projects" class="btn-gold">&#x26A1; View Projects</a>
+        <a href="#" class="btn-outline" onclick="openWindow('about-window');return false">&#128100; About Me</a>
+        <a href="#contact" class="btn-outline">&#9993; Contact</a>
+      </div>
+    </div>
+
+    <div class="hero-right">
+      <div class="avatar-ring">
+        <img src="image_bd8dbc.jpg" alt="Gimbert Ludovice" class="avatar-img" />
+      </div>
+      <div class="hero-badge">
+        <div class="badge-num">3+</div>
+        <div class="badge-label">Live Projects</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ══ SKILLS ════════════════════════════════════════════════════════ -->
+  <section class="section" id="skills">
+    <p class="section-tag reveal">Technical Arsenal</p>
+    <h2 class="section-heading reveal">What I <span>Build With</span></h2>
+    <div class="skills-grid">
+
+      <div class="skill-card reveal" onclick="openWindow('skill-web-window')">
+        <div class="skill-icon">&#9996;</div>
+        <h3>HTML5 & CSS3</h3>
+        <p>Semantic markup, CSS Grid, Flexbox, 3D transforms, and responsive layout engineering.</p>
+        <div class="skill-bar-wrap"><div class="skill-bar" style="width:82%"></div></div>
+      </div>
+
+      <div class="skill-card reveal" onclick="openWindow('skill-mobile-window')">
+        <div class="skill-icon">&#128241;</div>
+        <h3>Mobile Dev Concepts</h3>
+        <p>Clean, interactive user interfaces built with mobile-first layouts and accessibility principles.</p>
+        <div class="skill-bar-wrap"><div class="skill-bar" style="width:70%"></div></div>
+      </div>
+
+      <div class="skill-card reveal" onclick="openWindow('skill-uiux-window')">
+        <div class="skill-icon">&#127912;</div>
+        <h3>UI/UX Design</h3>
+        <p>Spatial animation layers, modern design systems, 3D presentation, and visual hierarchy.</p>
+        <div class="skill-bar-wrap"><div class="skill-bar" style="width:75%"></div></div>
+      </div>
+
+      <div class="skill-card reveal" onclick="openWindow('skill-git-window')">
+        <div class="skill-icon">&#128279;</div>
+        <h3>Version Control</h3>
+        <p>Git workflows, GitHub Pages deployments, project management and remote collaboration.</p>
+        <div class="skill-bar-wrap"><div class="skill-bar" style="width:68%"></div></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══ PROJECTS ══════════════════════════════════════════════════════ -->
+  <section class="section" id="projects">
+    <p class="section-tag reveal">Featured Work</p>
+    <h2 class="section-heading reveal">Projects & <span>Deployments</span></h2>
+    <div class="projects-grid">
+
+      <!-- Project 1 -->
+      <div class="project-card reveal" onclick="openWindow('proj1-window')">
+        <div class="project-thumb" style="background: linear-gradient(135deg, #0d1b2a, #1a3050);">
+          <div class="project-thumb-icon">&#127758;</div>
+          <span style="position:relative;z-index:1;">IT Portfolio</span>
         </div>
-    </div>
-
-    <!-- ========================= SIGN UP PAGE ========================= -->
-    <div id="signup-container" style="display: none;">
-        <div class="login-box" style="max-width: 500px;">
-            <div class="login-header">
-                <h1 class="login-title">Create Account</h1>
-                <p class="login-subtitle">Set up your LUDOVICE account</p>
+        <div class="project-body">
+          <p class="project-tag">Web Project 01</p>
+          <h3>IT Portfolio Workspace</h3>
+          <p>A responsive web ecosystem with clean markup structures outlining profiles and student activities.</p>
+          <div class="project-footer">
+            <div class="tech-tags">
+              <span class="tech-tag">HTML5</span>
+              <span class="tech-tag">CSS3</span>
             </div>
-
-            <div class="error-message" id="signupError"></div>
-
-            <div class="login-form">
-                <div class="form-group">
-                    <label for="signupUsername">👤 Username</label>
-                    <input type="text" id="signupUsername" placeholder="Choose a username">
-                </div>
-                <div class="form-group">
-                    <label for="signupEmail">📧 Email</label>
-                    <input type="email" id="signupEmail" placeholder="your@email.com">
-                </div>
-                <div class="form-group">
-                    <label for="signupPassword">🔐 Password</label>
-                    <input type="password" id="signupPassword" placeholder="Min 6 characters">
-                </div>
-                <div class="form-group">
-                    <label for="signupRole">👔 Role</label>
-                    <select id="signupRole">
-                        <option value="">Select your role</option>
-                        <option value="manager">Manager</option>
-                        <option value="cashier">Cashier</option>
-                        <option value="kitchen">Kitchen Staff</option>
-                        <option value="server">Server</option>
-                    </select>
-                </div>
-                <button class="login-btn" onclick="handleSignup()">✅ Create Account</button>
-                <p style="text-align: center; color: var(--text-muted); font-size: 0.85rem; margin-top: 10px; cursor: pointer;" onclick="showLogin()">← Back to Login</p>
-            </div>
+            <a href="https://gimbertludovice-sketch.github.io/gimbert-it-portfolio/" target="_blank" class="project-link">Live &#8594;</a>
+          </div>
         </div>
-    </div>
+      </div>
 
-    <!-- ========================= MAIN APP ========================= -->
-    <div class="app-container" id="appContainer">
-        <!-- SIDEBAR -->
-        <aside>
-            <div>
-                <div class="brand">
-                    <h2>LUDOVICE</h2>
-                    <p>PREMIUM RMS 2026</p>
-                </div>
-
-                <div class="user-profile">
-                    <div class="username" id="currentUsername">User</div>
-                    <div class="role" id="currentRole">Role</div>
-                </div>
-
-                <ul class="nav-links">
-                    <li class="nav-section-title">MENU</li>
-                    <li class="nav-item visible" onclick="switchView('dashboard-view', this)">📊 Dashboard</li>
-                    <li class="nav-item visible" onclick="switchView('foh-view', this)">🧑‍💼 FOH (Front of House)</li>
-                    <li class="nav-item visible" onclick="switchView('kds-view', this)">🍳 Kitchen Display</li>
-                    <li class="nav-item visible" onclick="switchView('orders-view', this)">📦 Order History</li>
-
-                    <li class="nav-section-title" style="margin-top: 30px;">ADMIN</li>
-                    <li class="nav-item" id="nav-accounts" onclick="switchView('accounts-view', this)">👥 Manage Accounts</li>
-                    <li class="nav-item" id="nav-reports" onclick="switchView('reports-view', this)">📈 Reports</li>
-                    <li class="nav-item" id="nav-settings" onclick="switchView('settings-view', this)">⚙️ Settings</li>
-                </ul>
-            </div>
-
-            <div class="owner-info">
-                <strong>Manager Email:</strong>
-                gimbertludovice@student.trimexcolleges.edu.ph
-                <button class="logout-btn" onclick="handleLogout()">🚪 Logout</button>
-            </div>
-        </aside>
-
-        <!-- MAIN CONTENT -->
-        <main>
-            <!-- Dashboard View -->
-            <div id="dashboard-view" class="view-content active-view">
-                <h2>📊 Dashboard</h2>
-                
-                <div class="dashboard-grid">
-                    <div class="stat-card">
-                        <div class="stat-label">Total Accounts</div>
-                        <div class="stat-value" id="statAccounts">0</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Active Users</div>
-                        <div class="stat-value" id="statActive">0</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Your Role</div>
-                        <div class="stat-value" id="statRole" style="font-size: 1.2rem; text-transform: capitalize;">-</div>
-                    </div>
-                </div>
-
-                <h3 style="margin-top: 30px;">👋 Welcome Back!</h3>
-                <p style="color: var(--text-muted); line-height: 1.6;">
-                    This is your restaurant management dashboard. To manage user accounts and control access, 
-                    navigate to the <strong>Manage Accounts</strong> section in the sidebar (Admin section). 
-                    Only managers can create and manage user accounts.
-                </p>
-            </div>
-
-            <!-- Accounts Management View -->
-            <div id="accounts-view" class="view-content">
-                <div class="accounts-header">
-                    <h2>👥 Manage User Accounts</h2>
-                    <button class="btn-primary" onclick="openAddAccountModal()">➕ Create New Account</button>
-                </div>
-
-                <table class="accounts-table">
-                    <thead>
-                        <tr>
-                            <th>Username</th>
-                            <th>Email</th>
-                            <th>Role</th>
-                            <th>Status</th>
-                            <th>Created</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="accountsTableBody">
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Reports View -->
-            <div id="reports-view" class="view-content">
-                <h2>📈 Reports & Analytics</h2>
-                <p style="color: var(--text-muted); margin-top: 20px;">Reports section coming soon...</p>
-            </div>
-
-            <!-- Settings View -->
-            <div id="settings-view" class="view-content">
-                <h2>⚙️ System Settings</h2>
-                <p style="color: var(--text-muted); margin-top: 20px;">Settings section coming soon...</p>
-            </div>
-
-            <!-- FOH View Placeholder -->
-            <div id="foh-view" class="view-content">
-                <h2>🧑‍💼 Front of House</h2>
-                <p style="color: var(--text-muted); margin-top: 20px;">FOH module will be displayed here...</p>
-            </div>
-
-            <!-- KDS View Placeholder -->
-            <div id="kds-view" class="view-content">
-                <h2>🍳 Kitchen Display System</h2>
-                <p style="color: var(--text-muted); margin-top: 20px;">Kitchen orders will be displayed here...</p>
-            </div>
-
-            <!-- Orders View Placeholder -->
-            <div id="orders-view" class="view-content">
-                <h2>📦 Order History</h2>
-                <p style="color: var(--text-muted); margin-top: 20px;">Order history will be displayed here...</p>
-            </div>
-        </main>
-    </div>
-
-    <!-- ========================= ADD ACCOUNT MODAL ========================= -->
-    <div id="addAccountModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">➕ Create New Account</div>
-            
-            <div class="error-message" id="modalError"></div>
-
-            <form class="modal-form" onsubmit="handleCreateAccount(event)">
-                <div class="modal-form-group">
-                    <label for="newUsername">Username</label>
-                    <input type="text" id="newUsername" required placeholder="Choose a username">
-                </div>
-
-                <div class="modal-form-group">
-                    <label for="newEmail">Email Address</label>
-                    <input type="email" id="newEmail" required placeholder="user@example.com">
-                </div>
-
-                <div class="modal-form-group">
-                    <label for="newPassword">Password</label>
-                    <input type="password" id="newPassword" required placeholder="Min 6 characters">
-                </div>
-
-                <div class="modal-form-group">
-                    <label for="newRole">User Role</label>
-                    <select id="newRole" required>
-                        <option value="">Select a role</option>
-                        <option value="cashier">Cashier</option>
-                        <option value="kitchen">Kitchen Staff</option>
-                        <option value="server">Server</option>
-                        <option value="manager">Manager (Admin)</option>
-                    </select>
-                </div>
-
-                <div class="modal-buttons">
-                    <button type="button" class="btn-cancel" onclick="closeAddAccountModal()">Cancel</button>
-                    <button type="submit" class="btn-submit">Create Account</button>
-                </div>
-            </form>
-
-            <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255, 107, 53, 0.2); font-size: 0.85rem; color: var(--text-muted);">
-                <strong>📧 Email Notification:</strong> Once created, account credentials will be sent to the user's email address and to the manager at gimbertludovice@student.trimexcolleges.edu.ph
-            </div>
+      <!-- Project 2 -->
+      <div class="project-card reveal" onclick="openWindow('proj2-window')">
+        <div class="project-thumb" style="background: linear-gradient(135deg, #1a1f3a, #2c3e6a);">
+          <div class="project-thumb-icon">&#128295;</div>
+          <span style="position:relative;z-index:1;">Web System</span>
         </div>
+        <div class="project-body">
+          <p class="project-tag">Web Project 02</p>
+          <h3>Web System UI/UX</h3>
+          <p>An interactive platform exploring structural layout manipulation and complex interface deployments.</p>
+          <div class="project-footer">
+            <div class="tech-tags">
+              <span class="tech-tag">UI Design</span>
+              <span class="tech-tag">CSS Grid</span>
+            </div>
+            <a href="https://gimbertludovice-sketch.github.io/myUI-UX/" target="_blank" class="project-link">Live &#8594;</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Project 3 -->
+      <div class="project-card reveal" onclick="openWindow('proj3-window')">
+        <div class="project-thumb" style="background: linear-gradient(135deg, #1a2a1a, #2a4a2a);">
+          <div class="project-thumb-icon">&#9997;</div>
+          <span style="position:relative;z-index:1;">Blog Space</span>
+        </div>
+        <div class="project-body">
+          <p class="project-tag">Web Project 03</p>
+          <h3>Personal Web Blog Space</h3>
+          <p>A clean web workspace with stylized components to display articles, images, and content feeds.</p>
+          <div class="project-footer">
+            <div class="tech-tags">
+              <span class="tech-tag">Blog</span>
+              <span class="tech-tag">Content</span>
+            </div>
+            <a href="https://gimbertludovice-sketch.github.io/MyVlog/" target="_blank" class="project-link">Live &#8594;</a>
+          </div>
+        </div>
+      </div>
+
     </div>
+  </section>
 
-    <script>
-        // ========================= USER DATABASE & AUTH ========================= 
-        let currentUser = null;
-        const userDatabase = JSON.parse(localStorage.getItem('ludovice_users')) || [];
-        const managerEmail = 'gimbertludovice@student.trimexcolleges.edu.ph';
+  <!-- ══ CONTACT ═══════════════════════════════════════════════════════ -->
+  <section class="section" id="contact">
+    <p class="section-tag reveal">Get In Touch</p>
+    <h2 class="section-heading reveal">Let's <span>Connect</span></h2>
+    <div class="contact-grid">
+      <div class="contact-info reveal">
+        <p>I'm a first-year BSIT student actively building my portfolio and always open to collaboration, feedback, or opportunities in web and mobile development.</p>
+        <div class="contact-item">
+          <div class="contact-item-icon">&#127979;</div>
+          <div class="contact-item-text">
+            <h4>Program</h4>
+            <p>BSIT — Mobile & Website Dev</p>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-item-icon">&#128218;</div>
+          <div class="contact-item-text">
+            <h4>Section</h4>
+            <p>WITMWD1M1-S</p>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-item-icon">&#128279;</div>
+          <div class="contact-item-text">
+            <h4>GitHub</h4>
+            <p>gimbertludovice-sketch</p>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-item-icon">&#128101;</div>
+          <div class="contact-item-text">
+            <h4>Classroom</h4>
+            <a href="https://classroom.google.com/u/0/c/ODYyOTIzMzQ1OTgx" target="_blank" style="color:var(--gold-soft);text-decoration:none;font-size:0.92rem">Google Classroom &#8594;</a>
+          </div>
+        </div>
+      </div>
+      <div class="contact-form-area reveal">
+        <div class="form-field">
+          <label>Your Name</label>
+          <input type="text" placeholder="e.g. Juan dela Cruz" />
+        </div>
+        <div class="form-field">
+          <label>Email Address</label>
+          <input type="email" placeholder="you@email.com" />
+        </div>
+        <div class="form-field">
+          <label>Message</label>
+          <textarea placeholder="Hi Gimbert, I'd like to collaborate on…"></textarea>
+        </div>
+        <button class="btn-gold" style="align-self:flex-start" onclick="showToast()">&#9993; Send Message</button>
+      </div>
+    </div>
+  </section>
 
-        // Initialize with demo accounts if empty
-        if (userDatabase.length === 0) {
-            userDatabase.push(
-                {
-                    id: 1,
-                    username: 'demo_manager',
-                    email: managerEmail,
-                    password: 'demo123', // In production: hash this
-                    role: 'manager',
-                    status: 'active',
-                    created: new Date().toLocaleDateString()
-                },
-                {
-                    id: 2,
-                    username: 'demo_cashier',
-                    email: 'cashier@ludovice.com',
-                    password: 'demo123',
-                    role: 'cashier',
-                    status: 'active',
-                    created: new Date().toLocaleDateString()
-                }
-            );
-            localStorage.setItem('ludovice_users', JSON.stringify(userDatabase));
+  <!-- ══ FOOTER ════════════════════════════════════════════════════════ -->
+  <footer>
+    <div class="footer-logo">GL<span style="color:rgba(255,255,255,0.4)">.dev</span></div>
+    <p>&copy; 2026 Gimbert Ludovice &mdash; All rights reserved.</p>
+    <p>Bachelor of Science in Information Technology &bull; Specialized in <a href="https://classroom.google.com/u/0/c/ODYyOTIzMzQ1OTgx" target="_blank">Mobile & Website Development</a></p>
+  </footer>
+
+
+  <!-- ══════════════════════════════════════════════════════════════════ -->
+  <!--  WINDOW OVERLAYS                                                  -->
+  <!-- ══════════════════════════════════════════════════════════════════ -->
+
+  <!-- ABOUT WINDOW -->
+  <div class="window-overlay" id="about-window">
+    <div class="window-panel">
+      <div class="window-titlebar">
+        <div class="window-dots">
+          <div class="window-dot dot-close" onclick="closeWindow('about-window')"></div>
+          <div class="window-dot dot-min"></div>
+          <div class="window-dot dot-max"></div>
+        </div>
+        <span class="window-title">about-me.txt — Gimbert Ludovice</span>
+        <button class="window-close-btn" onclick="closeWindow('about-window')">&times;</button>
+      </div>
+      <div class="window-body">
+        <div class="win-header">
+          <h2>About Gimbert</h2>
+          <p>First-Year BSIT Student &bull; Section WITMWD1M1-S</p>
+        </div>
+        <div class="about-grid">
+          <div class="about-stat"><div class="num">1st</div><div class="lbl">Year Level</div></div>
+          <div class="about-stat"><div class="num">3+</div><div class="lbl">Projects Live</div></div>
+          <div class="about-stat"><div class="num">2026</div><div class="lbl">Cohort Year</div></div>
+          <div class="about-stat"><div class="num">BSIT</div><div class="lbl">Degree Program</div></div>
+        </div>
+        <p style="color:rgba(255,255,255,0.55);line-height:1.8;margin-bottom:20px;font-size:0.95rem">
+          Gimbert Ludovice is a driven first-year Bachelor of Science in Information Technology student, specializing in Mobile and Website Development. With a sharp focus on clean code architecture, responsive design, and 3D web interfaces, Gimbert is actively building a portfolio that demonstrates modern front-end engineering skills.
+        </p>
+        <p style="color:rgba(255,255,255,0.4);font-size:0.88rem;line-height:1.7;margin-bottom:24px">
+          Currently exploring HTML5 semantics, CSS3 spatial layouts, Git workflows, and UI/UX design systems. Passionate about making the web beautiful, accessible, and performant.
+        </p>
+        <h4 style="color:rgba(255,255,255,0.6);font-size:0.8rem;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:12px">Tech Stack</h4>
+        <div class="about-skills-list">
+          <span class="about-skill-pill">HTML5</span>
+          <span class="about-skill-pill">CSS3</span>
+          <span class="about-skill-pill">Flexbox</span>
+          <span class="about-skill-pill">CSS Grid</span>
+          <span class="about-skill-pill">3D Transforms</span>
+          <span class="about-skill-pill">Responsive Design</span>
+          <span class="about-skill-pill">GitHub Pages</span>
+          <span class="about-skill-pill">Mobile-First</span>
+          <span class="about-skill-pill">UI/UX Principles</span>
+          <span class="about-skill-pill">CyberSec</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROJECT 1 WINDOW -->
+  <div class="window-overlay" id="proj1-window">
+    <div class="window-panel">
+      <div class="window-titlebar">
+        <div class="window-dots">
+          <div class="window-dot dot-close" onclick="closeWindow('proj1-window')"></div>
+          <div class="window-dot dot-min"></div>
+          <div class="window-dot dot-max"></div>
+        </div>
+        <span class="window-title">project-01 — IT Portfolio Workspace</span>
+        <button class="window-close-btn" onclick="closeWindow('proj1-window')">&times;</button>
+      </div>
+      <div class="window-body">
+        <div class="win-header">
+          <h2>IT Portfolio Workspace</h2>
+          <p>Web Project 01 &bull; HTML5 / CSS3</p>
+        </div>
+        <div class="win-preview">
+          <div class="win-preview-bar">
+            <div class="dot" style="background:#ff5f57"></div>
+            <div class="dot" style="background:#febc2e"></div>
+            <div class="dot" style="background:#28c840"></div>
+            <span class="win-url">gimbertludovice-sketch.github.io/gimbert-it-portfolio/</span>
+          </div>
+          <div class="win-preview-frame">
+            <iframe src="https://gimbertludovice-sketch.github.io/gimbert-it-portfolio/" loading="lazy" title="IT Portfolio Workspace"></iframe>
+          </div>
+        </div>
+        <div class="win-details">
+          <div class="win-detail-box"><h4>Type</h4><p>Personal Portfolio</p></div>
+          <div class="win-detail-box"><h4>Tech Stack</h4><p>HTML5, CSS3</p></div>
+          <div class="win-detail-box"><h4>Hosting</h4><p>GitHub Pages</p></div>
+          <div class="win-detail-box"><h4>Status</h4><p>&#x2705; Live & Active</p></div>
+        </div>
+        <p style="color:rgba(255,255,255,0.5);font-size:0.9rem;line-height:1.75;margin-bottom:24px">
+          A simple, responsive web ecosystem created using clean markup structures to outline profiles and student activities. Demonstrates foundational HTML5 semantic structure and CSS layout techniques.
+        </p>
+        <div class="win-actions">
+          <a href="https://gimbertludovice-sketch.github.io/gimbert-it-portfolio/" target="_blank" class="btn-gold">&#127758; Open Live Site</a>
+          <button class="btn-outline" onclick="closeWindow('proj1-window')">&#8592; Back</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROJECT 2 WINDOW -->
+  <div class="window-overlay" id="proj2-window">
+    <div class="window-panel">
+      <div class="window-titlebar">
+        <div class="window-dots">
+          <div class="window-dot dot-close" onclick="closeWindow('proj2-window')"></div>
+          <div class="window-dot dot-min"></div>
+          <div class="window-dot dot-max"></div>
+        </div>
+        <span class="window-title">project-02 — Web System UI/UX</span>
+        <button class="window-close-btn" onclick="closeWindow('proj2-window')">&times;</button>
+      </div>
+      <div class="window-body">
+        <div class="win-header">
+          <h2>Web System UI/UX</h2>
+          <p>Web Project 02 &bull; Interface Design & Layout Engineering</p>
+        </div>
+        <div class="win-preview">
+          <div class="win-preview-bar">
+            <div class="dot" style="background:#ff5f57"></div>
+            <div class="dot" style="background:#febc2e"></div>
+            <div class="dot" style="background:#28c840"></div>
+            <span class="win-url">gimbertludovice-sketch.github.io/myUI-UX/</span>
+          </div>
+          <div class="win-preview-frame">
+            <iframe src="https://gimbertludovice-sketch.github.io/myUI-UX/" loading="lazy" title="Web System UI/UX"></iframe>
+          </div>
+        </div>
+        <div class="win-details">
+          <div class="win-detail-box"><h4>Type</h4><p>UI/UX Platform</p></div>
+          <div class="win-detail-box"><h4>Tech Stack</h4><p>CSS Grid, Flexbox</p></div>
+          <div class="win-detail-box"><h4>Hosting</h4><p>GitHub Pages</p></div>
+          <div class="win-detail-box"><h4>Status</h4><p>&#x2705; Live & Active</p></div>
+        </div>
+        <p style="color:rgba(255,255,255,0.5);font-size:0.9rem;line-height:1.75;margin-bottom:24px">
+          An interactive platform deployment exploring the limits of structural layout manipulation. Features advanced CSS interface layouts with modern UI/UX design principles.
+        </p>
+        <div class="win-actions">
+          <a href="https://gimbertludovice-sketch.github.io/myUI-UX/" target="_blank" class="btn-gold">&#127758; Open Live Site</a>
+          <button class="btn-outline" onclick="closeWindow('proj2-window')">&#8592; Back</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROJECT 3 WINDOW -->
+  <div class="window-overlay" id="proj3-window">
+    <div class="window-panel">
+      <div class="window-titlebar">
+        <div class="window-dots">
+          <div class="window-dot dot-close" onclick="closeWindow('proj3-window')"></div>
+          <div class="window-dot dot-min"></div>
+          <div class="window-dot dot-max"></div>
+        </div>
+        <span class="window-title">project-03 — Personal Web Blog Space</span>
+        <button class="window-close-btn" onclick="closeWindow('proj3-window')">&times;</button>
+      </div>
+      <div class="window-body">
+        <div class="win-header">
+          <h2>Personal Web Blog Space</h2>
+          <p>Web Project 03 &bull; Content Platform</p>
+        </div>
+        <div class="win-preview">
+          <div class="win-preview-bar">
+            <div class="dot" style="background:#ff5f57"></div>
+            <div class="dot" style="background:#febc2e"></div>
+            <div class="dot" style="background:#28c840"></div>
+            <span class="win-url">gimbertludovice-sketch.github.io/MyVlog/</span>
+          </div>
+          <div class="win-preview-frame">
+            <iframe src="https://gimbertludovice-sketch.github.io/MyVlog/" loading="lazy" title="Personal Web Blog Space"></iframe>
+          </div>
+        </div>
+        <div class="win-details">
+          <div class="win-detail-box"><h4>Type</h4><p>Blog / Content Platform</p></div>
+          <div class="win-detail-box"><h4>Tech Stack</h4><p>HTML5, CSS3</p></div>
+          <div class="win-detail-box"><h4>Hosting</h4><p>GitHub Pages</p></div>
+          <div class="win-detail-box"><h4>Status</h4><p>&#x2705; Live & Active</p></div>
+        </div>
+        <p style="color:rgba(255,255,255,0.5);font-size:0.9rem;line-height:1.75;margin-bottom:24px">
+          A clean web workspace complete with stylized components constructed to display articles, images, and content feeds. Built with a focus on readability and visual hierarchy.
+        </p>
+        <div class="win-actions">
+          <a href="https://gimbertludovice-sketch.github.io/MyVlog/" target="_blank" class="btn-gold">&#127758; Open Live Site</a>
+          <button class="btn-outline" onclick="closeWindow('proj3-window')">&#8592; Back</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SKILL WINDOWS -->
+  <div class="window-overlay" id="skill-web-window">
+    <div class="window-panel">
+      <div class="window-titlebar">
+        <div class="window-dots">
+          <div class="window-dot dot-close" onclick="closeWindow('skill-web-window')"></div>
+          <div class="window-dot dot-min"></div><div class="window-dot dot-max"></div>
+        </div>
+        <span class="window-title">skill — HTML5 & CSS3</span>
+        <button class="window-close-btn" onclick="closeWindow('skill-web-window')">&times;</button>
+      </div>
+      <div class="window-body">
+        <div class="win-header"><h2>HTML5 & CSS3</h2><p>Core Web Technologies — Proficiency: 82%</p></div>
+        <div class="win-preview-frame" style="border-radius:12px;margin-bottom:24px;height:160px;background:linear-gradient(135deg,#0d1b2a,#1a3050);display:flex;align-items:center;justify-content:center;font-size:3rem">&#9996;</div>
+        <p style="color:rgba(255,255,255,0.55);line-height:1.8;margin-bottom:20px">Proficient in writing semantic HTML5 markup that is accessible, structured, and SEO-conscious. Advanced CSS3 skills include Flexbox, Grid layout, 3D transforms, custom properties, keyframe animations, and responsive design with media queries.</p>
+        <div class="about-skills-list">
+          <span class="about-skill-pill">Semantic HTML5</span><span class="about-skill-pill">CSS Grid</span>
+          <span class="about-skill-pill">Flexbox</span><span class="about-skill-pill">3D CSS Transforms</span>
+          <span class="about-skill-pill">CSS Animations</span><span class="about-skill-pill">Media Queries</span>
+          <span class="about-skill-pill">CSS Custom Properties</span>
+        </div>
+        <div style="margin-top:24px"><button class="btn-outline" onclick="closeWindow('skill-web-window')">&#8592; Close</button></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="window-overlay" id="skill-mobile-window">
+    <div class="window-panel">
+      <div class="window-titlebar">
+        <div class="window-dots">
+          <div class="window-dot dot-close" onclick="closeWindow('skill-mobile-window')"></div>
+          <div class="window-dot dot-min"></div><div class="window-dot dot-max"></div>
+        </div>
+        <span class="window-title">skill — Mobile Development Concepts</span>
+        <button class="window-close-btn" onclick="closeWindow('skill-mobile-window')">&times;</button>
+      </div>
+      <div class="window-body">
+        <div class="win-header"><h2>Mobile Dev Concepts</h2><p>Mobile-First UI Engineering — Proficiency: 70%</p></div>
+        <div class="win-preview-frame" style="border-radius:12px;margin-bottom:24px;height:160px;background:linear-gradient(135deg,#1a1f3a,#2c3e6a);display:flex;align-items:center;justify-content:center;font-size:3rem">&#128241;</div>
+        <p style="color:rgba(255,255,255,0.55);line-height:1.8;margin-bottom:20px">Building clean, interactive user interfaces with a mobile-first development philosophy. Focuses on touch-friendly layouts, performance optimization, and accessibility standards that ensure great experiences across all device sizes.</p>
+        <div class="about-skills-list">
+          <span class="about-skill-pill">Mobile-First Design</span><span class="about-skill-pill">Responsive Layouts</span>
+          <span class="about-skill-pill">Touch UI Patterns</span><span class="about-skill-pill">Viewport Optimization</span>
+          <span class="about-skill-pill">Accessibility (a11y)</span>
+        </div>
+        <div style="margin-top:24px"><button class="btn-outline" onclick="closeWindow('skill-mobile-window')">&#8592; Close</button></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="window-overlay" id="skill-uiux-window">
+    <div class="window-panel">
+      <div class="window-titlebar">
+        <div class="window-dots">
+          <div class="window-dot dot-close" onclick="closeWindow('skill-uiux-window')"></div>
+          <div class="window-dot dot-min"></div><div class="window-dot dot-max"></div>
+        </div>
+        <span class="window-title">skill — UI/UX & 3D Design</span>
+        <button class="window-close-btn" onclick="closeWindow('skill-uiux-window')">&times;</button>
+      </div>
+      <div class="window-body">
+        <div class="win-header"><h2>UI/UX & 3D Styling</h2><p>Visual Design Systems — Proficiency: 75%</p></div>
+        <div class="win-preview-frame" style="border-radius:12px;margin-bottom:24px;height:160px;background:linear-gradient(135deg,#1a2a1a,#2a4a2a);display:flex;align-items:center;justify-content:center;font-size:3rem">&#127912;</div>
+        <p style="color:rgba(255,255,255,0.55);line-height:1.8;margin-bottom:20px">Designing with modern CSS systems and 3D spatial presentation techniques. Creates immersive hover effects, animated transitions, and layered visual depth that elevate standard flat interfaces into engaging experiences.</p>
+        <div class="about-skills-list">
+          <span class="about-skill-pill">3D CSS Layers</span><span class="about-skill-pill">Design Systems</span>
+          <span class="about-skill-pill">Color Theory</span><span class="about-skill-pill">Typography</span>
+          <span class="about-skill-pill">Micro-interactions</span><span class="about-skill-pill">Visual Hierarchy</span>
+        </div>
+        <div style="margin-top:24px"><button class="btn-outline" onclick="closeWindow('skill-uiux-window')">&#8592; Close</button></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="window-overlay" id="skill-git-window">
+    <div class="window-panel">
+      <div class="window-titlebar">
+        <div class="window-dots">
+          <div class="window-dot dot-close" onclick="closeWindow('skill-git-window')"></div>
+          <div class="window-dot dot-min"></div><div class="window-dot dot-max"></div>
+        </div>
+        <span class="window-title">skill — Version Control & GitHub</span>
+        <button class="window-close-btn" onclick="closeWindow('skill-git-window')">&times;</button>
+      </div>
+      <div class="window-body">
+        <div class="win-header"><h2>Version Control</h2><p>Git & GitHub Pages — Proficiency: 68%</p></div>
+        <div class="win-preview-frame" style="border-radius:12px;margin-bottom:24px;height:160px;background:linear-gradient(135deg,#1a0d2a,#2a1a3a);display:flex;align-items:center;justify-content:center;font-size:3rem">&#128279;</div>
+        <p style="color:rgba(255,255,255,0.55);line-height:1.8;margin-bottom:20px">Managing project files, deployments, and version history using Git and GitHub. All three live projects are deployed on GitHub Pages, demonstrating the ability to maintain and publish real-world web projects remotely.</p>
+        <div class="about-skills-list">
+          <span class="about-skill-pill">Git CLI</span><span class="about-skill-pill">GitHub</span>
+          <span class="about-skill-pill">GitHub Pages</span><span class="about-skill-pill">Commits & Branches</span>
+          <span class="about-skill-pill">Remote Repositories</span>
+        </div>
+        <div style="margin-top:24px"><button class="btn-outline" onclick="closeWindow('skill-git-window')">&#8592; Close</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" style="
+    display:none;
+    position:fixed;
+    bottom:32px;right:32px;
+    background:linear-gradient(135deg,#002e5e,#0a4080);
+    border:1px solid rgba(240,165,0,0.3);
+    color:#fff;
+    padding:16px 24px;
+    border-radius:14px;
+    font-size:0.92rem;
+    z-index:9999;
+    box-shadow:0 10px 40px rgba(0,0,0,0.4);
+    animation: panelIn 0.4s ease;
+  ">
+    &#x2705; Message sent! I'll get back to you soon.
+  </div>
+
+  <script>
+    /* ── Window System ─────────────────────────────────────────────── */
+    function openWindow(id) {
+      const el = document.getElementById(id);
+      if (el) { el.classList.add('open'); document.body.style.overflow = 'hidden'; }
+    }
+    function closeWindow(id) {
+      const el = document.getElementById(id);
+      if (el) { el.classList.remove('open'); document.body.style.overflow = ''; }
+    }
+    /* Close on overlay click */
+    document.querySelectorAll('.window-overlay').forEach(ov => {
+      ov.addEventListener('click', e => {
+        if (e.target === ov) closeWindow(ov.id);
+      });
+    });
+    /* ESC key to close */
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.window-overlay.open').forEach(ov => {
+          closeWindow(ov.id);
+        });
+      }
+    });
+
+    /* ── Scroll Reveal ─────────────────────────────────────────────── */
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), i * 80);
         }
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-        // ========================= AUTHENTICATION FUNCTIONS ========================= 
-        function handleLogin() {
-            const username = document.getElementById('loginUsername').value.trim();
-            const password = document.getElementById('loginPassword').value;
-            const errorEl = document.getElementById('loginError');
-            
-            errorEl.classList.remove('show');
-
-            if (!username || !password) {
-                showError(errorEl, '⚠️ Please enter both username and password');
-                return;
-            }
-
-            const user = userDatabase.find(u => 
-                (u.username === username || u.email === username) && u.password === password
-            );
-
-            if (user) {
-                currentUser = user;
-                localStorage.setItem('ludovice_current_user', JSON.stringify(user));
-                showLoginPage(false);
-                loadDashboard();
-            } else {
-                showError(errorEl, '❌ Invalid username or password');
-            }
+    /* ── Active Nav Link ───────────────────────────────────────────── */
+    const sections = document.querySelectorAll('section[id], header');
+    const navLinks = document.querySelectorAll('.nav-links a');
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(sec => {
+        if (window.scrollY >= sec.offsetTop - 100) current = sec.id || 'home';
+      });
+      navLinks.forEach(a => {
+        a.classList.remove('active');
+        if (a.getAttribute('href') === '#' + current || (current === '' && a.getAttribute('href') === '#')) {
+          a.classList.add('active');
         }
+      });
+    });
 
-        function handleSignup() {
-            const username = document.getElementById('signupUsername').value.trim();
-            const email = document.getElementById('signupEmail').value.trim();
-            const password = document.getElementById('signupPassword').value;
-            const role = document.getElementById('signupRole').value;
-            const errorEl = document.getElementById('signupError');
-
-            errorEl.classList.remove('show');
-
-            if (!username || !email || !password || !role) {
-                showError(errorEl, '⚠️ Please fill in all fields');
-                return;
-            }
-
-            if (password.length < 6) {
-                showError(errorEl, '⚠️ Password must be at least 6 characters');
-                return;
-            }
-
-            if (userDatabase.find(u => u.username === username || u.email === email)) {
-                showError(errorEl, '⚠️ Username or email already exists');
-                return;
-            }
-
-            const newUser = {
-                id: Math.max(...userDatabase.map(u => u.id), 0) + 1,
-                username,
-                email,
-                password,
-                role,
-                status: 'active',
-                created: new Date().toLocaleDateString()
-            };
-
-            userDatabase.push(newUser);
-            localStorage.setItem('ludovice_users', JSON.stringify(userDatabase));
-
-            showLoginPage(true);
-            document.getElementById('signupUsername').value = '';
-            document.getElementById('signupEmail').value = '';
-            document.getElementById('signupPassword').value = '';
-            document.getElementById('signupRole').value = '';
-            
-            const successEl = document.getElementById('loginSuccess');
-            successEl.innerText = '✅ Account created! You can now log in.';
-            successEl.classList.add('show');
-            setTimeout(() => successEl.classList.remove('show'), 5000);
-        }
-
-        function handleLogout() {
-            if (confirm('Are you sure you want to logout?')) {
-                currentUser = null;
-                localStorage.removeItem('ludovice_current_user');
-                showLoginPage(true);
-                document.getElementById('loginUsername').value = '';
-                document.getElementById('loginPassword').value = '';
-            }
-        }
-
-        function showError(element, message) {
-            element.innerText = message;
-            element.classList.add('show');
-            setTimeout(() => element.classList.remove('show'), 5000);
-        }
-
-        function showLoginPage(show) {
-            document.getElementById('login-container').style.display = show ? 'flex' : 'none';
-            document.getElementById('signup-container').style.display = 'none';
-            document.getElementById('appContainer').classList.toggle('show', !show);
-        }
-
-        function showLogin() {
-            document.getElementById('signup-container').style.display = 'none';
-            document.getElementById('login-container').style.display = 'flex';
-        }
-
-        function showSignup() {
-            document.getElementById('login-container').style.display = 'none';
-            document.getElementById('signup-container').style.display = 'flex';
-        }
-
-        // ========================= NAVIGATION & VIEWS ========================= 
-        function switchView(viewId, element) {
-            if (!checkAccess(viewId)) {
-                alert('❌ You do not have access to this section.');
-                return;
-            }
-
-            document.querySelectorAll('.view-content').forEach(v => v.classList.remove('active-view'));
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-
-            document.getElementById(viewId).classList.add('active-view');
-            if (element) element.classList.add('active');
-
-            // Load view-specific content
-            if (viewId === 'accounts-view') loadAccounts();
-            if (viewId === 'dashboard-view') loadDashboard();
-        }
-
-        function checkAccess(viewId) {
-            if (!currentUser) return false;
-
-            const adminViews = ['accounts-view', 'reports-view', 'settings-view'];
-            
-            if (adminViews.includes(viewId) && currentUser.role !== 'manager') {
-                return false;
-            }
-
-            return true;
-        }
-
-        function updateNavigationAccess() {
-            document.getElementById('nav-accounts').classList.toggle('visible', currentUser.role === 'manager');
-            document.getElementById('nav-reports').classList.toggle('visible', currentUser.role === 'manager');
-            document.getElementById('nav-settings').classList.toggle('visible', currentUser.role === 'manager');
-        }
-
-        // ========================= DASHBOARD FUNCTIONS ========================= 
-        function loadDashboard() {
-            document.getElementById('currentUsername').innerText = currentUser.username;
-            document.getElementById('currentRole').innerText = currentUser.role.toUpperCase();
-            document.getElementById('statRole').innerText = currentUser.role;
-            document.getElementById('statAccounts').innerText = userDatabase.length;
-            document.getElementById('statActive').innerText = userDatabase.filter(u => u.status === 'active').length;
-
-            updateNavigationAccess();
-        }
-
-        // ========================= ACCOUNT MANAGEMENT FUNCTIONS ========================= 
-        function openAddAccountModal() {
-            if (currentUser.role !== 'manager') {
-                alert('❌ Only managers can create accounts');
-                return;
-            }
-            document.getElementById('addAccountModal').classList.add('show');
-        }
-
-        function closeAddAccountModal() {
-            document.getElementById('addAccountModal').classList.remove('show');
-            document.getElementById('newUsername').value = '';
-            document.getElementById('newEmail').value = '';
-            document.getElementById('newPassword').value = '';
-            document.getElementById('newRole').value = '';
-            document.getElementById('modalError').classList.remove('show');
-        }
-
-        function handleCreateAccount(event) {
-            event.preventDefault();
-            
-            const username = document.getElementById('newUsername').value.trim();
-            const email = document.getElementById('newEmail').value.trim();
-            const password = document.getElementById('newPassword').value;
-            const role = document.getElementById('newRole').value;
-            const errorEl = document.getElementById('modalError');
-
-            errorEl.classList.remove('show');
-
-            if (userDatabase.find(u => u.username === username || u.email === email)) {
-                showError(errorEl, '⚠️ Username or email already exists');
-                return;
-            }
-
-            const newUser = {
-                id: Math.max(...userDatabase.map(u => u.id), 0) + 1,
-                username,
-                email,
-                password,
-                role,
-                status: 'active',
-                created: new Date().toLocaleDateString()
-            };
-
-            userDatabase.push(newUser);
-            localStorage.setItem('ludovice_users', JSON.stringify(userDatabase));
-
-            // Simulate email notification (in production, use backend)
-            console.log(`📧 Email would be sent to: ${email}`);
-            console.log(`📧 Also notify manager: ${managerEmail}`);
-            console.log(`Account Details:\nUsername: ${username}\nPassword: ${password}\nRole: ${role}`);
-
-            alert(`✅ Account created!\n\n📧 Email notification would be sent to:\n• ${email}\n• ${managerEmail}\n\nCredentials:\nUsername: ${username}\nPassword: ${password}`);
-
-            closeAddAccountModal();
-            loadAccounts();
-            loadDashboard();
-        }
-
-        function loadAccounts() {
-            const tbody = document.getElementById('accountsTableBody');
-            tbody.innerHTML = '';
-
-            userDatabase.forEach(user => {
-                const row = document.createElement('tr');
-                
-                const roleColor = {
-                    'manager': 'role-manager',
-                    'cashier': 'role-cashier',
-                    'kitchen': 'role-kitchen',
-                    'server': 'role-server'
-                };
-
-                row.innerHTML = `
-                    <td><strong>${user.username}</strong></td>
-                    <td>${user.email}</td>
-                    <td><span class="role-badge ${roleColor[user.role]}">${user.role}</span></td>
-                    <td><span style="color: var(--success);">● ${user.status}</span></td>
-                    <td>${user.created}</td>
-                    <td>
-                        <div class="action-buttons">
-                            <button class="btn-sm btn-edit" onclick="editAccount(${user.id})">✏️ Edit</button>
-                            <button class="btn-sm btn-reset" onclick="resetPassword(${user.id})">🔑 Reset</button>
-                            <button class="btn-sm btn-delete" onclick="deleteAccount(${user.id})">🗑️ Delete</button>
-                        </div>
-                    </td>
-                `;
-                tbody.appendChild(row);
-            });
-        }
-
-        function editAccount(userId) {
-            alert('✏️ Edit functionality coming soon...');
-        }
-
-        function resetPassword(userId) {
-            const user = userDatabase.find(u => u.id === userId);
-            if (!user) return;
-
-            const newPassword = 'RESET' + Math.random().toString(36).substring(7).toUpperCase();
-            user.password = newPassword;
-            localStorage.setItem('ludovice_users', JSON.stringify(userDatabase));
-
-            alert(`🔐 Password Reset\n\nNew Password: ${newPassword}\n\n📧 This would be sent to:\n• ${user.email}\n• ${managerEmail}`);
-        }
-
-        function deleteAccount(userId) {
-            if (!confirm('Are you sure you want to delete this account?')) return;
-
-            const index = userDatabase.findIndex(u => u.id === userId);
-            if (index > -1) {
-                userDatabase.splice(index, 1);
-                localStorage.setItem('ludovice_users', JSON.stringify(userDatabase));
-                loadAccounts();
-                loadDashboard();
-                alert('✅ Account deleted');
-            }
-        }
-
-        // ========================= INITIALIZATION ========================= 
-        window.onload = () => {
-            const savedUser = localStorage.getItem('ludovice_current_user');
-            if (savedUser) {
-                currentUser = JSON.parse(savedUser);
-                showLoginPage(false);
-                loadDashboard();
-            } else {
-                showLoginPage(true);
-            }
-        };
-    </script>
+    /* ── Toast ─────────────────────────────────────────────────────── */
+    function showToast() {
+      const t = document.getElementById('toast');
+      t.style.display = 'block';
+      setTimeout(() => { t.style.display = 'none'; }, 3500);
+    }
+  </script>
 </body>
 </html>
