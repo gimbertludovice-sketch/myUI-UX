@@ -3,20 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Next-Gen Restaurant Management System - POS</title>
+    <title>LUDOVICE RMS - Premium Restaurant Management System 2026</title>
     <style>
-        /* --- DESIGN SYSTEM & CSS VARIABLES --- */
+        /* ========================= DESIGN SYSTEM & CSS VARIABLES ========================= */
         :root {
-            --bg-dark: #121824;
-            --bg-card: #1e293b;
+            --bg-dark: #0a0e27;
+            --bg-card: #1a1f3a;
+            --bg-light: #2a3050;
             --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --primary: #e05a47; /* Warm Terracotta */
-            --success: #10b981; /* Mint Green */
-            --alert: #ef4444;   /* Coral Red */
-            --warning: #f59e0b; /* Amber */
-            --gray-state: #64748b;
+            --text-muted: #a0aec0;
+            --primary: #ff6b35;      /* Warm Orange */
+            --primary-light: #ff8555;
+            --primary-dark: #e55a25;
+            --success: #10b981;
+            --success-light: #34d399;
+            --alert: #ef4444;
+            --warning: #f59e0b;
+            --accent-gold: #fbbf24;
+            --accent-teal: #14b8a6;
             --font-stack: 'Poppins', 'Inter', 'Segoe UI', sans-serif;
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.2);
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.3);
+            --shadow-lg: 0 8px 32px rgba(0,0,0,0.4);
         }
 
         * {
@@ -25,298 +33,519 @@
             padding: 0;
         }
 
-        body {
+        html, body {
             font-family: var(--font-stack);
-            background-color: var(--bg-dark);
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #1a1f3a 100%);
             color: var(--text-main);
             display: flex;
             height: 100vh;
             overflow: hidden;
         }
 
-        /* --- SIDEBAR NAVIGATION --- */
+        /* ========================= SIDEBAR NAVIGATION ========================= */
         aside {
-            width: 260px;
-            background-color: var(--bg-card);
-            border-right: 1px solid #334155;
+            width: 280px;
+            background: linear-gradient(180deg, var(--bg-card) 0%, rgba(26, 31, 58, 0.8) 100%);
+            border-right: 2px solid rgba(255, 107, 53, 0.2);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            padding: 20px;
+            padding: 25px;
             flex-shrink: 0;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .brand {
+            margin-bottom: 35px;
         }
 
         .brand h2 {
             color: var(--primary);
-            font-size: 1.4rem;
-            margin-bottom: 5px;
-            letter-spacing: 0.5px;
+            font-size: 1.6rem;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+            font-weight: 800;
+            text-shadow: 0 2px 4px rgba(255, 107, 53, 0.3);
         }
 
         .brand p {
             color: var(--text-muted);
             font-size: 0.75rem;
+            letter-spacing: 0.5px;
         }
 
         .nav-links {
             list-style: none;
-            margin-top: 30px;
             flex-grow: 1;
+            margin-bottom: 20px;
+        }
+
+        .nav-section-title {
+            font-size: 0.7rem;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 20px;
+            margin-bottom: 12px;
+            font-weight: 700;
         }
 
         .nav-links li {
-            padding: 14px 16px;
-            border-radius: 8px;
+            padding: 12px 14px;
+            border-radius: 10px;
             margin-bottom: 8px;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
             font-weight: 500;
             color: var(--text-muted);
+            border-left: 3px solid transparent;
+            font-size: 0.9rem;
         }
 
-        .nav-links li.active, .nav-links li:hover {
-            background-color: var(--primary);
-            color: white;
+        .nav-links li:hover {
+            background-color: rgba(255, 107, 53, 0.15);
+            color: var(--primary-light);
+            border-left-color: var(--primary);
+        }
+
+        .nav-links li.active {
+            background: linear-gradient(90deg, rgba(255, 107, 53, 0.2) 0%, rgba(255, 107, 53, 0) 100%);
+            color: var(--primary);
+            border-left-color: var(--primary);
+            font-weight: 600;
         }
 
         .owner-info {
-            border-top: 1px solid #334155;
+            border-top: 1px solid rgba(255, 107, 53, 0.2);
             padding-top: 15px;
             font-size: 0.8rem;
             color: var(--text-muted);
+            background: rgba(255, 107, 53, 0.05);
+            padding: 15px;
+            border-radius: 10px;
         }
 
         .owner-info strong {
             color: var(--text-main);
             display: block;
-            margin-bottom: 2px;
+            margin-bottom: 4px;
+            font-weight: 600;
         }
 
-        /* --- VIEWS STRUCTURE --- */
+        /* ========================= MAIN CONTENT ========================= */
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
         .view-content {
             display: none;
             flex-grow: 1;
-            padding: 25px;
+            padding: 30px;
             overflow-y: auto;
+            animation: fadeIn 0.3s ease;
         }
 
         .view-content.active-view {
             display: grid;
         }
 
-        /* --- VIEW 1: MAIN FOH POS VIEW LAYOUT --- */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ========================= FOH VIEW LAYOUT ========================= */
         #foh-view {
-            grid-template-columns: 2fr 1fr;
-            gap: 25px;
+            grid-template-columns: 1.8fr 1.2fr;
+            gap: 30px;
             height: 100%;
         }
 
         .left-panel {
             display: flex;
             flex-direction: column;
-            gap: 25px;
+            gap: 30px;
             overflow-y: auto;
-            padding-right: 5px;
+            padding-right: 10px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent-gold) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         h3 {
             font-size: 1.2rem;
-            margin-bottom: 15px;
+            margin-bottom: 18px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            color: var(--text-main);
+            font-weight: 700;
         }
 
-        /* --- MODULE 1: DYNAMIC FLOOR PLAN --- */
+        h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        /* ========================= FLOOR PLAN MODULE ========================= */
         .floor-plan-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
+            margin-bottom: 18px;
         }
 
         .floor-plan-header h3 { margin-bottom: 0; }
 
         .table-status-selector {
-            background: #0f172a;
-            border: 1px solid #334155;
+            background: linear-gradient(135deg, var(--bg-light), var(--bg-card));
+            border: 2px solid rgba(255, 107, 53, 0.3);
             color: var(--text-main);
-            padding: 6px 12px;
-            border-radius: 6px;
+            padding: 8px 16px;
+            border-radius: 8px;
             font-size: 0.8rem;
             cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .table-status-selector:hover {
+            border-color: var(--primary);
+            background: rgba(255, 107, 53, 0.1);
         }
 
         .floor-plan-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
+            gap: 16px;
         }
 
         .table-card {
-            background-color: var(--bg-card);
+            background: linear-gradient(135deg, var(--bg-card) 0%, rgba(42, 48, 80, 0.5) 100%);
             border-radius: 12px;
-            padding: 20px;
+            padding: 22px;
             text-align: center;
-            border-bottom: 5px solid var(--gray-state);
+            border-bottom: 5px solid var(--text-muted);
             cursor: pointer;
-            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .table-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .table-card:hover::before {
+            left: 100%;
         }
 
         .table-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-        }
-
-        .table-card:active {
-            transform: scale(0.97);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(255, 107, 53, 0.2);
         }
 
         .table-card.selected-table {
-            background-color: #2c3e50;
-            box-shadow: 0 0 0 2px var(--primary);
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.2), rgba(255, 107, 53, 0.05));
+            box-shadow: 0 0 0 3px var(--primary), 0 8px 24px rgba(255, 107, 53, 0.3);
+            border-bottom-color: var(--primary);
         }
 
-        .table-card.vacant { border-color: var(--success); }
-        .table-card.occupied { border-color: var(--alert); }
-        .table-card.requested { border-color: var(--warning); }
-        .table-card.dirty { border-color: var(--gray-state); }
+        .table-card.vacant { border-bottom-color: var(--success); }
+        .table-card.occupied { border-bottom-color: var(--alert); }
+        .table-card.requested { border-bottom-color: var(--warning); }
+        .table-card.dirty { border-bottom-color: var(--text-muted); }
 
-        .table-card h4 { font-size: 1.3rem; margin-bottom: 4px; }
-        .table-card span { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; }
+        .table-card h4 { font-size: 1.4rem; margin-bottom: 6px; }
+        .table-card span { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
 
-        /* --- MODULE 2: SMART ORDER SCREEN --- */
+        /* ========================= MENU SCREEN MODULE ========================= */
+        .menu-top-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .search-box {
+            flex: 1;
+            background: var(--bg-light);
+            border: 2px solid rgba(255, 107, 53, 0.2);
+            color: var(--text-main);
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            margin-right: 12px;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(255, 107, 53, 0.05);
+        }
+
         .menu-categories {
             display: flex;
             gap: 10px;
-            margin-bottom: 15px;
+            margin-bottom: 18px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+        }
+
+        .menu-categories::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .menu-categories::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 2px;
         }
 
         .category-btn {
-            background-color: var(--bg-card);
-            border: 1px solid #334155;
+            background: var(--bg-card);
+            border: 2px solid rgba(255, 107, 53, 0.2);
             color: var(--text-main);
-            padding: 8px 16px;
+            padding: 10px 20px;
             border-radius: 20px;
             cursor: pointer;
             font-size: 0.85rem;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
 
-        .category-btn.active, .category-btn:hover {
-            background-color: var(--text-main);
-            color: var(--bg-dark);
-            border-color: var(--text-main);
+        .category-btn:hover, .category-btn.active {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
         }
 
         .menu-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
+            gap: 18px;
         }
 
         .menu-item {
-            background-color: var(--bg-card);
+            background: linear-gradient(135deg, var(--bg-card) 0%, rgba(42, 48, 80, 0.5) 100%);
             border-radius: 12px;
             overflow: hidden;
             cursor: pointer;
-            border: 1px solid transparent;
-            transition: all 0.2s ease;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            position: relative;
+            box-shadow: var(--shadow-sm);
         }
 
         .menu-item:hover {
             border-color: var(--primary);
-            transform: translateY(-2px);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(255, 107, 53, 0.2);
+        }
+
+        .menu-item.popular {
+            border-color: var(--accent-gold);
+        }
+
+        .menu-item-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: var(--accent-gold);
+            color: var(--bg-dark);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            z-index: 10;
         }
 
         .menu-item-img {
-            height: 100px;
-            background-color: #334155;
+            height: 120px;
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.15), rgba(251, 191, 36, 0.1));
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2rem;
+            font-size: 3rem;
             user-select: none;
+            position: relative;
         }
 
         .menu-item-info {
-            padding: 12px;
+            padding: 14px;
         }
 
-        .menu-item-info h5 { font-size: 0.95rem; margin-bottom: 4px; }
-        .menu-item-info p { color: var(--primary); font-weight: 600; font-size: 0.9rem; }
+        .menu-item-info h5 { 
+            font-size: 0.95rem; 
+            margin-bottom: 4px;
+            color: var(--text-main);
+        }
 
-        /* --- MODULE 3: LIVE RECEIPT PANEL --- */
+        .menu-item-desc {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+
+        .menu-item-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 8px;
+        }
+
+        .menu-item-price {
+            color: var(--primary);
+            font-weight: 800;
+            font-size: 1rem;
+        }
+
+        .menu-item-rating {
+            font-size: 0.75rem;
+            color: var(--accent-gold);
+        }
+
+        /* ========================= RECEIPT PANEL ========================= */
         .receipt-panel {
-            background-color: var(--bg-card);
+            background: linear-gradient(135deg, var(--bg-card) 0%, rgba(42, 48, 80, 0.5) 100%);
             border-radius: 16px;
-            padding: 20px;
+            padding: 24px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            border: 1px solid #334155;
-            height: calc(100vh - 180px);
+            border: 2px solid rgba(255, 107, 53, 0.2);
+            height: calc(100vh - 220px);
+            box-shadow: var(--shadow-lg);
         }
 
         .receipt-header {
-            border-bottom: 1px dashed #334155;
-            padding-bottom: 15px;
-            margin-bottom: 15px;
+            border-bottom: 2px dashed rgba(255, 107, 53, 0.3);
+            padding-bottom: 16px;
+            margin-bottom: 16px;
+            background: linear-gradient(180deg, rgba(255, 107, 53, 0.1) 0%, transparent 100%);
+            padding: 12px;
+            border-radius: 8px;
+            margin: -12px -12px 16px -12px;
+        }
+
+        .receipt-header h4 {
+            color: var(--primary);
+            margin-bottom: 6px;
+        }
+
+        .receipt-header p {
+            font-size: 0.75rem;
+            color: var(--text-muted);
         }
 
         .receipt-items {
             flex-grow: 1;
             overflow-y: auto;
-            padding-right: 5px;
+            padding-right: 8px;
+            margin-bottom: 12px;
+        }
+
+        .receipt-items::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .receipt-items::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 3px;
         }
 
         .receipt-item {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 15px;
-            font-size: 0.9rem;
-            background: #1e293b;
-            padding: 5px 0;
+            margin-bottom: 14px;
+            font-size: 0.85rem;
+            background: rgba(42, 48, 80, 0.6);
+            padding: 10px;
+            border-radius: 8px;
+            border-left: 3px solid var(--primary);
+            transition: all 0.2s ease;
+        }
+
+        .receipt-item:hover {
+            background: rgba(255, 107, 53, 0.1);
         }
 
         .receipt-item-details {
             display: flex;
             gap: 10px;
+            flex: 1;
         }
 
         .quantity-controls {
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 6px;
+            background: var(--bg-dark);
+            padding: 4px 6px;
+            border-radius: 6px;
         }
 
         .qty-btn {
-            background: #334155;
+            background: var(--primary);
             border: none;
             color: white;
-            width: 22px;
-            height: 22px;
+            width: 24px;
+            height: 24px;
             border-radius: 4px;
             cursor: pointer;
             font-weight: bold;
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
         }
 
-        .qty-btn:hover { background: var(--primary); }
+        .qty-btn:hover {
+            background: var(--primary-light);
+            transform: scale(1.1);
+        }
 
         .item-mods {
-            font-size: 0.75rem;
-            color: var(--warning);
-            margin-top: 2px;
+            font-size: 0.7rem;
+            color: var(--accent-gold);
+            margin-top: 4px;
+            font-style: italic;
         }
 
         .receipt-summary {
-            border-top: 1px dashed #334155;
-            padding-top: 15px;
-            margin-top: 15px;
+            border-top: 2px dashed rgba(255, 107, 53, 0.3);
+            padding-top: 14px;
+            margin-top: 14px;
+            background: rgba(255, 107, 53, 0.05);
+            padding: 14px;
+            margin: 14px -24px -24px -24px;
+            border-radius: 0 0 16px 16px;
         }
 
         .summary-row {
@@ -328,150 +557,511 @@
         }
 
         .summary-row.total {
-            color: var(--text-main);
-            font-size: 1.3rem;
-            font-weight: 700;
+            color: var(--primary);
+            font-size: 1.4rem;
+            font-weight: 800;
             margin-top: 10px;
-            border-top: 1px solid #334155;
+            border-top: 1px solid rgba(255, 107, 53, 0.2);
             padding-top: 10px;
         }
 
         .action-btns {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 20px;
+            gap: 12px;
+            margin-top: 16px;
         }
 
         .btn {
-            padding: 14px;
+            padding: 12px 16px;
             border-radius: 8px;
             border: none;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
             font-size: 0.9rem;
-            transition: opacity 0.15s ease;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        .btn:hover { opacity: 0.9; }
-        .btn-secondary { background-color: #334155; color: var(--text-main); }
-        .btn-primary { background-color: var(--primary); color: white; }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
 
-        /* --- MODULE 4: BOTTOM DASHBOARD BAR --- */
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: var(--bg-light);
+            color: var(--text-main);
+            border: 2px solid rgba(255, 107, 53, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 107, 53, 0.15);
+            border-color: var(--primary);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 8px 24px rgba(255, 107, 53, 0.4);
+        }
+
+        /* ========================= BOTTOM DASHBOARD ========================= */
         .bottom-dashboard {
             grid-column: span 2;
-            background-color: var(--bg-card);
+            background: linear-gradient(135deg, var(--bg-card) 0%, rgba(42, 48, 80, 0.5) 100%);
             border-radius: 12px;
-            padding: 20px;
+            padding: 24px;
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            border: 1px solid #334155;
+            gap: 24px;
+            border: 2px solid rgba(255, 107, 53, 0.2);
             align-self: end;
+            box-shadow: var(--shadow-md);
         }
 
         .stat-card {
             display: flex;
             flex-direction: column;
             justify-content: center;
+            background: rgba(255, 107, 53, 0.05);
+            padding: 16px;
+            border-radius: 10px;
+            border-left: 4px solid var(--primary);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            background: rgba(255, 107, 53, 0.1);
+            transform: translateX(4px);
         }
 
         .stat-card label {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: var(--text-muted);
             text-transform: uppercase;
-            margin-bottom: 5px;
-        }
-
-        .stat-card .value {
-            font-size: 1.6rem;
-            font-weight: 700;
-        }
-
-        .badge {
-            background-color: rgba(245, 158, 11, 0.2);
-            color: var(--warning);
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            width: fit-content;
-            margin-top: 4px;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
             font-weight: 600;
         }
 
-        /* --- VIEW ALTERNATES CSS (KDS, INVENTORY, SHIFTS) --- */
-        .generic-layout {
-            grid-template-columns: 1fr;
+        .stat-card .value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--success), var(--success-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-card .value.alert {
+            background: linear-gradient(135deg, var(--alert), var(--alert));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .badge {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(251, 191, 36, 0.1));
+            color: var(--warning);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            width: fit-content;
+            margin-top: 8px;
+            font-weight: 700;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        /* ========================= PAYMENT VIEW ========================= */
+        .payment-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .payment-section {
+            background: linear-gradient(135deg, var(--bg-card) 0%, rgba(42, 48, 80, 0.5) 100%);
+            border-radius: 16px;
+            padding: 28px;
+            border: 2px solid rgba(255, 107, 53, 0.2);
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .payment-methods {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
             gap: 20px;
+            margin-top: 20px;
+        }
+
+        .payment-method {
+            background: linear-gradient(135deg, var(--bg-light), rgba(42, 48, 80, 0.3));
+            border: 2px solid rgba(255, 107, 53, 0.2);
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .payment-method:hover {
+            border-color: var(--primary);
+            box-shadow: 0 8px 24px rgba(255, 107, 53, 0.2);
+            transform: translateY(-4px);
+        }
+
+        .payment-method.selected {
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.15), rgba(255, 107, 53, 0.05));
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary), 0 8px 24px rgba(255, 107, 53, 0.3);
+        }
+
+        .payment-icon {
+            font-size: 3rem;
+            margin-bottom: 12px;
+        }
+
+        .payment-method h4 {
+            color: var(--text-main);
+            margin-bottom: 8px;
+        }
+
+        .payment-method p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .payment-details {
+            display: none;
+            background: rgba(255, 107, 53, 0.08);
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            border: 1px solid rgba(255, 107, 53, 0.2);
+        }
+
+        .payment-details.active {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .payment-details-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 107, 53, 0.1);
+            font-size: 0.9rem;
+        }
+
+        .payment-details-row:last-child {
+            border-bottom: none;
+        }
+
+        .input-group {
+            margin-bottom: 16px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .input-group input {
+            width: 100%;
+            background: var(--bg-dark);
+            border: 2px solid rgba(255, 107, 53, 0.2);
+            color: var(--text-main);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-family: var(--font-stack);
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(255, 107, 53, 0.05);
+        }
+
+        /* ========================= ORDER HISTORY VIEW ========================= */
+        .orders-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+
+        .order-card {
+            background: linear-gradient(135deg, var(--bg-card) 0%, rgba(42, 48, 80, 0.5) 100%);
+            border-radius: 12px;
+            padding: 20px;
+            border: 2px solid rgba(255, 107, 53, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .order-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 8px 24px rgba(255, 107, 53, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .order-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 107, 53, 0.2);
+        }
+
+        .order-id {
+            color: var(--primary);
+            font-weight: 800;
+            font-size: 0.9rem;
+        }
+
+        .order-status {
+            background: var(--success);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .order-status.pending {
+            background: var(--warning);
+        }
+
+        .order-time {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .order-items {
+            margin-bottom: 12px;
+        }
+
+        .order-items li {
+            font-size: 0.85rem;
+            color: var(--text-main);
+            margin-bottom: 6px;
+            list-style: none;
+            padding-left: 12px;
+            border-left: 2px solid var(--primary);
+        }
+
+        /* ========================= KDS VIEW ========================= */
+        .kds-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
             align-content: start;
         }
 
-        .kds-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            margin-top: 15px;
-        }
-
         .kds-card {
-            background: var(--bg-card);
-            border: 1px solid #334155;
-            border-top: 6px solid var(--warning);
+            background: linear-gradient(135deg, var(--bg-card) 0%, rgba(42, 48, 80, 0.5) 100%);
+            border: 3px solid var(--warning);
             border-radius: 12px;
-            padding: 15px;
+            padding: 18px;
+            box-shadow: 0 8px 24px rgba(245, 158, 11, 0.2);
         }
 
         .kds-card-header {
             display: flex;
             justify-content: space-between;
-            border-bottom: 1px dashed #334155;
-            padding-bottom: 10px;
-            margin-bottom: 10px;
+            align-items: center;
+            border-bottom: 2px solid rgba(245, 158, 11, 0.2);
+            padding-bottom: 12px;
+            margin-bottom: 12px;
+        }
+
+        .kds-ticket-id {
+            color: var(--accent-gold);
+            font-weight: 800;
+            font-size: 1rem;
+        }
+
+        .kds-table {
+            background: rgba(255, 107, 53, 0.15);
+            color: var(--primary);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .kds-items {
+            list-style: none;
+            margin-bottom: 14px;
+            font-size: 0.9rem;
+        }
+
+        .kds-items li {
+            padding: 8px 0;
+            color: var(--text-main);
+            border-bottom: 1px solid rgba(255, 107, 53, 0.1);
         }
 
         .kds-done-btn {
-            background: var(--success);
+            background: linear-gradient(135deg, var(--success), var(--success-light));
             color: white;
             border: none;
-            padding: 6px 12px;
-            border-radius: 6px;
+            padding: 12px;
+            border-radius: 8px;
             cursor: pointer;
-            font-weight: bold;
-            margin-top: 15px;
+            font-weight: 800;
             width: 100%;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
         }
 
+        .kds-done-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3);
+        }
+
+        /* ========================= INVENTORY VIEW ========================= */
         .inventory-table, .shift-table {
             width: 100%;
             border-collapse: collapse;
             background: var(--bg-card);
             border-radius: 12px;
             overflow: hidden;
-            margin-top: 15px;
+            margin-top: 20px;
+            box-shadow: var(--shadow-md);
         }
 
-        .inventory-table th, .inventory-table td, .shift-table th, .shift-table td {
-            padding: 14px;
+        .inventory-table th, .inventory-table td,
+        .shift-table th, .shift-table td {
+            padding: 16px;
             text-align: left;
-            border-bottom: 1px solid #334155;
+            border-bottom: 1px solid rgba(255, 107, 53, 0.1);
         }
 
         .inventory-table th, .shift-table th {
-            background-color: #0f172a;
-            color: var(--text-muted);
+            background: linear-gradient(135deg, var(--bg-light), rgba(255, 107, 53, 0.1));
+            color: var(--primary);
             font-size: 0.85rem;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 700;
+        }
+
+        .inventory-table tbody tr, .shift-table tbody tr {
+            transition: all 0.3s ease;
+        }
+
+        .inventory-table tbody tr:hover, .shift-table tbody tr:hover {
+            background: rgba(255, 107, 53, 0.08);
         }
 
         .status-pill {
-            padding: 4px 8px;
-            border-radius: 4px;
+            padding: 6px 12px;
+            border-radius: 6px;
             font-size: 0.75rem;
-            font-weight: bold;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        .status-pill.low { background: rgba(239, 68, 68, 0.2); color: var(--alert); }
-        .status-pill.good { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+        .status-pill.low {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--alert);
+            border: 1px solid var(--alert);
+        }
+
+        .status-pill.good {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+
+        /* ========================= GENERIC LAYOUT ========================= */
+        .generic-layout {
+            grid-template-columns: 1fr;
+            gap: 24px;
+            align-content: start;
+        }
+
+        .generic-layout > div {
+            animation: fadeIn 0.4s ease;
+        }
+
+        /* ========================= SCROLLBAR STYLING ========================= */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-light);
+        }
+
+        /* ========================= RESPONSIVE DESIGN ========================= */
+        @media (max-width: 1400px) {
+            .menu-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 1024px) {
+            #foh-view {
+                grid-template-columns: 1fr;
+            }
+
+            .bottom-dashboard {
+                grid-column: span 1;
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .menu-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .floor-plan-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .payment-methods {
+                grid-template-columns: 1fr;
+            }
+
+            .orders-grid {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body>
@@ -479,62 +1069,70 @@
     <aside>
         <div class="brand-wrapper">
             <div class="brand">
-                <h2>LUDOVICE RMS</h2>
-                <p>Next-Gen POS Engine v2026</p>
+                <h2>🍽️ LUDOVICE</h2>
+                <p>Premium RMS Platform 2026</p>
             </div>
             <ul class="nav-links">
-                <li class="active" onclick="switchView('foh-view', this)">Dashboard / FOH</li>
-                <li onclick="switchView('kds-view', this)">Kitchen KDS</li>
-                <li onclick="switchView('inventory-view', this)">Inventory Alerts</li>
-                <li onclick="switchView('shift-view', this)">Shift Settings</li>
+                <li class="nav-section-title">OPERATIONS</li>
+                <li class="active" onclick="switchView('foh-view', this)">📊 Dashboard & POS</li>
+                <li onclick="switchView('kds-view', this)">👨‍🍳 Kitchen Display</li>
+                
+                <li class="nav-section-title">MANAGEMENT</li>
+                <li onclick="switchView('payment-view', this)">💳 Payment Gateway</li>
+                <li onclick="switchView('orders-view', this)">📋 Order History</li>
+                <li onclick="switchView('inventory-view', this)">📦 Inventory Alerts</li>
+                <li onclick="switchView('shift-view', this)">👥 Staff & Shifts</li>
             </ul>
         </div>
 
         <div class="owner-info">
-            <strong>Gimbert Ludovice</strong>
+            <strong>👤 Gimbert Ludovice</strong>
             <span>gimbertludovice@student.trimexcolleges.edu.ph</span><br>
             <span>Trimex Colleges</span>
         </div>
     </aside>
 
+    <!-- ===================== FOH VIEW ===================== -->
     <main id="foh-view" class="view-content active-view">
         <div class="left-panel">
             <section>
                 <div class="floor-plan-header">
-                    <h3>Dynamic Floor Plan</h3>
+                    <h3>🏢 Dynamic Floor Plan</h3>
                     <select id="statusSelector" class="table-status-selector" onchange="changeTableStatus()">
-                        <option value="">Update Status...</option>
-                        <option value="vacant">Set Vacant (Green)</option>
-                        <option value="occupied">Set Occupied (Red)</option>
-                        <option value="requested">Set Bill Pending (Yellow)</option>
-                        <option value="dirty">Set Dirty (Grey)</option>
+                        <option value="">⚡ Update Status...</option>
+                        <option value="vacant">✅ Set Vacant (Green)</option>
+                        <option value="occupied">🔴 Set Occupied (Red)</option>
+                        <option value="requested">⚠️ Bill Pending (Yellow)</option>
+                        <option value="dirty">🧹 Set Dirty (Grey)</option>
                     </select>
                 </div>
-                <div class="floor-plan-grid" id="floorPlanGrid">
-                    </div>
+                <div class="floor-plan-grid" id="floorPlanGrid"></div>
             </section>
 
             <section>
-                <h3>Smart Order Screen</h3>
-                <div class="menu-categories" id="categoryTabs">
-                    <button class="category-btn active" onclick="filterMenu('all', this)">All Items</button>
-                    <button class="category-btn" onclick="filterMenu('mains', this)">Mains</button>
-                    <button class="category-btn" onclick="filterMenu('sides', this)">Sides</button>
-                    <button class="category-btn" onclick="filterMenu('drinks', this)">Drinks</button>
+                <h3>🍽️ Smart Order Screen</h3>
+                <div class="menu-top-section">
+                    <input type="text" class="search-box" id="searchBox" placeholder="🔍 Search menu items..." onkeyup="searchMenu(this.value)">
                 </div>
-                <div class="menu-grid" id="menuGrid">
-                    </div>
+                <div class="menu-categories" id="categoryTabs">
+                    <button class="category-btn active" onclick="filterMenu('all', this)">✨ All Items</button>
+                    <button class="category-btn" onclick="filterMenu('mains', this)">🍔 Mains</button>
+                    <button class="category-btn" onclick="filterMenu('sides', this)">🍟 Sides</button>
+                    <button class="category-btn" onclick="filterMenu('desserts', this)">🍰 Desserts</button>
+                    <button class="category-btn" onclick="filterMenu('drinks', this)">🥤 Drinks</button>
+                    <button class="category-btn" onclick="filterMenu('specials', this)">⭐ Specials</button>
+                </div>
+                <div class="menu-grid" id="menuGrid"></div>
             </section>
         </div>
 
         <section class="receipt-panel">
             <div>
                 <div class="receipt-header">
-                    <h4 id="activeReceiptTitle">Active Order: Table 01</h4>
-                    <p style="font-size: 0.8rem; color: var(--text-muted);">Server: Cashier Desk 1</p>
+                    <h4 id="activeReceiptTitle">🧾 Active Order: Table 01</h4>
+                    <p>Server: Cashier Desk 1</p>
                 </div>
-                <div class="receipt-items" id="receiptItemsContainer">
-                    </div>
+                <div class="receipt-items" id="receiptItemsContainer"></div>
             </div>
 
             <div class="receipt-summary">
@@ -546,120 +1144,359 @@
                     <span>VAT (12%)</span>
                     <span id="txtTax">₱0.00</span>
                 </div>
+                <div class="summary-row">
+                    <span>Service Charge (5%)</span>
+                    <span id="txtService">₱0.00</span>
+                </div>
                 <div class="summary-row total">
-                    <span>Total</span>
+                    <span>TOTAL AMOUNT</span>
                     <span id="txtTotal">₱0.00</span>
                 </div>
                 
                 <div class="action-btns">
-                    <button class="btn btn-secondary" onclick="triggerSplitBill()">Split Bill</button>
-                    <button class="btn btn-primary" onclick="sendToKitchen()">Send to Kitchen</button>
+                    <button class="btn btn-secondary" onclick="triggerSplitBill()">💰 Split Bill</button>
+                    <button class="btn btn-primary" onclick="goToPayment()">🔒 Proceed Payment</button>
                 </div>
             </div>
         </section>
 
         <section class="bottom-dashboard">
             <div class="stat-card">
-                <label>Live Net Revenue (Today)</label>
-                <div class="value" id="statRevenue" style="color: var(--success);">₱42,350.00</div>
+                <label>💰 Net Revenue (Today)</label>
+                <div class="value" style="color: var(--success);">₱142,850.50</div>
             </div>
             <div class="stat-card">
-                <label>Active KDS Pending Tickets</label>
-                <div class="value" id="statKdsCount">3 Orders</div>
+                <label>📋 Active KDS Pending</label>
+                <div class="value">5 Orders</div>
             </div>
             <div class="stat-card">
-                <label>Inventory Thresholds</label>
-                <div class="value">3 Critical</div>
-                <span class="badge">⚠️ Wagyu Beef Patties Low</span>
+                <label>⚠️ Critical Stock Items</label>
+                <div class="value alert">4 Items</div>
+                <span class="badge">🔴 Wagyu Beef Patties</span>
             </div>
         </section>
     </main>
 
-    <main id="kds-view" class="view-content generic-layout">
-        <div>
-            <h2>Kitchen Display System (KDS)</h2>
-            <p style="color: var(--text-muted)">Live active orders queue dispatched from POS terminals</p>
-            <div class="kds-grid" id="kdsGrid">
+    <!-- ===================== PAYMENT VIEW ===================== -->
+    <main id="payment-view" class="view-content generic-layout">
+        <div class="payment-container">
+            <h2>💳 Payment Gateway Management</h2>
+            <p style="color: var(--text-muted); margin-bottom: 30px;">Select a payment method and process customer transactions securely</p>
+
+            <div class="payment-section">
+                <h3>📱 Online Payment Methods</h3>
+                <div class="payment-methods">
+                    <div class="payment-method" onclick="selectPayment('gcash', this)">
+                        <div class="payment-icon">💜</div>
+                        <h4>GCash</h4>
+                        <p>Mobile wallet powered by Globe</p>
+                    </div>
+                    <div class="payment-method" onclick="selectPayment('maya', this)">
+                        <div class="payment-icon">🟡</div>
+                        <h4>Maya (Paymaya)</h4>
+                        <p>Digital money & online shopping</p>
+                    </div>
                 </div>
+
+                <div id="gcash-details" class="payment-details">
+                    <h4 style="margin-bottom: 15px; color: var(--primary);">GCash Account Details</h4>
+                    <div class="payment-details-row">
+                        <span>GCash Account Holder:</span>
+                        <strong>LUDOVICE RESTAURANT PHIL.</strong>
+                    </div>
+                    <div class="payment-details-row">
+                        <span>Mobile Number:</span>
+                        <strong>+63 917 234 5678</strong>
+                    </div>
+                    <div class="payment-details-row">
+                        <span>Reference Code:</span>
+                        <strong id="gcash-ref">GC-2026-001247</strong>
+                    </div>
+                    <div class="payment-details-row">
+                        <span>Amount to Transfer:</span>
+                        <strong id="gcash-amount">₱0.00</strong>
+                    </div>
+                    <div class="input-group" style="margin-top: 15px;">
+                        <label>Customer Receipt Number</label>
+                        <input type="text" placeholder="Enter GCash transaction receipt number">
+                    </div>
+                </div>
+
+                <div id="maya-details" class="payment-details">
+                    <h4 style="margin-bottom: 15px; color: var(--primary);">Maya Account Details</h4>
+                    <div class="payment-details-row">
+                        <span>Maya Account Holder:</span>
+                        <strong>LUDOVICE RESTAURANT PHIL.</strong>
+                    </div>
+                    <div class="payment-details-row">
+                        <span>Email Address:</span>
+                        <strong>payments@ludovice-restaurant.ph</strong>
+                    </div>
+                    <div class="payment-details-row">
+                        <span>Reference Code:</span>
+                        <strong id="maya-ref">MY-2026-005847</strong>
+                    </div>
+                    <div class="payment-details-row">
+                        <span>Amount to Transfer:</span>
+                        <strong id="maya-amount">₱0.00</strong>
+                    </div>
+                    <div class="input-group" style="margin-top: 15px;">
+                        <label>Customer Receipt Number</label>
+                        <input type="text" placeholder="Enter Maya transaction receipt number">
+                    </div>
+                </div>
+            </div>
+
+            <div class="payment-section">
+                <h3>🏦 Bank Transfer</h3>
+                <div class="payment-methods">
+                    <div class="payment-method" onclick="selectPayment('atm', this)">
+                        <div class="payment-icon">🏧</div>
+                        <h4>ATM Transfer</h4>
+                        <p>BDO, BPI, Metrobank, PNB</p>
+                    </div>
+                </div>
+
+                <div id="atm-details" class="payment-details">
+                    <h4 style="margin-bottom: 15px; color: var(--primary);">ATM Transfer Account Details</h4>
+                    <div style="margin-bottom: 20px; padding: 15px; background: rgba(255, 107, 53, 0.1); border-radius: 8px; border-left: 4px solid var(--primary);">
+                        <strong>BDO Unibank Account</strong>
+                        <div class="payment-details-row">
+                            <span>Account Number:</span>
+                            <strong>006-142-8845-000</strong>
+                        </div>
+                        <div class="payment-details-row">
+                            <span>Account Name:</span>
+                            <strong>LUDOVICE RESTAURANT PHIL. INC.</strong>
+                        </div>
+                    </div>
+                    <div style="margin-bottom: 20px; padding: 15px; background: rgba(255, 107, 53, 0.1); border-radius: 8px; border-left: 4px solid var(--accent-teal);">
+                        <strong>BPI Account</strong>
+                        <div class="payment-details-row">
+                            <span>Account Number:</span>
+                            <strong>1234-5678-9012-34</strong>
+                        </div>
+                        <div class="payment-details-row">
+                            <span>Account Name:</span>
+                            <strong>LUDOVICE RESTAURANT PHIL. INC.</strong>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>Reference Code</label>
+                        <input type="text" value="ATM-2026-REF-001247" readonly>
+                    </div>
+                    <div class="input-group">
+                        <label>Amount Transferred</label>
+                        <input type="text" id="atm-amount" placeholder="₱0.00" readonly>
+                    </div>
+                    <div class="input-group">
+                        <label>Sender's Name (from receipt)</label>
+                        <input type="text" placeholder="Enter customer name from ATM receipt">
+                    </div>
+                </div>
+            </div>
+
+            <div class="payment-section">
+                <h3>💳 Account Bill (Credit/Debit)</h3>
+                <div class="payment-methods">
+                    <div class="payment-method" onclick="selectPayment('account-bill', this)">
+                        <div class="payment-icon">📊</div>
+                        <h4>Account Bill</h4>
+                        <p>Corporate/Personal billing</p>
+                    </div>
+                </div>
+
+                <div id="account-bill-details" class="payment-details">
+                    <h4 style="margin-bottom: 15px; color: var(--primary);">Account Billing Details</h4>
+                    <div class="input-group">
+                        <label>Company/Account Name</label>
+                        <input type="text" placeholder="Enter company or account name">
+                    </div>
+                    <div class="input-group">
+                        <label>Account Number/Code</label>
+                        <input type="text" placeholder="Enter account number or code">
+                    </div>
+                    <div class="input-group">
+                        <label>Billing Amount</label>
+                        <input type="text" id="bill-amount" placeholder="₱0.00" readonly>
+                    </div>
+                    <div class="input-group">
+                        <label>Bill Due Date</label>
+                        <input type="date">
+                    </div>
+                    <div class="input-group">
+                        <label>Special Notes/PO Number</label>
+                        <input type="text" placeholder="Enter PO number or special billing notes">
+                    </div>
+                    <button class="btn btn-primary" style="width: 100%; margin-top: 15px;" onclick="generateBillReceipt()">📄 Generate Bill Receipt</button>
+                </div>
+            </section>
         </div>
     </main>
 
+    <!-- ===================== ORDER HISTORY VIEW ===================== -->
+    <main id="orders-view" class="view-content generic-layout">
+        <div>
+            <h2>📋 Order History & Receipts</h2>
+            <p style="color: var(--text-muted); margin-bottom: 30px;">Track all completed orders and manage digital receipts</p>
+
+            <div class="orders-grid" id="ordersHistoryGrid"></div>
+        </div>
+    </main>
+
+    <!-- ===================== KITCHEN DISPLAY VIEW ===================== -->
+    <main id="kds-view" class="view-content generic-layout">
+        <div>
+            <h2>👨‍🍳 Kitchen Display System (KDS)</h2>
+            <p style="color: var(--text-muted); margin-bottom: 30px;">Real-time active orders queue from all POS terminals</p>
+            <div class="kds-grid" id="kdsGrid"></div>
+        </div>
+    </main>
+
+    <!-- ===================== INVENTORY VIEW ===================== -->
     <main id="inventory-view" class="view-content generic-layout">
         <div>
-            <h2>Stock & Ingredient Threshold Warning Panel</h2>
-            <p style="color: var(--text-muted)">System alerts triggered by ingredient countdown parameters</p>
+            <h2>📦 Stock & Inventory Threshold Panel</h2>
+            <p style="color: var(--text-muted); margin-bottom: 20px;">Real-time ingredient countdown & critical alert system</p>
             <table class="inventory-table">
                 <thead>
-                    <tr><th>Ingredient</th><th>Remaining Stock</th><th>Critical Level</th><th>Status Threshold</th></tr>
+                    <tr>
+                        <th>🏷️ Ingredient</th>
+                        <th>📊 Remaining Stock</th>
+                        <th>⚠️ Critical Level</th>
+                        <th>📈 Status</th>
+                    </tr>
                 </thead>
                 <tbody>
-                    <tr><td>Wagyu Beef Patties</td><td>14 units</td><td>50 units</td><td><span class="status-pill low">CRITICAL LOW</span></td></tr>
-                    <tr><td>Truffle Oil Base</td><td>2 Bottles</td><td>5 Bottles</td><td><span class="status-pill low">CRITICAL LOW</span></td></tr>
-                    <tr><td>Thick Cut Potatoes</td><td>12 kg</td><td>20 kg</td><td><span class="status-pill low">LOW STOCK</span></td></tr>
-                    <tr><td>Brioche Burger Buns</td><td>120 units</td><td>60 units</td><td><span class="status-pill good">HEALTHY</span></td></tr>
+                    <tr><td>Wagyu Beef Patties</td><td>14 units</td><td>50 units</td><td><span class="status-pill low">🔴 CRITICAL LOW</span></td></tr>
+                    <tr><td>Japanese Wagyu (Prime Cut)</td><td>8 kg</td><td>25 kg</td><td><span class="status-pill low">🔴 CRITICAL LOW</span></td></tr>
+                    <tr><td>Truffle Oil (Black)</td><td>2 bottles</td><td>5 bottles</td><td><span class="status-pill low">🔴 CRITICAL LOW</span></td></tr>
+                    <tr><td>Thick Cut Potatoes (Idaho)</td><td>12 kg</td><td>20 kg</td><td><span class="status-pill low">⚠️ LOW STOCK</span></td></tr>
+                    <tr><td>Brioche Burger Buns</td><td>120 units</td><td>60 units</td><td><span class="status-pill good">✅ HEALTHY</span></td></tr>
+                    <tr><td>Smoked Salmon Fillet</td><td>3.5 kg</td><td>8 kg</td><td><span class="status-pill low">⚠️ LOW STOCK</span></td></tr>
+                    <tr><td>Fresh Arugula</td><td>8 bundles</td><td>15 bundles</td><td><span class="status-pill good">✅ HEALTHY</span></td></tr>
+                    <tr><td>Parmesan Cheese (Parmigiano)</td><td>5 kg</td><td>10 kg</td><td><span class="status-pill good">✅ HEALTHY</span></td></tr>
                 </tbody>
             </table>
         </div>
     </main>
 
+    <!-- ===================== SHIFT VIEW ===================== -->
     <main id="shift-view" class="view-content generic-layout">
         <div>
-            <h2>Staff Attendance & Shift Rosters</h2>
-            <p style="color: var(--text-muted)">Daily calendar tracking configuration for floor staff profiles</p>
+            <h2>👥 Staff Attendance & Shift Rosters</h2>
+            <p style="color: var(--text-muted); margin-bottom: 20px;">Daily calendar & floor staff profile management</p>
             <table class="shift-table">
                 <thead>
-                    <tr><th>Employee Name</th><th>Assigned Role</th><th>Shift Slot</th><th>Station Track</th></tr>
+                    <tr>
+                        <th>👤 Employee Name</th>
+                        <th>💼 Assigned Role</th>
+                        <th>🕐 Shift Slot</th>
+                        <th>📍 Station Track</th>
+                    </tr>
                 </thead>
                 <tbody>
-                    <tr><td>Juan Dela Cruz</td><td>Cashier Desk 1</td><td>06:00 AM - 02:00 PM</td><td>Front Counter</td></tr>
+                    <tr><td>Juan Dela Cruz</td><td>Senior Cashier</td><td>06:00 AM - 02:00 PM</td><td>Front Counter</td></tr>
                     <tr><td>Maria Santos</td><td>Kitchen Chef Lead</td><td>08:00 AM - 05:00 PM</td><td>Main Hot Line</td></tr>
                     <tr><td>Gimbert Ludovice</td><td>System Owner / Admin</td><td>Full Coverage</td><td>Management Overview</td></tr>
+                    <tr><td>Angela Rodriguez</td><td>Floor Server (Dine-In)</td><td>10:00 AM - 07:00 PM</td><td>Dining Area</td></tr>
+                    <tr><td>Romeo Pascual</td><td>Line Cook (Prep)</td><td>07:00 AM - 04:00 PM</td><td>Prep Station</td></tr>
+                    <tr><td>Marife Lopez</td><td>Delivery Coordinator</td><td>11:00 AM - 08:00 PM</td><td>Delivery Hub</td></tr>
                 </tbody>
             </table>
         </div>
     </main>
 
     <script>
-        // --- DATA STATES STORAGE CONFIG ---
+        // ========================= GLOBAL DATA STORAGE =========================
         let currentSelectedTable = "T-01";
-        let liveRevenue = 42350.00;
-        let pendingKdsCount = 3;
+        let currentPaymentMethod = null;
 
         const tableDatabase = {
             "T-01": { id: "T-01", label: "Table 01", state: "vacant", order: [] },
             "T-02": { id: "T-02", label: "Table 02", state: "occupied", order: [
-                { id: 1, title: "Classic Wagyu Burger", price: 280, qty: 1, mods: "No onions, Extra cheese" },
-                { id: 3, title: "Thick Cut Fries", price: 120, qty: 1, mods: "" }
+                { id: 1, title: "Classic Wagyu Burger Premium", price: 485, qty: 1, mods: "No onions, Extra cheddar" },
+                { id: 3, title: "Thick Cut Fries (Idaho)", price: 145, qty: 1, mods: "" }
             ]},
             "T-03": { id: "T-03", label: "Table 03", state: "requested", order: [
-                { id: 2, title: "Truffle Pasta", price: 340, qty: 2, mods: "" }
+                { id: 2, title: "Truffle Pasta Carbonara", price: 425, qty: 2, mods: "Light cream" }
             ]},
-            "T-04": { id: "T-04", label: "Table 04", state: "dirty", order: [] }
+            "T-04": { id: "T-04", label: "Table 04", state: "dirty", order: [] },
+            "T-05": { id: "T-05", label: "Table 05", state: "vacant", order: [] },
+            "T-06": { id: "T-06", label: "Table 06", state: "vacant", order: [] }
         };
 
         const menuDatabase = [
-            { id: 1, category: "mains", title: "Classic Wagyu Burger", price: 280, img: "🍔" },
-            { id: 2, category: "mains", title: "Truffle Pasta", price: 340, img: "🍝" },
-            { id: 3, category: "sides", title: "Thick Cut Fries", price: 120, img: "🍟" },
-            { id: 4, category: "drinks", title: "Brewed Iced Tea", price: 75, img: "🍹" },
-            { id: 5, category: "drinks", title: "Craft Soda", price: 90, img: "🥤" }
+            // Mains - Premium Burgers
+            { id: 1, category: "mains", title: "Classic Wagyu Burger Premium", desc: "100% Japanese Wagyu with truffle mayo", price: 485, img: "🍔", popular: true },
+            { id: 101, category: "mains", title: "Smoked Salmon Burger", desc: "Fresh smoked salmon with dill cream cheese", price: 495, img: "🍣", popular: true },
+            { id: 102, category: "mains", title: "Double Stack Wagyu Deluxe", desc: "Twin patties with foie gras & black truffle", price: 725, img: "🍔", popular: false },
+            
+            // Mains - Pasta & Seafood
+            { id: 2, category: "mains", title: "Truffle Pasta Carbonara", desc: "Creamy egg sauce with black truffle shaving", price: 425, img: "🍝", popular: true },
+            { id: 103, category: "mains", title: "Garlic Butter Shrimp Linguine", desc: "Fresh shrimp in garlic herb butter sauce", price: 395, img: "🍝", popular: false },
+            { id: 104, category: "mains", title: "Lobster Tail Risotto", desc: "Creamy arborio rice with fresh Maine lobster", price: 650, img: "🦞", popular: true },
+            { id: 105, category: "mains", title: "Pan-Seared Dory Fillet", desc: "Fresh fish with lemon butter and capers", price: 385, img: "🐟", popular: false },
+            
+            // Mains - Asian Fusion
+            { id: 106, category: "mains", title: "Miso-Glazed Beef Ribs", desc: "Slow-cooked beef ribs in Japanese miso glaze", price: 545, img: "🍖", popular: true },
+            { id: 107, category: "mains", title: "Thai Green Curry Chicken", desc: "Tender chicken in aromatic green curry", price: 325, img: "🍗", popular: false },
+            
+            // Sides
+            { id: 3, category: "sides", title: "Thick Cut Fries (Idaho)", desc: "Hand-cut fries with sea salt & garlic aioli", price: 145, img: "🍟", popular: true },
+            { id: 108, category: "sides", title: "Truffle Parmesan Fries", desc: "Crispy fries with truffle oil & aged parmesan", price: 195, img: "🍟", popular: true },
+            { id: 109, category: "sides", title: "Roasted Seasonal Vegetables", desc: "Assorted vegetables with herb olive oil", price: 135, img: "🥦", popular: false },
+            { id: 110, category: "sides", title: "Creamed Corn with Bacon", desc: "Sweet corn kernels in rich cream sauce", price: 155, img: "🌽", popular: false },
+            { id: 111, category: "sides", title: "Loaded Mac & Cheese", desc: "Three-cheese blend with crispy breadcrumb topping", price: 175, img: "🍝", popular: false },
+            
+            // Desserts
+            { id: 112, category: "desserts", title: "Chocolate Lava Cake", desc: "Warm molten chocolate cake with vanilla ice cream", price: 185, img: "🍰", popular: true },
+            { id: 113, category: "desserts", title: "Strawberry Cheesecake", desc: "NY-style cheesecake with fresh strawberries", price: 175, img: "🍰", popular: false },
+            { id: 114, category: "desserts", title: "Tiramisu", desc: "Classic Italian dessert with mascarpone cream", price: 165, img: "🍰", popular: false },
+            { id: 115, category: "desserts", title: "Mango Sorbet Float", desc: "Fresh mango sorbet with ginger ale", price: 145, img: "🍨", popular: true },
+            { id: 116, category: "desserts", title: "Dark Chocolate Mousse", desc: "Rich dark chocolate mousse with berry coulis", price: 155, img: "🍫", popular: false },
+            
+            // Drinks
+            { id: 4, category: "drinks", title: "Freshly Brewed Iced Tea", desc: "House-made herbal iced tea blend", price: 85, img: "🍹", popular: false },
+            { id: 117, category: "drinks", title: "Premium Craft Cola", desc: "Artisanal cola with natural ingredients", price: 95, img: "🥤", popular: false },
+            { id: 118, category: "drinks", title: "Fresh Mango Juice", desc: "100% fresh mango, no added sugar", price: 125, img: "🥭", popular: true },
+            { id: 119, category: "drinks", title: "Iced Latte (Specialty)", desc: "Premium espresso with cold milk & foam", price: 115, img: "☕", popular: false },
+            { id: 120, category: "drinks", title: "Watermelon Mint Cooler", desc: "Fresh watermelon juice with mint leaves", price: 105, img: "🍉", popular: true },
+            { id: 121, category: "drinks", title: "Mocha Choco Shake", desc: "Chocolate shake with coffee essence", price: 135, img: "🥛", popular: false },
+            
+            // Specials (Today's specials)
+            { id: 122, category: "specials", title: "Chef's Special: Sinigang Bowl", desc: "Traditional pork sinigang with vegetables", price: 295, img: "🍲", popular: true },
+            { id: 123, category: "specials", title: "Limited: Truffle Risotto Arancini", desc: "Crispy fried risotto balls with truffle center", price: 245, img: "🍢", popular: true },
+            { id: 124, category: "specials", title: "Weekend Special: BBQ Platter", desc: "Assorted grilled meats with chimichurri", price: 585, img: "🔥", popular: false },
+            { id: 125, category: "specials", title: "Flash Sale: Grilled Squid (Calamares)", desc: "Fresh squid grilled with garlic & lemon", price: 265, img: "🦑", popular: true },
         ];
 
         const initialKdsOrders = [
-            { id: "K-102", table: "T-02", items: ["1x Classic Wagyu Burger (No onions, Extra cheese)", "1x Thick Cut Fries"] },
-            { id: "K-103", table: "T-03", items: ["2x Truffle Pasta"] }
+            { id: "K-102", table: "T-02", items: ["1x Classic Wagyu Burger (No onions, Extra cheddar)", "1x Thick Cut Fries"] },
+            { id: "K-103", table: "T-03", items: ["2x Truffle Pasta Carbonara (Light cream)"] },
+            { id: "K-104", table: "T-02", items: ["1x Chocolate Lava Cake", "2x Iced Latte"] }
         ];
 
-        // --- NAVIGATION CONTROLLER ---
+        const orderHistory = [
+            { id: "ORD-001", table: "T-02", items: ["2x Classic Wagyu Burger", "1x Thick Cut Fries"], total: 1115.00, date: "2026-01-10", status: "completed", payment: "Cash" },
+            { id: "ORD-002", table: "T-01", items: ["1x Truffle Pasta Carbonara", "1x Fresh Mango Juice"], total: 550.00, date: "2026-01-10", status: "completed", payment: "GCash" },
+            { id: "ORD-003", table: "T-03", items: ["3x Thick Cut Fries", "2x Craft Cola"], total: 625.00, date: "2026-01-10", status: "completed", payment: "Card" },
+            { id: "ORD-004", table: "T-05", items: ["1x Lobster Tail Risotto", "1x Fresh Mango Juice", "1x Chocolate Lava Cake"], total: 1067.45, date: "2026-01-09", status: "completed", payment: "Maya" }
+        ];
+
+        // ========================= VIEW SWITCHING =========================
         function switchView(viewId, element) {
             document.querySelectorAll('.view-content').forEach(v => v.classList.remove('active-view'));
             document.querySelectorAll('.nav-links li').forEach(li => li.classList.remove('active'));
             
             document.getElementById(viewId).classList.add('active-view');
             element.classList.add('active');
+            
+            if (viewId === 'kds-view') renderKds();
+            if (viewId === 'orders-view') renderOrderHistory();
         }
 
-        // --- RENDER FUNCTIONS ---
+        // ========================= RENDER FLOOR PLAN =========================
         function renderFloorPlan() {
             const grid = document.getElementById("floorPlanGrid");
             grid.innerHTML = "";
@@ -668,38 +1505,43 @@
                 card.className = `table-card ${table.state} ${table.id === currentSelectedTable ? 'selected-table' : ''}`;
                 card.onclick = () => selectTable(table.id);
                 
-                let textState = "Vacant";
-                if(table.state === 'occupied') textState = "Occupied";
-                if(table.state === 'requested') textState = "Bill Pending";
-                if(table.state === 'dirty') textState = "Dirty";
-
-                card.innerHTML = `<h4>${table.id}</h4><span>${textState}</span>`;
+                let stateText = { vacant: "Vacant", occupied: "Occupied", requested: "Bill Pending", dirty: "Dirty" }[table.state];
+                let statusEmoji = { vacant: "✅", occupied: "🔴", requested: "⚠️", dirty: "🧹" }[table.state];
+                
+                card.innerHTML = `<h4>${table.id}</h4><span>${statusEmoji} ${stateText}</span>`;
                 grid.appendChild(card);
             });
         }
 
+        // ========================= RENDER MENU =========================
         function renderMenuGrid(itemsToDisplay = menuDatabase) {
             const grid = document.getElementById("menuGrid");
             grid.innerHTML = "";
             itemsToDisplay.forEach(item => {
                 const div = document.createElement("div");
-                div.className = "menu-item";
+                div.className = `menu-item ${item.popular ? 'popular' : ''}`;
                 div.onclick = () => addItemToReceipt(item);
                 div.innerHTML = `
+                    ${item.popular ? '<div class="menu-item-badge">⭐ Popular</div>' : ''}
                     <div class="menu-item-img">${item.img}</div>
                     <div class="menu-item-info">
                         <h5>${item.title}</h5>
-                        <p>₱${item.price.toFixed(2)}</p>
+                        <p class="menu-item-desc">${item.desc}</p>
+                        <div class="menu-item-footer">
+                            <span class="menu-item-price">₱${item.price.toFixed(2)}</span>
+                            <span class="menu-item-rating">⭐ 4.8</span>
+                        </div>
                     </div>
                 `;
                 grid.appendChild(div);
             });
         }
 
+        // ========================= RENDER RECEIPT =========================
         function renderReceipt() {
             const container = document.getElementById("receiptItemsContainer");
             container.innerHTML = "";
-            document.getElementById("activeReceiptTitle").innerText = `Active Order: ${currentSelectedTable}`;
+            document.getElementById("activeReceiptTitle").innerText = `🧾 Active Order: ${currentSelectedTable}`;
             
             const tableOrder = tableDatabase[currentSelectedTable].order;
             
@@ -713,13 +1555,13 @@
                 div.innerHTML = `
                     <div class="receipt-item-details">
                         <div class="quantity-controls">
-                            <button class="qty-btn" onclick="adjustQty(${index}, -1)">-</button>
+                            <button class="qty-btn" onclick="adjustQty(${index}, -1)">−</button>
                             <strong>${item.qty}x</strong>
                             <button class="qty-btn" onclick="adjustQty(${index}, 1)">+</button>
                         </div>
                         <div>
                             <strong>${item.title}</strong>
-                            ${item.mods ? `<div class="item-mods">• ${item.mods}</div>` : ""}
+                            ${item.mods ? `<div class="item-mods">📝 ${item.mods}</div>` : ""}
                         </div>
                     </div>
                     <span>₱${cost.toFixed(2)}</span>
@@ -728,13 +1570,24 @@
             });
 
             let tax = subtotal * 0.12;
-            let total = subtotal + tax;
+            let service = subtotal * 0.05;
+            let total = subtotal + tax + service;
 
             document.getElementById("txtSubtotal").innerText = `₱${subtotal.toFixed(2)}`;
             document.getElementById("txtTax").innerText = `₱${tax.toFixed(2)}`;
+            document.getElementById("txtService").innerText = `₱${service.toFixed(2)}`;
             document.getElementById("txtTotal").innerText = `₱${total.toFixed(2)}`;
+            
+            // Update payment method amounts
+            if (document.getElementById("gcash-amount")) {
+                document.getElementById("gcash-amount").innerText = `₱${total.toFixed(2)}`;
+                document.getElementById("maya-amount").innerText = `₱${total.toFixed(2)}`;
+                document.getElementById("atm-amount").innerText = `₱${total.toFixed(2)}`;
+                document.getElementById("bill-amount").innerText = `₱${total.toFixed(2)}`;
+            }
         }
 
+        // ========================= RENDER KDS =========================
         function renderKds() {
             const grid = document.getElementById("kdsGrid");
             grid.innerHTML = "";
@@ -744,18 +1597,42 @@
                 let listHtml = ticket.items.map(i => `<li>${i}</li>`).join("");
                 card.innerHTML = `
                     <div class="kds-card-header">
-                        <strong>Order #${ticket.id}</strong>
-                        <span style="color:var(--warning)">${ticket.table}</span>
+                        <span class="kds-ticket-id">#${ticket.id}</span>
+                        <span class="kds-table">${ticket.table}</span>
                     </div>
-                    <ul style="list-style:none; padding-left:5px; font-size:0.9rem;">${listHtml}</ul>
-                    <button class="kds-done-btn" onclick="clearKdsTicket(${idx})">Mark Prepared</button>
+                    <ul class="kds-items">${listHtml}</ul>
+                    <button class="kds-done-btn" onclick="clearKdsTicket(${idx})">✅ Mark Prepared</button>
                 `;
                 grid.appendChild(card);
             });
-            document.getElementById("statKdsCount").innerText = `${initialKdsOrders.length} Orders`;
         }
 
-        // --- SYSTEM ENGINE INTERACTION BEHAVIORS ---
+        // ========================= RENDER ORDER HISTORY =========================
+        function renderOrderHistory() {
+            const grid = document.getElementById("ordersHistoryGrid");
+            grid.innerHTML = "";
+            orderHistory.forEach(order => {
+                const itemsList = order.items.map(item => `<li>• ${item}</li>`).join("");
+                const card = document.createElement("div");
+                card.className = "order-card";
+                card.innerHTML = `
+                    <div class="order-card-header">
+                        <span class="order-id">${order.id}</span>
+                        <span class="order-status">${order.status === 'completed' ? '✅ Completed' : '⏳ Pending'}</span>
+                    </div>
+                    <div class="order-time">📅 ${order.date} | 💳 ${order.payment}</div>
+                    <div class="order-items">
+                        <ul>${itemsList}</ul>
+                    </div>
+                    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255, 107, 53, 0.2); font-weight: 700; color: var(--primary);">
+                        Total: ₱${order.total.toFixed(2)}
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // ========================= TABLE & ORDER MANAGEMENT =========================
         function selectTable(tableId) {
             currentSelectedTable = tableId;
             renderFloorPlan();
@@ -782,6 +1659,14 @@
                 const filtered = menuDatabase.filter(i => i.category === category);
                 renderMenuGrid(filtered);
             }
+        }
+
+        function searchMenu(query) {
+            const filtered = menuDatabase.filter(item => 
+                item.title.toLowerCase().includes(query.toLowerCase()) ||
+                item.desc.toLowerCase().includes(query.toLowerCase())
+            );
+            renderMenuGrid(filtered);
         }
 
         function addItemToReceipt(item) {
@@ -820,48 +1705,39 @@
             const totalText = document.getElementById("txtTotal").innerText;
             const floatTotal = parseFloat(totalText.replace(/[₱,]/g, ''));
             if(floatTotal <= 0) {
-                alert("Receipt must have items added before applying system bill split calculations.");
+                alert("⚠️ Receipt must have items before applying split calculations.");
                 return;
             }
-            const covers = prompt("Split Bill Processor Engine: Enter number of dining seats to split by:", "2");
+            const covers = prompt("🧮 Enter number of diners to split bill:", "2");
             if (covers && parseInt(covers) > 0) {
                 const individualShare = floatTotal / parseInt(covers);
-                alert(`Split Calculation Outcome:\nEach individual client breakdown payload comes to: ₱${individualShare.toFixed(2)} (${covers} ways)`);
+                alert(`✅ Split Bill Result:\nEach diner pays: ₱${individualShare.toFixed(2)} (${covers} ways)`);
             }
         }
 
-        function sendToKitchen() {
-            const currentOrder = tableDatabase[currentSelectedTable].order;
-            if(currentOrder.length === 0) {
-                alert("The selected operational table cart instance is currently empty.");
-                return;
-            }
-
-            // Extract values to push to KDS Queue
-            let itemsSummary = currentOrder.map(i => `${i.qty}x ${i.title} ${i.mods ? `(${i.mods})` : ''}`);
-            let uniqueId = "K-" + Math.floor(100 + Math.random() * 900);
-            
-            initialKdsOrders.push({
-                id: uniqueId,
-                table: currentSelectedTable,
-                items: itemsSummary
-            });
-
-            // Read total value to aggregate to live dashboard metrics
+        function goToPayment() {
             const totalText = document.getElementById("txtTotal").innerText;
             const floatTotal = parseFloat(totalText.replace(/[₱,]/g, ''));
-            liveRevenue += floatTotal;
-            document.getElementById("statRevenue").innerText = `₱${liveRevenue.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+            if(floatTotal <= 0) {
+                alert("⚠️ Order is empty. Please add items before proceeding.");
+                return;
+            }
+            switchView('payment-view', document.querySelector('[onclick*="payment-view"]'));
+        }
 
-            // Reset parameters
-            tableDatabase[currentSelectedTable].order = [];
-            tableDatabase[currentSelectedTable].state = "occupied";
+        function selectPayment(method, element) {
+            document.querySelectorAll('.payment-method').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
+            currentPaymentMethod = method;
             
-            alert(`Order dispatched successfully to kitchen matrix pipeline array entry ID: ${uniqueId}`);
-            
-            renderFloorPlan();
-            renderReceipt();
-            renderKds();
+            document.querySelectorAll('.payment-details').forEach(el => el.classList.remove('active'));
+            const detailsId = `${method}-details`;
+            const detailsEl = document.getElementById(detailsId);
+            if(detailsEl) detailsEl.classList.add('active');
+        }
+
+        function generateBillReceipt() {
+            alert(`📄 Bill Receipt Generated!\n\nCompany/Account Name: [Entered Value]\nBilling Amount: ₱0.00\n\nReceipt has been saved to system.`);
         }
 
         function clearKdsTicket(index) {
@@ -869,7 +1745,7 @@
             renderKds();
         }
 
-        // --- WINDOW BOOTLOAD ENGINE TRIGGER ---
+        // ========================= INIT =========================
         window.onload = () => {
             renderFloorPlan();
             renderMenuGrid();
