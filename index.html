@@ -2,1822 +2,1365 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Gimbert Ludovice | BSIT Portfolio</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;700&display=swap"
-    rel="stylesheet" />
-
-  <style>
-    /* ── TOKENS ─────────────────────────────────────────────────────── */
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LUDOVICE RMS - Premium Restaurant Management System 2026</title>
+<style>
     :root {
-      --navy: #001a38;
-      --navy-mid: #002e5e;
-      --navy-light: #0a4080;
-      --gold: #f0a500;
-      --gold-soft: #ffd166;
-      --cream: #f4f7fb;
-      --white: #ffffff;
-      --text-main: #1c2b3a;
-      --text-mute: #5a7393;
-      --glass: rgba(255, 255, 255, 0.08);
-      --glass-border: rgba(255, 255, 255, 0.15);
-      --shadow-deep: 0 30px 80px rgba(0, 0, 0, 0.4);
-      --shadow-card: 0 8px 32px rgba(0, 26, 56, 0.18);
-      --transition: 0.45s cubic-bezier(0.23, 1, 0.32, 1);
-    }
-
-    /* ── RESET ───────────────────────────────────────────────────────── */
-    *,
-    *::before,
-    *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      font-family: 'Space Grotesk', sans-serif;
-      background: var(--navy);
-      color: var(--white);
-      overflow-x: hidden;
-      cursor: default;
-    }
-
-    /* ── ANIMATED BACKGROUND ────────────────────────────────────────── */
-    .bg-scene {
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-      overflow: hidden;
-      pointer-events: none;
-    }
-
-    .bg-scene::before {
-      content: '';
-      position: absolute;
-      width: 900px;
-      height: 900px;
-      background: radial-gradient(circle, rgba(0, 78, 146, 0.35) 0%, transparent 70%);
-      top: -200px;
-      left: -200px;
-      animation: orb1 18s ease-in-out infinite alternate;
-    }
-
-    .bg-scene::after {
-      content: '';
-      position: absolute;
-      width: 700px;
-      height: 700px;
-      background: radial-gradient(circle, rgba(240, 165, 0, 0.12) 0%, transparent 70%);
-      bottom: -100px;
-      right: -100px;
-      animation: orb2 22s ease-in-out infinite alternate;
-    }
-
-    @keyframes orb1 {
-      to {
-        transform: translate(120px, 80px);
-      }
-    }
-
-    @keyframes orb2 {
-      to {
-        transform: translate(-80px, -60px);
-      }
-    }
-
-    /* Floating grid lines */
-    .grid-lines {
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-      pointer-events: none;
-      background-image:
-        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-      background-size: 60px 60px;
-    }
-
-    /* ── NAV ─────────────────────────────────────────────────────────── */
-    nav {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 900;
-      padding: 0 40px;
-      height: 70px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: rgba(0, 26, 56, 0.75);
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--glass-border);
-    }
-
-    .nav-logo {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 1.1rem;
-      color: var(--gold);
-      text-decoration: none;
-      letter-spacing: 0.05em;
-    }
-
-    .nav-logo span {
-      color: var(--white);
-    }
-
-    .nav-links {
-      display: flex;
-      list-style: none;
-      gap: 8px;
-    }
-
-    .nav-links a {
-      color: rgba(255, 255, 255, 0.7);
-      text-decoration: none;
-      font-size: 0.9rem;
-      font-weight: 500;
-      padding: 8px 18px;
-      border-radius: 50px;
-      transition: all 0.3s ease;
-      border: 1px solid transparent;
-    }
-
-    .nav-links a:hover,
-    .nav-links a.active {
-      color: var(--white);
-      background: var(--glass);
-      border-color: var(--glass-border);
-    }
-
-    .nav-links a.active {
-      color: var(--gold);
-    }
-
-    /* ── WINDOW SYSTEM ───────────────────────────────────────────────── */
-    .window-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 800;
-      background: rgba(0, 10, 26, 0.7);
-      backdrop-filter: blur(8px);
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      animation: fadeIn 0.3s ease;
-    }
-
-    .window-overlay.open {
-      display: flex;
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-      }
-
-      to {
-        opacity: 1;
-      }
-    }
-
-    .window-panel {
-      background: linear-gradient(160deg, #031c38 0%, #011428 100%);
-      border: 1px solid var(--glass-border);
-      border-radius: 20px;
-      width: 100%;
-      max-width: 860px;
-      max-height: 88vh;
-      overflow-y: auto;
-      box-shadow: var(--shadow-deep), 0 0 0 1px rgba(240, 165, 0, 0.08);
-      animation: panelIn 0.45s cubic-bezier(0.23, 1, 0.32, 1);
-      scrollbar-width: thin;
-      scrollbar-color: var(--navy-light) transparent;
-    }
-
-    @keyframes panelIn {
-      from {
-        opacity: 0;
-        transform: scale(0.92) translateY(30px);
-      }
-
-      to {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-      }
-    }
-
-    /* Window titlebar */
-    .window-titlebar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 18px 28px;
-      border-bottom: 1px solid var(--glass-border);
-      position: sticky;
-      top: 0;
-      background: rgba(3, 28, 56, 0.97);
-      backdrop-filter: blur(10px);
-      border-radius: 20px 20px 0 0;
-      z-index: 2;
-    }
-
-    .window-dots {
-      display: flex;
-      gap: 8px;
-    }
-
-    .window-dot {
-      width: 13px;
-      height: 13px;
-      border-radius: 50%;
-      cursor: pointer;
-    }
-
-    .dot-close {
-      background: #ff5f57;
-    }
-
-    .dot-min {
-      background: #febc2e;
-    }
-
-    .dot-max {
-      background: #28c840;
-    }
-
-    .window-title {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.85rem;
-      color: rgba(255, 255, 255, 0.5);
-      letter-spacing: 0.05em;
-    }
-
-    .window-close-btn {
-      background: none;
-      border: none;
-      color: rgba(255, 255, 255, 0.4);
-      font-size: 1.3rem;
-      cursor: pointer;
-      transition: color 0.2s;
-      line-height: 1;
-    }
-
-    .window-close-btn:hover {
-      color: var(--white);
-    }
-
-    .window-body {
-      padding: 36px;
-    }
-
-    /* ── HERO ────────────────────────────────────────────────────────── */
-    .hero {
-      position: relative;
-      z-index: 1;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      padding: 100px 60px 60px;
-      gap: 60px;
-    }
-
-    .hero-left {
-      flex: 1.2;
-    }
-
-    .hero-eyebrow {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.8rem;
-      color: var(--gold);
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      margin-bottom: 20px;
-      opacity: 0;
-      animation: slideUp 0.8s 0.2s ease forwards;
-    }
-
-    .hero-name {
-      font-size: clamp(2.8rem, 6vw, 5rem);
-      font-weight: 700;
-      line-height: 1.08;
-      color: var(--white);
-      margin-bottom: 12px;
-      opacity: 0;
-      animation: slideUp 0.8s 0.35s ease forwards;
-    }
-
-    .hero-name em {
-      font-style: normal;
-      color: var(--gold);
-    }
-
-    .hero-role {
-      font-size: 1.2rem;
-      color: var(--text-mute);
-      font-weight: 400;
-      margin-bottom: 28px;
-      opacity: 0;
-      animation: slideUp 0.8s 0.5s ease forwards;
-    }
-
-    .hero-desc {
-      font-size: 1.05rem;
-      color: rgba(255, 255, 255, 0.65);
-      line-height: 1.75;
-      max-width: 520px;
-      margin-bottom: 44px;
-      opacity: 0;
-      animation: slideUp 0.8s 0.65s ease forwards;
-    }
-
-    .hero-cta {
-      display: flex;
-      gap: 16px;
-      flex-wrap: wrap;
-      opacity: 0;
-      animation: slideUp 0.8s 0.8s ease forwards;
-    }
-
-    @keyframes slideUp {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .btn-gold {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      background: linear-gradient(135deg, var(--gold) 0%, #e09000 100%);
-      color: var(--navy);
-      font-weight: 700;
-      font-size: 0.95rem;
-      padding: 14px 30px;
-      border-radius: 50px;
-      text-decoration: none;
-      border: none;
-      cursor: pointer;
-      transition: var(--transition);
-      box-shadow: 0 4px 24px rgba(240, 165, 0, 0.3);
-    }
-
-    .btn-gold:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 10px 36px rgba(240, 165, 0, 0.45);
-    }
-
-    .btn-outline {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      background: transparent;
-      color: var(--white);
-      font-weight: 600;
-      font-size: 0.95rem;
-      padding: 14px 30px;
-      border-radius: 50px;
-      text-decoration: none;
-      border: 1.5px solid var(--glass-border);
-      cursor: pointer;
-      transition: var(--transition);
-    }
-
-    .btn-outline:hover {
-      border-color: var(--gold);
-      color: var(--gold);
-      transform: translateY(-3px);
-    }
-
-    /* Hero 3D Avatar */
-    .hero-right {
-      flex: 0.8;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      opacity: 0;
-      animation: fadeInScale 1s 0.5s ease forwards;
-    }
-
-    @keyframes fadeInScale {
-      from {
-        opacity: 0;
-        transform: scale(0.85);
-      }
-
-      to {
-        opacity: 1;
-        transform: scale(1);
-      }
-    }
-
-    .avatar-ring {
-      width: 360px;
-      height: 360px;
-      position: relative;
-      perspective: 1000px;
-    }
-
-    .avatar-ring::before {
-      content: '';
-      position: absolute;
-      inset: -20px;
-      border-radius: 50%;
-      background: conic-gradient(from 0deg, var(--gold), var(--navy-light), var(--gold));
-      animation: spin 8s linear infinite;
-      opacity: 0.6;
-    }
-
-    .avatar-ring::after {
-      content: '';
-      position: absolute;
-      inset: -4px;
-      border-radius: 50%;
-      background: var(--navy);
-    }
-
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
-    .avatar-img {
-      position: absolute;
-      inset: 0;
-      z-index: 2;
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 6px solid rgba(255, 255, 255, 0.12);
-      transition: transform 0.6s ease;
-      transform: rotateY(-12deg) rotateX(8deg);
-    }
-
-    .avatar-ring:hover .avatar-img {
-      transform: rotateY(0deg) rotateX(0deg) scale(1.03);
-    }
-
-    /* Floating badge */
-    .hero-badge {
-      position: absolute;
-      bottom: 10px;
-      right: -20px;
-      background: linear-gradient(135deg, var(--navy-mid), var(--navy-light));
-      border: 1px solid var(--glass-border);
-      border-radius: 14px;
-      padding: 14px 20px;
-      z-index: 10;
-      box-shadow: var(--shadow-card);
-      animation: float 4s ease-in-out infinite;
-    }
-
-    .hero-badge .badge-num {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 1.8rem;
-      font-weight: 700;
-      color: var(--gold);
-      line-height: 1;
-    }
-
-    .hero-badge .badge-label {
-      font-size: 0.72rem;
-      color: rgba(255, 255, 255, 0.55);
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-    }
-
-    @keyframes float {
-
-      0%,
-      100% {
-        transform: translateY(0);
-      }
-
-      50% {
-        transform: translateY(-10px);
-      }
-    }
-
-    /* ── SECTION SHARED ──────────────────────────────────────────────── */
-    .section {
-      position: relative;
-      z-index: 1;
-      padding: 100px 60px;
-    }
-
-    .section-tag {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.75rem;
-      color: var(--gold);
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      margin-bottom: 14px;
-    }
-
-    .section-heading {
-      font-size: clamp(2rem, 4vw, 3rem);
-      font-weight: 700;
-      color: var(--white);
-      margin-bottom: 60px;
-      line-height: 1.15;
-    }
-
-    .section-heading span {
-      color: var(--gold);
-    }
-
-    /* ── SKILLS SECTION ──────────────────────────────────────────────── */
-    #skills {
-      background: linear-gradient(to bottom, transparent, rgba(0, 46, 94, 0.2), transparent);
-    }
-
-    .skills-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 24px;
-    }
-
-    .skill-card {
-      background: var(--glass);
-      border: 1px solid var(--glass-border);
-      border-radius: 16px;
-      padding: 32px 28px;
-      position: relative;
-      overflow: hidden;
-      cursor: pointer;
-      transition: var(--transition);
-      transform-style: preserve-3d;
-    }
-
-    .skill-card::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, rgba(240, 165, 0, 0.08) 0%, transparent 60%);
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    .skill-card:hover {
-      border-color: rgba(240, 165, 0, 0.4);
-      transform: translateY(-8px) rotateX(6deg) rotateY(-3deg);
-      box-shadow: -6px 20px 40px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(240, 165, 0, 0.15);
-    }
-
-    .skill-card:hover::before {
-      opacity: 1;
-    }
-
-    .skill-icon {
-      width: 50px;
-      height: 50px;
-      border-radius: 12px;
-      background: linear-gradient(135deg, var(--navy-mid), var(--navy-light));
-      border: 1px solid var(--glass-border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 20px;
-      font-size: 1.4rem;
-    }
-
-    .skill-card h3 {
-      font-size: 1.05rem;
-      font-weight: 600;
-      color: var(--white);
-      margin-bottom: 10px;
-    }
-
-    .skill-card p {
-      font-size: 0.88rem;
-      color: rgba(255, 255, 255, 0.5);
-      line-height: 1.65;
-    }
-
-    .skill-bar-wrap {
-      margin-top: 18px;
-      background: rgba(255, 255, 255, 0.08);
-      border-radius: 50px;
-      height: 4px;
-      overflow: hidden;
-    }
-
-    .skill-bar {
-      height: 100%;
-      border-radius: 50px;
-      background: linear-gradient(90deg, var(--gold), var(--gold-soft));
-      transition: width 1.2s cubic-bezier(0.23, 1, 0.32, 1);
-    }
-
-    /* ── PROJECTS SECTION ────────────────────────────────────────────── */
-    #projects {
-      background: linear-gradient(to bottom, transparent, rgba(0, 26, 56, 0.4), transparent);
-    }
-
-    .projects-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 28px;
-    }
-
-    .project-card {
-      background: var(--glass);
-      border: 1px solid var(--glass-border);
-      border-radius: 20px;
-      overflow: hidden;
-      cursor: pointer;
-      transition: var(--transition);
-      transform-style: preserve-3d;
-      perspective: 1000px;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .project-card:hover {
-      transform: translateY(-12px) rotateY(6deg) rotateX(3deg);
-      border-color: rgba(240, 165, 0, 0.35);
-      box-shadow: -12px 28px 60px rgba(0, 0, 0, 0.35);
-    }
-
-    .project-thumb {
-      height: 190px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 1rem;
-      color: rgba(255, 255, 255, 0.4);
-      letter-spacing: 0.1em;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .project-thumb::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 60px;
-      background: linear-gradient(to top, var(--glass) 0%, transparent 100%);
-    }
-
-    .project-thumb-icon {
-      font-size: 2.5rem;
-      position: absolute;
-      z-index: 1;
-    }
-
-    .project-body {
-      padding: 24px 26px 26px;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .project-tag {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.7rem;
-      color: var(--gold);
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      margin-bottom: 10px;
-    }
-
-    .project-body h3 {
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: var(--white);
-      margin-bottom: 10px;
-    }
-
-    .project-body p {
-      font-size: 0.88rem;
-      color: rgba(255, 255, 255, 0.5);
-      line-height: 1.65;
-      flex: 1;
-      margin-bottom: 20px;
-    }
-
-    .project-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .tech-tags {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .tech-tag {
-      font-size: 0.72rem;
-      background: rgba(255, 255, 255, 0.07);
-      color: rgba(255, 255, 255, 0.5);
-      padding: 4px 10px;
-      border-radius: 50px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .project-link {
-      color: var(--gold);
-      font-size: 0.85rem;
-      font-weight: 600;
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      white-space: nowrap;
-      transition: gap 0.2s ease;
-    }
-
-    .project-link:hover {
-      gap: 10px;
-    }
-
-    /* "Open Window" btn on project cards */
-    .btn-window {
-      background: none;
-      border: none;
-      color: rgba(255, 255, 255, 0.4);
-      font-size: 0.8rem;
-      cursor: pointer;
-      padding: 6px 14px;
-      border-radius: 50px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      transition: all 0.25s ease;
-      font-family: 'Space Grotesk', sans-serif;
-    }
-
-    .btn-window:hover {
-      color: var(--white);
-      border-color: var(--glass-border);
-      background: var(--glass);
-    }
-
-    /* ── CONTACT SECTION ─────────────────────────────────────────────── */
-    #contact {
-      background: linear-gradient(135deg, rgba(0, 46, 94, 0.3) 0%, rgba(0, 26, 56, 0.8) 100%);
-      border-top: 1px solid var(--glass-border);
-    }
-
-    .contact-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 60px;
-      align-items: start;
-    }
-
-    .contact-info p {
-      font-size: 1rem;
-      color: rgba(255, 255, 255, 0.55);
-      line-height: 1.8;
-      margin-bottom: 36px;
-    }
-
-    .contact-item {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      padding: 18px 22px;
-      background: var(--glass);
-      border: 1px solid var(--glass-border);
-      border-radius: 14px;
-      margin-bottom: 14px;
-      transition: var(--transition);
-      cursor: pointer;
-    }
-
-    .contact-item:hover {
-      border-color: rgba(240, 165, 0, 0.3);
-      transform: translateX(6px);
-    }
-
-    .contact-item-icon {
-      width: 42px;
-      height: 42px;
-      background: linear-gradient(135deg, var(--navy-mid), var(--navy-light));
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.1rem;
-      flex-shrink: 0;
-    }
-
-    .contact-item-text h4 {
-      font-size: 0.82rem;
-      color: rgba(255, 255, 255, 0.4);
-      font-weight: 400;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      margin-bottom: 3px;
-    }
-
-    .contact-item-text p {
-      font-size: 0.92rem;
-      color: var(--white);
-      margin: 0;
-    }
-
-    .contact-form-area {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .form-field {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .form-field label {
-      font-size: 0.8rem;
-      color: rgba(255, 255, 255, 0.45);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-
-    .form-field input,
-    .form-field textarea {
-      background: var(--glass);
-      border: 1px solid var(--glass-border);
-      border-radius: 10px;
-      padding: 14px 18px;
-      color: var(--white);
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 0.95rem;
-      outline: none;
-      transition: border-color 0.3s ease;
-      resize: none;
-    }
-
-    .form-field input:focus,
-    .form-field textarea:focus {
-      border-color: var(--gold);
-    }
-
-    .form-field textarea {
-      height: 130px;
-    }
-
-    /* ── FOOTER ──────────────────────────────────────────────────────── */
-    footer {
-      position: relative;
-      z-index: 1;
-      text-align: center;
-      padding: 40px 20px;
-      border-top: 1px solid var(--glass-border);
-    }
-
-    .footer-logo {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 1.1rem;
-      color: var(--gold);
-      margin-bottom: 14px;
-    }
-
-    footer p {
-      font-size: 0.83rem;
-      color: rgba(255, 255, 255, 0.3);
-      margin-bottom: 6px;
-    }
-
-    footer a {
-      color: var(--gold);
-      text-decoration: none;
-    }
-
-    footer a:hover {
-      text-decoration: underline;
-    }
-
-    /* ── SCROLL REVEAL ───────────────────────────────────────────────── */
-    .reveal {
-      opacity: 0;
-      transform: translateY(40px);
-      transition: opacity 0.7s ease, transform 0.7s ease;
-    }
-
-    .reveal.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* ── WINDOW CONTENT STYLES ──────────────────────────────────────── */
-    .win-header {
-      margin-bottom: 28px;
-    }
-
-    .win-header h2 {
-      font-size: 1.8rem;
-      font-weight: 700;
-      color: var(--white);
-      margin-bottom: 8px;
-    }
-
-    .win-header p {
-      color: rgba(255, 255, 255, 0.5);
-      font-size: 0.95rem;
-    }
-
-    .win-preview {
-      width: 100%;
-      border-radius: 12px;
-      overflow: hidden;
-      border: 1px solid var(--glass-border);
-      background: #0a0e1a;
-      margin-bottom: 28px;
-    }
-
-    .win-preview-bar {
-      background: rgba(255, 255, 255, 0.06);
-      padding: 12px 16px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .win-preview-bar .dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-    }
-
-    .win-url {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.75rem;
-      color: rgba(255, 255, 255, 0.35);
-      margin-left: 10px;
-    }
-
-    .win-preview-frame {
-      height: 320px;
-      background: linear-gradient(160deg, #0d1a2d, #081222);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: rgba(255, 255, 255, 0.2);
-      font-size: 0.9rem;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .win-preview-frame iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-
-    .win-details {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-      margin-bottom: 28px;
-    }
-
-    .win-detail-box {
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--glass-border);
-      border-radius: 12px;
-      padding: 18px 20px;
-    }
-
-    .win-detail-box h4 {
-      font-size: 0.75rem;
-      color: rgba(255, 255, 255, 0.35);
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      margin-bottom: 8px;
-    }
-
-    .win-detail-box p {
-      font-size: 0.9rem;
-      color: var(--white);
-    }
-
-    .win-actions {
-      display: flex;
-      gap: 12px;
-    }
-
-    /* ── ABOUT WINDOW ────────────────────────────────────────────────── */
-    .about-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-      margin-bottom: 28px;
-    }
-
-    .about-stat {
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--glass-border);
-      border-radius: 12px;
-      padding: 24px;
-      text-align: center;
-    }
-
-    .about-stat .num {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 2.2rem;
-      color: var(--gold);
-      font-weight: 700;
-      line-height: 1;
-    }
-
-    .about-stat .lbl {
-      font-size: 0.8rem;
-      color: rgba(255, 255, 255, 0.4);
-      margin-top: 6px;
-    }
-
-    .about-skills-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 20px;
-    }
-
-    .about-skill-pill {
-      padding: 7px 16px;
-      border-radius: 50px;
-      font-size: 0.82rem;
-      background: rgba(240, 165, 0, 0.1);
-      border: 1px solid rgba(240, 165, 0, 0.25);
-      color: var(--gold-soft);
-    }
-
-    /* ── RESPONSIVE ──────────────────────────────────────────────────── */
-    @media (max-width: 900px) {
-      nav {
-        padding: 0 20px;
-      }
-
-      .hero {
-        flex-direction: column;
-        padding: 100px 24px 60px;
-        text-align: center;
-      }
-
-      .hero-right {
-        order: -1;
-      }
-
-      .avatar-ring {
-        width: 260px;
-        height: 260px;
-      }
-
-      .hero-badge {
-        right: 0;
-        bottom: -10px;
-      }
-
-      .section {
-        padding: 70px 24px;
-      }
-
-      .contact-grid {
-        grid-template-columns: 1fr;
-        gap: 40px;
-      }
-
-      .win-details {
-        grid-template-columns: 1fr;
-      }
-
-      .about-grid {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .window-body {
-        padding: 24px;
-      }
-    }
-
-    @media (max-width: 600px) {
-      .nav-links {
-        display: none;
-      }
-
-      .hero-name {
-        font-size: 2.4rem;
-      }
-
-      .about-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
+        --bg-dark: #0a0e27;
+        --bg-card: #1a1f3a;
+        --bg-light: #2a3050;
+        --text-main: #f8fafc;
+        --text-muted: #a0aec0;
+        --primary: #ff6b35;
+        --primary-light: #ff8555;
+        --primary-dark: #e55a25;
+        --success: #10b981;
+        --success-light: #34d399;
+        --alert: #ef4444;
+        --warning: #f59e0b;
+        --accent-gold: #fbbf24;
+        --accent-teal: #14b8a6;
+        --font-stack: 'Poppins', 'Inter', 'Segoe UI', sans-serif;
+        --shadow-sm: 0 2px 8px rgba(0,0,0,.2);
+        --shadow-md: 0 4px 16px rgba(0,0,0,.3);
+        --shadow-lg: 0 8px 32px rgba(0,0,0,.4);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { font-family: var(--font-stack); background: linear-gradient(135deg, var(--bg-dark) 0%, #1a1f3a 100%); color: var(--text-main); height: 100vh; overflow: hidden; }
+
+    /* ===== LOGIN / SIGNUP ===== */
+    #login-container, #signup-container { display: flex; justify-content: center; align-items: center; height: 100vh; width: 100%; }
+    .login-box { background: linear-gradient(135deg, var(--bg-card) 0%, rgba(26,31,58,.9) 100%); border: 2px solid rgba(255,107,53,.3); border-radius: 20px; padding: 50px; width: 100%; max-width: 450px; box-shadow: var(--shadow-lg); }
+    .login-header { text-align: center; margin-bottom: 40px; }
+    .login-logo { color: var(--primary); font-size: 3rem; margin-bottom: 15px; }
+    .login-title { color: var(--primary); font-size: 1.8rem; margin-bottom: 8px; font-weight: 800; }
+    .login-subtitle { color: var(--text-muted); font-size: .9rem; }
+    .login-form { display: flex; flex-direction: column; gap: 20px; }
+    .form-group { display: flex; flex-direction: column; gap: 8px; }
+    .form-group label { font-weight: 600; font-size: .9rem; }
+    .form-group input, .form-group select { background: rgba(255,255,255,.05); border: 2px solid rgba(255,107,53,.2); color: var(--text-main); padding: 12px 16px; border-radius: 10px; font-size: 1rem; font-family: var(--font-stack); transition: all .3s ease; }
+    .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--primary); background: rgba(255,107,53,.1); }
+    .login-btn { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: #fff; border: none; padding: 14px 24px; border-radius: 10px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all .3s ease; }
+    .login-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 16px rgba(255,107,53,.3); }
+    .login-footer { text-align: center; margin-top: 25px; color: var(--text-muted); font-size: .85rem; }
+    .signup-link { color: var(--primary); cursor: pointer; text-decoration: underline; margin-left: 5px; }
+    .error-message { background: rgba(239,68,68,.1); border: 1px solid var(--alert); color: #fca5a5; padding: 12px; border-radius: 8px; font-size: .85rem; display: none; margin-bottom: 5px; }
+    .error-message.show { display: block; }
+    .success-message { background: rgba(16,185,129,.1); border: 1px solid var(--success); color: #86efac; padding: 12px; border-radius: 8px; font-size: .85rem; display: none; margin-bottom: 5px; }
+    .success-message.show { display: block; }
+    .demo-hint { margin-top: 20px; padding: 14px; background: rgba(255,107,53,.06); border: 1px dashed rgba(255,107,53,.3); border-radius: 10px; font-size: .75rem; color: var(--text-muted); line-height: 1.6; }
+    .demo-hint strong { color: var(--primary-light); }
+
+    /* ===== APP SHELL ===== */
+    .app-container { display: none; width: 100%; height: 100vh; }
+    .app-container.show { display: flex; }
+    aside { width: 280px; background: linear-gradient(180deg, var(--bg-card) 0%, rgba(26,31,58,.8) 100%); border-right: 2px solid rgba(255,107,53,.2); display: flex; flex-direction: column; justify-content: space-between; padding: 25px; flex-shrink: 0; overflow-y: auto; box-shadow: var(--shadow-lg); }
+    .brand { margin-bottom: 25px; }
+    .brand h2 { color: var(--primary); font-size: 1.6rem; margin-bottom: 8px; letter-spacing: 1px; font-weight: 800; text-shadow: 0 2px 4px rgba(255,107,53,.3); }
+    .brand p { color: var(--text-muted); font-size: .75rem; letter-spacing: .5px; }
+    .user-profile { background: rgba(255,107,53,.1); border: 1px solid rgba(255,107,53,.2); padding: 12px; border-radius: 10px; margin-bottom: 20px; font-size: .8rem; }
+    .user-profile .username { color: var(--primary); font-weight: 700; margin-bottom: 4px; }
+    .user-profile .role { color: var(--text-muted); font-size: .75rem; text-transform: capitalize; }
+    .nav-links { list-style: none; flex-grow: 1; margin-bottom: 10px; }
+    .nav-section-title { font-size: .7rem; color: var(--primary); text-transform: uppercase; letter-spacing: 1px; margin-top: 20px; margin-bottom: 12px; font-weight: 700; }
+    .nav-links li { padding: 12px 14px; border-radius: 10px; margin-bottom: 8px; cursor: pointer; transition: all .3s ease; font-weight: 500; color: var(--text-muted); border-left: 3px solid transparent; font-size: .9rem; display: none; }
+    .nav-links li.visible { display: block; }
+    .nav-links li:hover { background-color: rgba(255,107,53,.15); color: var(--primary-light); border-left-color: var(--primary); }
+    .nav-links li.active { background: linear-gradient(90deg, rgba(255,107,53,.2) 0%, rgba(255,107,53,0) 100%); color: var(--primary); border-left-color: var(--primary); font-weight: 600; }
+    .owner-info { border-top: 1px solid rgba(255,107,53,.2); padding-top: 15px; font-size: .78rem; color: var(--text-muted); line-height: 1.5; }
+    .logout-btn { background: rgba(239,68,68,.15); color: var(--alert); border: 1px solid var(--alert); padding: 10px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all .3s ease; margin-top: 12px; width: 100%; }
+    .logout-btn:hover { background: rgba(239,68,68,.25); }
+
+    main.wrap { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+    .view-content { display: none; flex-grow: 1; padding: 30px; overflow-y: auto; animation: fadeIn .3s ease; }
+    .view-content.active-view { display: block; }
+    .view-content.grid-layout.active-view { display: grid; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    h2 { font-size: 1.8rem; font-weight: 800; margin-bottom: 20px; background: linear-gradient(135deg, var(--primary) 0%, var(--accent-gold) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    h3 { font-size: 1.2rem; margin-bottom: 18px; display: flex; justify-content: space-between; align-items: center; font-weight: 700; }
+    h4 { font-size: 1rem; font-weight: 700; }
+    .subtext { color: var(--text-muted); margin-bottom: 24px; }
+
+    /* ===== DASHBOARD ===== */
+    .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 20px; margin-bottom: 30px; }
+    .stat-card { background: linear-gradient(135deg, var(--bg-card) 0%, rgba(26,31,58,.8) 100%); border: 2px solid rgba(255,107,53,.2); padding: 22px; border-radius: 12px; box-shadow: var(--shadow-md); transition: all .3s ease; }
+    .stat-card:hover { transform: translateY(-3px); border-color: var(--primary); }
+    .stat-label { color: var(--text-muted); font-size: .8rem; margin-bottom: 10px; text-transform: uppercase; letter-spacing: .5px; }
+    .stat-value { color: var(--primary); font-size: 2rem; font-weight: 800; }
+    .stat-value.success { color: var(--success); }
+    .stat-value.alert { color: var(--alert); }
+    .welcome-card { background: linear-gradient(135deg, rgba(255,107,53,.08), rgba(251,191,36,.04)); border: 1px solid rgba(255,107,53,.2); border-radius: 14px; padding: 24px; margin-top: 10px; }
+    .welcome-card p { color: var(--text-muted); line-height: 1.7; margin-top: 8px; }
+
+    /* ===== FOH LAYOUT ===== */
+    #foh-view { grid-template-columns: 1.8fr 1.2fr; gap: 30px; height: 100%; }
+    .left-panel { display: flex; flex-direction: column; gap: 30px; overflow-y: auto; padding-right: 10px; }
+    .floor-plan-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+    .floor-plan-header h3 { margin-bottom: 0; }
+    .table-status-selector { background: linear-gradient(135deg, var(--bg-light), var(--bg-card)); border: 2px solid rgba(255,107,53,.3); color: var(--text-main); padding: 8px 16px; border-radius: 8px; font-size: .8rem; cursor: pointer; font-weight: 600; }
+    .floor-plan-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .table-card { background: linear-gradient(135deg, var(--bg-card) 0%, rgba(42,48,80,.5) 100%); border-radius: 12px; padding: 22px; text-align: center; border-bottom: 5px solid var(--text-muted); cursor: pointer; transition: all .25s cubic-bezier(.4,0,.2,1); position: relative; overflow: hidden; }
+    .table-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(255,107,53,.2); }
+    .table-card.selected-table { background: linear-gradient(135deg, rgba(255,107,53,.2), rgba(255,107,53,.05)); box-shadow: 0 0 0 3px var(--primary), 0 8px 24px rgba(255,107,53,.3); border-bottom-color: var(--primary); }
+    .table-card.vacant { border-bottom-color: var(--success); }
+    .table-card.occupied { border-bottom-color: var(--alert); }
+    .table-card.requested { border-bottom-color: var(--warning); }
+    .table-card.dirty { border-bottom-color: var(--text-muted); }
+    .table-card h4 { font-size: 1.4rem; margin-bottom: 6px; }
+    .table-card span { font-size: .75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: .5px; font-weight: 600; }
+
+    .menu-top-section { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+    .search-box { flex: 1; background: var(--bg-light); border: 2px solid rgba(255,107,53,.2); color: var(--text-main); padding: 10px 16px; border-radius: 8px; font-size: .9rem; margin-right: 12px; font-family: var(--font-stack); }
+    .search-box:focus { outline: none; border-color: var(--primary); background: rgba(255,107,53,.05); }
+    .menu-categories { display: flex; gap: 10px; margin-bottom: 18px; overflow-x: auto; padding-bottom: 8px; }
+    .category-btn { background: var(--bg-card); border: 2px solid rgba(255,107,53,.2); color: var(--text-main); padding: 10px 20px; border-radius: 20px; cursor: pointer; font-size: .85rem; font-weight: 600; white-space: nowrap; flex-shrink: 0; transition: all .3s ease; }
+    .category-btn:hover, .category-btn.active { background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: #fff; border-color: var(--primary); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(255,107,53,.3); }
+    .menu-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .menu-item { background: linear-gradient(135deg, var(--bg-card) 0%, rgba(42,48,80,.5) 100%); border-radius: 12px; overflow: hidden; cursor: pointer; border: 2px solid transparent; transition: all .3s ease; position: relative; box-shadow: var(--shadow-sm); }
+    .menu-item:hover { border-color: var(--primary); transform: translateY(-4px); box-shadow: 0 12px 24px rgba(255,107,53,.2); }
+    .menu-item.popular { border-color: var(--accent-gold); }
+    .menu-item-badge { position: absolute; top: 8px; right: 8px; background: var(--accent-gold); color: var(--bg-dark); padding: 4px 10px; border-radius: 20px; font-size: .65rem; font-weight: 700; z-index: 10; }
+    .menu-item-img-wrap { height: 120px; overflow: hidden; position: relative; background: linear-gradient(135deg, rgba(255,107,53,.15), rgba(251,191,36,.1)); }
+    .menu-item-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .4s ease; }
+    .menu-item:hover .menu-item-img-wrap img { transform: scale(1.08); }
+    .menu-item-info { padding: 14px; }
+    .menu-item-info h5 { font-size: .95rem; margin-bottom: 4px; }
+    .menu-item-desc { font-size: .75rem; color: var(--text-muted); margin-bottom: 8px; line-height: 1.3; }
+    .menu-item-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
+    .menu-item-price { color: var(--primary); font-weight: 800; font-size: 1rem; }
+    .menu-item-rating { font-size: .75rem; color: var(--accent-gold); }
+
+    .receipt-panel { background: linear-gradient(135deg, var(--bg-card) 0%, rgba(42,48,80,.5) 100%); border-radius: 16px; padding: 24px; display: flex; flex-direction: column; justify-content: space-between; border: 2px solid rgba(255,107,53,.2); height: calc(100vh - 220px); box-shadow: var(--shadow-lg); }
+    .receipt-header { border-bottom: 2px dashed rgba(255,107,53,.3); padding: 12px; border-radius: 8px; margin: -12px -12px 16px -12px; background: linear-gradient(180deg, rgba(255,107,53,.1) 0%, transparent 100%); }
+    .receipt-header h4 { color: var(--primary); margin-bottom: 6px; }
+    .receipt-header p { font-size: .75rem; color: var(--text-muted); }
+    .receipt-items { flex-grow: 1; overflow-y: auto; padding-right: 8px; margin-bottom: 12px; }
+    .receipt-empty { color: var(--text-muted); font-size: .85rem; text-align: center; padding: 30px 10px; }
+    .receipt-item { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; font-size: .85rem; background: rgba(42,48,80,.6); padding: 10px; border-radius: 8px; border-left: 3px solid var(--primary); transition: all .2s ease; }
+    .receipt-item:hover { background: rgba(255,107,53,.1); }
+    .receipt-item-details { display: flex; gap: 10px; flex: 1; }
+    .quantity-controls { display: flex; align-items: center; gap: 6px; background: var(--bg-dark); padding: 4px 6px; border-radius: 6px; }
+    .qty-btn { background: var(--primary); border: none; color: #fff; width: 24px; height: 24px; border-radius: 4px; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center; font-size: .9rem; }
+    .qty-btn:hover { background: var(--primary-light); transform: scale(1.1); }
+    .item-mods { font-size: .7rem; color: var(--accent-gold); margin-top: 4px; font-style: italic; }
+    .receipt-summary { border-top: 2px dashed rgba(255,107,53,.3); padding: 14px; margin: 14px -24px -24px -24px; background: rgba(255,107,53,.05); border-radius: 0 0 16px 16px; }
+    .summary-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: .9rem; color: var(--text-muted); }
+    .summary-row.total { color: var(--primary); font-size: 1.4rem; font-weight: 800; margin-top: 10px; border-top: 1px solid rgba(255,107,53,.2); padding-top: 10px; }
+    .action-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
+    .btn { padding: 12px 16px; border-radius: 8px; border: none; font-weight: 700; cursor: pointer; font-size: .9rem; transition: all .3s ease; text-transform: uppercase; letter-spacing: .5px; }
+    .btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .btn:active { transform: translateY(0); }
+    .btn-secondary { background: var(--bg-light); color: var(--text-main); border: 2px solid rgba(255,107,53,.3); }
+    .btn-secondary:hover { background: rgba(255,107,53,.15); border-color: var(--primary); }
+    .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: #fff; box-shadow: 0 4px 12px rgba(255,107,53,.3); }
+    .btn-primary:hover { box-shadow: 0 8px 24px rgba(255,107,53,.4); }
+
+    .bottom-dashboard { grid-column: span 2; background: linear-gradient(135deg, var(--bg-card) 0%, rgba(42,48,80,.5) 100%); border-radius: 12px; padding: 24px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; border: 2px solid rgba(255,107,53,.2); align-self: end; box-shadow: var(--shadow-md); }
+    .stat-card2 { display: flex; flex-direction: column; justify-content: center; background: rgba(255,107,53,.05); padding: 16px; border-radius: 10px; border-left: 4px solid var(--primary); transition: all .3s ease; }
+    .stat-card2:hover { background: rgba(255,107,53,.1); transform: translateX(4px); }
+    .stat-card2 label { font-size: .75rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; letter-spacing: .5px; font-weight: 600; }
+    .stat-card2 .value { font-size: 1.8rem; font-weight: 800; background: linear-gradient(135deg, var(--success), var(--success-light)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .stat-card2 .value.alert { background: linear-gradient(135deg, var(--alert), var(--alert)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .badge { background: linear-gradient(135deg, rgba(245,158,11,.2), rgba(251,191,36,.1)); color: var(--warning); padding: 6px 12px; border-radius: 6px; font-size: .75rem; width: fit-content; margin-top: 8px; font-weight: 700; border: 1px solid rgba(245,158,11,.3); }
+
+    /* ===== PAYMENT ===== */
+    .payment-container { max-width: 800px; margin: 0 auto; }
+    .payment-section { background: linear-gradient(135deg, var(--bg-card) 0%, rgba(42,48,80,.5) 100%); border-radius: 16px; padding: 28px; border: 2px solid rgba(255,107,53,.2); margin-bottom: 24px; box-shadow: var(--shadow-md); }
+    .payment-methods { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 20px; }
+    .payment-method { background: linear-gradient(135deg, var(--bg-light), rgba(42,48,80,.3)); border: 2px solid rgba(255,107,53,.2); border-radius: 12px; padding: 24px; text-align: center; cursor: pointer; transition: all .3s ease; }
+    .payment-method:hover { border-color: var(--primary); box-shadow: 0 8px 24px rgba(255,107,53,.2); transform: translateY(-4px); }
+    .payment-method.selected { background: linear-gradient(135deg, rgba(255,107,53,.15), rgba(255,107,53,.05)); border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary), 0 8px 24px rgba(255,107,53,.3); }
+    .payment-icon { font-size: 3rem; margin-bottom: 12px; }
+    .payment-method p { font-size: .8rem; color: var(--text-muted); }
+    .payment-details { display: none; background: rgba(255,107,53,.08); padding: 20px; border-radius: 12px; margin-top: 20px; border: 1px solid rgba(255,107,53,.2); }
+    .payment-details.active { display: block; animation: slideDown .3s ease; }
+    @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+    .payment-details-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255,107,53,.1); font-size: .9rem; }
+    .payment-details-row:last-child { border-bottom: none; }
+    .input-group { margin-bottom: 16px; }
+    .input-group label { display: block; font-size: .8rem; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .5px; font-weight: 600; }
+    .input-group input { width: 100%; background: var(--bg-dark); border: 2px solid rgba(255,107,53,.2); color: var(--text-main); padding: 12px; border-radius: 8px; font-size: .9rem; font-family: var(--font-stack); }
+    .input-group input:focus { outline: none; border-color: var(--primary); background: rgba(255,107,53,.05); }
+
+    /* ===== ORDERS / KDS ===== */
+    .orders-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+    .order-card { background: linear-gradient(135deg, var(--bg-card) 0%, rgba(42,48,80,.5) 100%); border-radius: 12px; padding: 20px; border: 2px solid rgba(255,107,53,.2); transition: all .3s ease; }
+    .order-card:hover { border-color: var(--primary); box-shadow: 0 8px 24px rgba(255,107,53,.2); transform: translateY(-2px); }
+    .order-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid rgba(255,107,53,.2); }
+    .order-id { color: var(--primary); font-weight: 800; font-size: .9rem; }
+    .order-status { background: var(--success); color: #fff; padding: 4px 10px; border-radius: 6px; font-size: .7rem; font-weight: 700; text-transform: uppercase; }
+    .order-time { font-size: .8rem; color: var(--text-muted); }
+    .order-items { margin: 12px 0; }
+    .order-items li { font-size: .85rem; margin-bottom: 6px; list-style: none; padding-left: 12px; border-left: 2px solid var(--primary); }
+
+    .kds-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; align-content: start; }
+    .kds-card { background: linear-gradient(135deg, var(--bg-card) 0%, rgba(42,48,80,.5) 100%); border: 3px solid var(--warning); border-radius: 12px; padding: 18px; box-shadow: 0 8px 24px rgba(245,158,11,.2); }
+    .kds-card-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid rgba(245,158,11,.2); padding-bottom: 12px; margin-bottom: 12px; }
+    .kds-ticket-id { color: var(--accent-gold); font-weight: 800; }
+    .kds-table { background: rgba(255,107,53,.15); color: var(--primary); padding: 4px 8px; border-radius: 4px; font-size: .75rem; font-weight: 700; }
+    .kds-items { list-style: none; margin-bottom: 14px; font-size: .9rem; }
+    .kds-items li { padding: 8px 0; border-bottom: 1px solid rgba(255,107,53,.1); }
+    .kds-done-btn { background: linear-gradient(135deg, var(--success), var(--success-light)); color: #fff; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 800; width: 100%; text-transform: uppercase; letter-spacing: .5px; }
+    .kds-done-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(16,185,129,.3); }
+    .kds-empty { color: var(--text-muted); text-align: center; padding: 40px; grid-column: 1/-1; }
+
+    /* ===== TABLES (accounts / inventory / shift) ===== */
+    table.data-table { width: 100%; border-collapse: collapse; background: var(--bg-card); border-radius: 12px; overflow: hidden; box-shadow: var(--shadow-md); margin-top: 10px; }
+    table.data-table thead { background: linear-gradient(135deg, rgba(255,107,53,.2) 0%, rgba(255,107,53,.1) 100%); }
+    table.data-table th { padding: 16px; text-align: left; color: var(--primary); font-weight: 700; border-bottom: 2px solid rgba(255,107,53,.2); text-transform: uppercase; font-size: .8rem; letter-spacing: .5px; }
+    table.data-table td { padding: 14px 16px; border-bottom: 1px solid rgba(255,107,53,.1); }
+    table.data-table tbody tr:hover { background: rgba(255,107,53,.05); }
+    .role-badge { display: inline-block; padding: 6px 12px; border-radius: 20px; font-size: .75rem; font-weight: 700; text-transform: uppercase; }
+    .role-manager { background: rgba(59,130,246,.2); color: #93c5fd; }
+    .role-cashier { background: rgba(16,185,129,.2); color: #6ee7b7; }
+    .role-kitchen { background: rgba(249,115,22,.2); color: #fdba74; }
+    .role-server { background: rgba(139,92,246,.2); color: #d8b4fe; }
+    .action-buttons { display: flex; gap: 8px; }
+    .btn-sm { padding: 6px 12px; border: none; border-radius: 6px; cursor: pointer; font-size: .75rem; font-weight: 600; transition: all .2s ease; }
+    .btn-edit { background: rgba(59,130,246,.2); color: #93c5fd; }
+    .btn-edit:hover { background: rgba(59,130,246,.4); }
+    .btn-delete { background: rgba(239,68,68,.2); color: #fca5a5; }
+    .btn-delete:hover { background: rgba(239,68,68,.4); }
+    .btn-reset { background: rgba(249,115,22,.2); color: #fdba74; }
+    .btn-reset:hover { background: rgba(249,115,22,.4); }
+    .status-pill { padding: 6px 12px; border-radius: 6px; font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; }
+    .status-pill.low { background: rgba(239,68,68,.2); color: var(--alert); border: 1px solid var(--alert); }
+    .status-pill.good { background: rgba(16,185,129,.2); color: var(--success); border: 1px solid var(--success); }
+
+    .accounts-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .btn-primary-lg { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: #fff; border: none; padding: 12px 24px; border-radius: 10px; font-weight: 700; cursor: pointer; transition: all .3s ease; }
+    .btn-primary-lg:hover { transform: translateY(-2px); box-shadow: 0 8px 16px rgba(255,107,53,.3); }
+
+    /* ===== MODAL ===== */
+    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.7); justify-content: center; align-items: center; z-index: 1000; }
+    .modal.show { display: flex; }
+    .modal-content { background: var(--bg-card); border: 2px solid rgba(255,107,53,.3); border-radius: 16px; padding: 40px; max-width: 500px; width: 90%; box-shadow: var(--shadow-lg); max-height: 90vh; overflow-y: auto; }
+    .modal-header { font-size: 1.6rem; font-weight: 800; margin-bottom: 25px; color: var(--primary); }
+    .modal-form { display: flex; flex-direction: column; gap: 18px; }
+    .modal-form-group { display: flex; flex-direction: column; gap: 8px; }
+    .modal-form-group label { font-weight: 600; font-size: .9rem; }
+    .modal-form-group input, .modal-form-group select { background: rgba(255,255,255,.05); border: 2px solid rgba(255,107,53,.2); color: var(--text-main); padding: 12px 16px; border-radius: 10px; font-family: var(--font-stack); }
+    .modal-form-group input:focus, .modal-form-group select:focus { outline: none; border-color: var(--primary); background: rgba(255,107,53,.1); }
+    .modal-buttons { display: flex; gap: 12px; margin-top: 10px; }
+    .btn-cancel { flex: 1; background: rgba(160,174,192,.1); color: var(--text-muted); border: 1px solid rgba(160,174,192,.2); padding: 12px; border-radius: 8px; font-weight: 600; cursor: pointer; }
+    .btn-cancel:hover { background: rgba(160,174,192,.2); }
+    .btn-submit { flex: 1; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: #fff; border: none; padding: 12px; border-radius: 8px; font-weight: 600; cursor: pointer; }
+    .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(255,107,53,.3); }
+
+    /* ===== RESTRICTED ===== */
+    .restricted-message { background: linear-gradient(135deg, rgba(239,68,68,.1) 0%, rgba(239,68,68,.05) 100%); border: 2px solid var(--alert); padding: 40px; border-radius: 12px; text-align: center; margin-top: 50px; }
+    .restricted-message h3 { color: var(--alert); justify-content: center; margin-bottom: 10px; }
+
+    /* ===== REPORTS ===== */
+    .report-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+    .report-card { background: linear-gradient(135deg, var(--bg-card) 0%, rgba(42,48,80,.5) 100%); border-radius: 14px; padding: 24px; border: 2px solid rgba(255,107,53,.2); }
+    .bar-chart { display: flex; align-items: flex-end; gap: 14px; height: 200px; margin-top: 16px; }
+    .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; gap: 8px; }
+    .bar-fill { width: 100%; max-width: 42px; background: linear-gradient(180deg, var(--primary-light), var(--primary)); border-radius: 6px 6px 0 0; transition: height .6s ease; box-shadow: 0 4px 10px rgba(255,107,53,.3); }
+    .bar-label { font-size: .7rem; color: var(--text-muted); text-align: center; }
+    .bar-value { font-size: .7rem; color: var(--accent-gold); font-weight: 700; }
+    .top-item-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(255,107,53,.1); font-size: .9rem; }
+    .top-item-row:last-child { border-bottom: none; }
+    .top-item-rank { color: var(--primary); font-weight: 800; margin-right: 10px; }
+
+    /* ===== SETTINGS ===== */
+    .settings-card { background: linear-gradient(135deg, var(--bg-card) 0%, rgba(42,48,80,.5) 100%); border-radius: 14px; padding: 26px; border: 2px solid rgba(255,107,53,.2); margin-bottom: 20px; max-width: 700px; }
+    .settings-row { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid rgba(255,107,53,.1); }
+    .settings-row:last-child { border-bottom: none; }
+    .settings-row label { font-weight: 600; font-size: .9rem; }
+    .settings-row span.hint { display: block; font-size: .75rem; color: var(--text-muted); margin-top: 3px; font-weight: 400; }
+    .settings-row input[type=text], .settings-row input[type=number] { background: var(--bg-dark); border: 2px solid rgba(255,107,53,.2); color: var(--text-main); padding: 8px 12px; border-radius: 8px; width: 160px; font-family: var(--font-stack); }
+    .toggle-switch { position: relative; width: 50px; height: 26px; }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider { position: absolute; cursor: pointer; inset: 0; background: var(--bg-light); border-radius: 26px; transition: .3s; }
+    .toggle-slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background: var(--text-muted); border-radius: 50%; transition: .3s; }
+    .toggle-switch input:checked + .toggle-slider { background: var(--primary); }
+    .toggle-switch input:checked + .toggle-slider:before { transform: translateX(24px); background: #fff; }
+    .settings-save-bar { display: flex; justify-content: flex-end; max-width: 700px; }
+
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--primary-light); }
+
+    @media (max-width: 1400px) { .menu-grid { grid-template-columns: repeat(2, 1fr); } .report-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 1024px) {
+        #foh-view { grid-template-columns: 1fr; }
+        .bottom-dashboard { grid-column: span 1; grid-template-columns: repeat(2, 1fr); }
+        .menu-grid { grid-template-columns: repeat(2, 1fr); }
+        .floor-plan-grid { grid-template-columns: repeat(3, 1fr); }
+        .payment-methods { grid-template-columns: 1fr; }
+        .orders-grid { grid-template-columns: 1fr; }
+    }
+</style>
 </head>
 
 <body>
 
-  <!-- Background Atmosphere -->
-  <div class="bg-scene"></div>
-  <div class="grid-lines"></div>
-
-  <!-- ══ NAV ══════════════════════════════════════════════════════════ -->
-  <nav>
-    <a href="#" class="nav-logo">My Portfolio<span>.dev</span></a>
-    <ul class="nav-links">
-      <li><a href="#" class="active" onclick="scrollTo(0,0);return false">Home</a></li>
-      <li><a href="#skills">Skills</a></li>
-      <li><a href="#projects">Projects</a></li>
-      <li><a href="#contact">Contact</a></li>
-      <li><a href="#" onclick="openWindow('about-window');return false">About Me</a></li>
-    </ul>
-  </nav>
-
-  <!-- ══ HERO ══════════════════════════════════════════════════════════ -->
-  <header class="hero" id="home">
-    <div class="hero-left">
-      <p class="hero-eyebrow">&#x2726; BSIT Student &bull; Web Developer</p>
-      <h1 class="hero-name">Gimbert<br><em>Ludovice</em></h1>
-      <p class="hero-role">Mobile & Website Development Specialist</p>
-      <p class="hero-desc">
-        Focused on HTML5 and CSS3 simple and clean, structurally precise, and highly accessible web experiences.
-        Passionate about 3D UI systems, responsive layouts, and modern development standards.
-      </p>
-      <div class="hero-cta">
-        <a href="#projects" class="btn-gold">&#x26A1; View Projects</a>
-        <a href="#" class="btn-outline" onclick="openWindow('about-window');return false">&#128100; About Me</a>
-        <a href="#contact" class="btn-outline">&#9993; Contact</a>
-      </div>
-    </div>
-
-    <div class="hero-right">
-      <div class="avatar-ring">
-        <img src="image_bd8dbc.jpg" alt="Gimbert Ludovice" class="avatar-img" />
-      </div>
-      <div class="hero-badge">
-        <div class="badge-num">3+</div>
-        <div class="badge-label">Live Projects</div>
-      </div>
-    </div>
-  </header>
-
-  <!-- ══ SKILLS ════════════════════════════════════════════════════════ -->
-  <section class="section" id="skills">
-    <p class="section-tag reveal">Technical Arsenal</p>
-    <h2 class="section-heading reveal">What I <span>Build With</span></h2>
-    <div class="skills-grid">
-
-      <div class="skill-card reveal" onclick="openWindow('skill-web-window')">
-        <div class="skill-icon">&#9996;</div>
-        <h3>HTML5 & CSS3</h3>
-        <p>Semantic markup, CSS Grid, Flexbox, 3D transforms, and responsive layout engineering.</p>
-        <div class="skill-bar-wrap">
-          <div class="skill-bar" style="width:82%"></div>
+<!-- ========================= LOGIN ========================= -->
+<div id="login-container">
+    <div class="login-box">
+        <div class="login-header">
+            <div class="login-logo">🍽️</div>
+            <h1 class="login-title">LUDOVICE</h1>
+            <p class="login-subtitle">Restaurant Management System 2026</p>
         </div>
-      </div>
-
-      <div class="skill-card reveal" onclick="openWindow('skill-mobile-window')">
-        <div class="skill-icon">&#128241;</div>
-        <h3>Mobile Dev Concepts</h3>
-        <p>Clean, interactive user interfaces built with mobile-first layouts and accessibility principles.</p>
-        <div class="skill-bar-wrap">
-          <div class="skill-bar" style="width:70%"></div>
-        </div>
-      </div>
-
-      <div class="skill-card reveal" onclick="openWindow('skill-uiux-window')">
-        <div class="skill-icon">&#127912;</div>
-        <h3>UI/UX Design</h3>
-        <p>Spatial animation layers, modern design systems, 3D presentation, and visual hierarchy.</p>
-        <div class="skill-bar-wrap">
-          <div class="skill-bar" style="width:75%"></div>
-        </div>
-      </div>
-
-      <div class="skill-card reveal" onclick="openWindow('skill-git-window')">
-        <div class="skill-icon">&#128279;</div>
-        <h3>Version Control</h3>
-        <p>Git workflows, GitHub Pages deployments, project management and remote collaboration.</p>
-        <div class="skill-bar-wrap">
-          <div class="skill-bar" style="width:68%"></div>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ══ PROJECTS ══════════════════════════════════════════════════════ -->
-  <section class="section" id="projects">
-    <p class="section-tag reveal">Featured Work</p>
-    <h2 class="section-heading reveal">Projects & <span>Deployments</span></h2>
-    <div class="projects-grid">
-
-      <!-- Project 1 -->
-      <div class="project-card reveal" onclick="openWindow('proj1-window')">
-        <div class="project-thumb" style="background: linear-gradient(135deg, #0d1b2a, #1a3050);">
-          <div class="project-thumb-icon">&#127758;</div>
-          <span style="position:relative;z-index:1;">IT Portfolio</span>
-        </div>
-        <div class="project-body">
-          <p class="project-tag">Web Project 01</p>
-          <h3>IT Portfolio Workspace</h3>
-          <p>A responsive web ecosystem with clean markup structures outlining profiles and student activities.</p>
-          <div class="project-footer">
-            <div class="tech-tags">
-              <span class="tech-tag">HTML5</span>
-              <span class="tech-tag">CSS3</span>
+        <div class="error-message" id="loginError"></div>
+        <div class="success-message" id="loginSuccess"></div>
+        <div class="login-form">
+            <div class="form-group">
+                <label for="loginUsername">👤 Username / Email</label>
+                <input type="text" id="loginUsername" placeholder="Enter your username">
             </div>
-            <a href="https://gimbertludovice-sketch.github.io/gimbert-it-portfolio/" target="_blank"
-              class="project-link">Live &#8594;</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Project 2 -->
-      <div class="project-card reveal" onclick="openWindow('proj2-window')">
-        <div class="project-thumb" style="background: linear-gradient(135deg, #1a1f3a, #2c3e6a);">
-          <div class="project-thumb-icon">&#128295;</div>
-          <span style="position:relative;z-index:1;">Web System</span>
-        </div>
-        <div class="project-body">
-          <p class="project-tag">Web Project 02</p>
-          <h3>Web System UI/UX</h3>
-          <p>An interactive platform exploring structural layout manipulation and complex interface deployments.</p>
-          <div class="project-footer">
-            <div class="tech-tags">
-              <span class="tech-tag">UI Design</span>
-              <span class="tech-tag">CSS Grid</span>
+            <div class="form-group">
+                <label for="loginPassword">🔐 Password</label>
+                <input type="password" id="loginPassword" placeholder="Enter your password">
             </div>
-            <a href="https://gimbertludovice-sketch.github.io/myUI-UX/" target="_blank" class="project-link">Live
-              &#8594;</a>
-          </div>
+            <button class="login-btn" onclick="handleLogin()">🔓 Login</button>
         </div>
-      </div>
+        <div class="login-footer">Don't have an account? <span class="signup-link" onclick="showSignup()">Sign Up</span></div>
+        <div class="demo-hint">
+            <strong>Demo accounts</strong><br>
+            Manager: demo_manager / demo123<br>
+            Cashier: demo_cashier / demo123<br>
+            Kitchen: demo_kitchen / demo123 &nbsp;|&nbsp; Server: demo_server / demo123
+        </div>
+    </div>
+</div>
 
-      <!-- Project 3 -->
-      <div class="project-card reveal" onclick="openWindow('proj3-window')">
-        <div class="project-thumb" style="background: linear-gradient(135deg, #1a2a1a, #2a4a2a);">
-          <div class="project-thumb-icon">&#9997;</div>
-          <span style="position:relative;z-index:1;">Blog Space</span>
+<!-- ========================= SIGN UP ========================= -->
+<div id="signup-container" style="display:none;">
+    <div class="login-box" style="max-width:500px;">
+        <div class="login-header">
+            <h1 class="login-title">Create Account</h1>
+            <p class="login-subtitle">Set up your LUDOVICE staff account</p>
         </div>
-        <div class="project-body">
-          <p class="project-tag">Web Project 03</p>
-          <h3>Personal Web Blog Space</h3>
-          <p>A clean web workspace with stylized components to display articles, images, and content feeds.</p>
-          <div class="project-footer">
-            <div class="tech-tags">
-              <span class="tech-tag">Blog</span>
-              <span class="tech-tag">Content</span>
+        <div class="error-message" id="signupError"></div>
+        <div class="login-form">
+            <div class="form-group"><label for="signupUsername">👤 Username</label><input type="text" id="signupUsername" placeholder="Choose a username"></div>
+            <div class="form-group"><label for="signupEmail">📧 Email</label><input type="email" id="signupEmail" placeholder="your@email.com"></div>
+            <div class="form-group"><label for="signupPassword">🔐 Password</label><input type="password" id="signupPassword" placeholder="Min 6 characters"></div>
+            <div class="form-group">
+                <label for="signupRole">👔 Role</label>
+                <select id="signupRole">
+                    <option value="">Select your role</option>
+                    <option value="manager">Manager</option>
+                    <option value="cashier">Cashier</option>
+                    <option value="kitchen">Kitchen Staff</option>
+                    <option value="server">Server</option>
+                </select>
             </div>
-            <a href="https://gimbertludovice-sketch.github.io/MyVlog/" target="_blank" class="project-link">Live
-              &#8594;</a>
-          </div>
+            <button class="login-btn" onclick="handleSignup()">✅ Create Account</button>
+            <p style="text-align:center;color:var(--text-muted);font-size:.85rem;margin-top:10px;cursor:pointer;" onclick="showLogin()">← Back to Login</p>
         </div>
-      </div>
-
     </div>
-  </section>
+</div>
 
-  <!-- ══ CONTACT ═══════════════════════════════════════════════════════ -->
-  <section class="section" id="contact">
-    <p class="section-tag reveal">Get In Touch</p>
-    <h2 class="section-heading reveal">Let's <span>Connect</span></h2>
-    <div class="contact-grid">
-      <div class="contact-info reveal">
-        <p>I'm a first-year BSIT student actively building my portfolio and always open to collaboration, feedback, or
-          opportunities in web and mobile development.</p>
-        <div class="contact-item">
-          <div class="contact-item-icon">&#127979;</div>
-          <div class="contact-item-text">
-            <h4>Program</h4>
-            <p>BSIT — Mobile & Website Dev</p>
-          </div>
+<!-- ========================= MAIN APP ========================= -->
+<div class="app-container" id="appContainer">
+    <aside>
+        <div>
+            <div class="brand"><h2>🍽️ LUDOVICE</h2><p>PREMIUM RMS PLATFORM 2026</p></div>
+            <div class="user-profile">
+                <div class="username" id="currentUsername">User</div>
+                <div class="role" id="currentRole">Role</div>
+            </div>
+            <ul class="nav-links">
+                <li class="nav-section-title">OPERATIONS</li>
+                <li class="nav-item" id="nav-dashboard" onclick="switchView('dashboard-view', this)">📊 Dashboard</li>
+                <li class="nav-item" id="nav-foh" onclick="switchView('foh-view', this)">🧑‍💼 Front of House / POS</li>
+                <li class="nav-item" id="nav-kds" onclick="switchView('kds-view', this)">🍳 Kitchen Display</li>
+                <li class="nav-item" id="nav-payment" onclick="switchView('payment-view', this)">💳 Payment Gateway</li>
+                <li class="nav-item" id="nav-orders" onclick="switchView('orders-view', this)">📦 Order History</li>
+
+                <li class="nav-section-title" style="margin-top:26px;">ADMIN &amp; MANAGEMENT</li>
+                <li class="nav-item" id="nav-inventory" onclick="switchView('inventory-view', this)">📦 Inventory Alerts</li>
+                <li class="nav-item" id="nav-shift" onclick="switchView('shift-view', this)">👥 Staff &amp; Shifts</li>
+                <li class="nav-item" id="nav-accounts" onclick="switchView('accounts-view', this)">🔐 Manage Accounts</li>
+                <li class="nav-item" id="nav-reports" onclick="switchView('reports-view', this)">📈 Reports</li>
+                <li class="nav-item" id="nav-settings" onclick="switchView('settings-view', this)">⚙️ Settings</li>
+            </ul>
         </div>
-        <div class="contact-item">
-          <div class="contact-item-icon">&#128218;</div>
-          <div class="contact-item-text">
-            <h4>Section</h4>
-            <p>WITMWD1M1-S</p>
-          </div>
+        <div class="owner-info">
+            <strong style="color:var(--text-main);">Manager Contact</strong><br>
+            gimbertludovice@student.trimexcolleges.edu.ph
+            <button class="logout-btn" onclick="handleLogout()">🚪 Logout</button>
         </div>
-        <div class="contact-item">
-          <div class="contact-item-icon">&#128279;</div>
-          <div class="contact-item-text">
-            <h4>GitHub</h4>
-            <p>gimbertludovice-sketch</p>
-          </div>
+    </aside>
+
+    <main class="wrap">
+
+        <!-- DASHBOARD -->
+        <div id="dashboard-view" class="view-content active-view">
+            <h2>📊 Dashboard</h2>
+            <div class="dashboard-grid">
+                <div class="stat-card"><div class="stat-label">Net Revenue (Today)</div><div class="stat-value success" id="statRevenue">₱0.00</div></div>
+                <div class="stat-card"><div class="stat-label">Active KDS Tickets</div><div class="stat-value" id="statKds">0</div></div>
+                <div class="stat-card"><div class="stat-label">Total Staff Accounts</div><div class="stat-value" id="statAccounts">0</div></div>
+                <div class="stat-card"><div class="stat-label">Your Role</div><div class="stat-value" id="statRole" style="font-size:1.3rem;text-transform:capitalize;">-</div></div>
+            </div>
+            <div class="welcome-card">
+                <h4 id="welcomeHeading">👋 Welcome back!</h4>
+                <p id="welcomeText">This is your restaurant management dashboard.</p>
+            </div>
         </div>
-        <div class="contact-item">
-          <div class="contact-item-icon">&#128101;</div>
-          <div class="contact-item-text">
-            <h4>Classroom</h4>
-            <a href="https://classroom.google.com/u/0/c/ODYyOTIzMzQ1OTgx" target="_blank"
-              style="color:var(--gold-soft);text-decoration:none;font-size:0.92rem">Google Classroom &#8594;</a>
-          </div>
+
+        <!-- FOH VIEW -->
+        <div id="foh-view" class="view-content grid-layout">
+            <div class="left-panel">
+                <section>
+                    <div class="floor-plan-header">
+                        <h3>🏢 Dynamic Floor Plan</h3>
+                        <select id="statusSelector" class="table-status-selector" onchange="changeTableStatus()">
+                            <option value="">⚡ Update Status...</option>
+                            <option value="vacant">✅ Set Vacant</option>
+                            <option value="occupied">🔴 Set Occupied</option>
+                            <option value="requested">⚠️ Bill Pending</option>
+                            <option value="dirty">🧹 Set Dirty</option>
+                        </select>
+                    </div>
+                    <div class="floor-plan-grid" id="floorPlanGrid"></div>
+                </section>
+
+                <section>
+                    <h3>🍽️ Smart Order Screen</h3>
+                    <div class="menu-top-section">
+                        <input type="text" class="search-box" id="searchBox" placeholder="🔍 Search dishes, e.g. sisig, burger, pasta..." onkeyup="searchMenu(this.value)">
+                    </div>
+                    <div class="menu-categories" id="categoryTabs">
+                        <button class="category-btn active" onclick="filterMenu('all', this)">✨ All (<span id="cnt-all"></span>)</button>
+                        <button class="category-btn" onclick="filterMenu('appetizers', this)">🥟 Appetizers</button>
+                        <button class="category-btn" onclick="filterMenu('mains', this)">🍔 Mains</button>
+                        <button class="category-btn" onclick="filterMenu('sides', this)">🍟 Sides</button>
+                        <button class="category-btn" onclick="filterMenu('desserts', this)">🍰 Desserts</button>
+                        <button class="category-btn" onclick="filterMenu('drinks', this)">🥤 Drinks</button>
+                        <button class="category-btn" onclick="filterMenu('specials', this)">⭐ Specials</button>
+                    </div>
+                    <div class="menu-grid" id="menuGrid"></div>
+                </section>
+            </div>
+
+            <section class="receipt-panel">
+                <div>
+                    <div class="receipt-header">
+                        <h4 id="activeReceiptTitle">🧾 Active Order: T-01</h4>
+                        <p>Cashier: <span id="receiptCashier">-</span></p>
+                    </div>
+                    <div class="receipt-items" id="receiptItemsContainer"></div>
+                </div>
+                <div class="receipt-summary">
+                    <div class="summary-row"><span>Subtotal</span><span id="txtSubtotal">₱0.00</span></div>
+                    <div class="summary-row"><span>VAT (<span id="taxRateLabel">12</span>%)</span><span id="txtTax">₱0.00</span></div>
+                    <div class="summary-row"><span>Service Charge (<span id="serviceRateLabel">5</span>%)</span><span id="txtService">₱0.00</span></div>
+                    <div class="summary-row total"><span>TOTAL</span><span id="txtTotal">₱0.00</span></div>
+                    <div class="action-btns">
+                        <button class="btn btn-secondary" onclick="triggerSplitBill()">💰 Split Bill</button>
+                        <button class="btn btn-primary" onclick="goToPayment()">🔒 Proceed Payment</button>
+                    </div>
+                </div>
+            </section>
+
+            <section class="bottom-dashboard">
+                <div class="stat-card2"><label>💰 Net Revenue (Today)</label><div class="value" id="fohRevenue">₱0.00</div></div>
+                <div class="stat-card2"><label>📋 Active KDS Pending</label><div class="value" id="fohKds">0 Orders</div></div>
+                <div class="stat-card2"><label>⚠️ Critical Stock Items</label><div class="value alert">3 Items</div><span class="badge">🔴 Wagyu Beef Patties</span></div>
+            </section>
         </div>
-      </div>
-      <div class="contact-form-area reveal">
-        <div class="form-field">
-          <label>Your Name</label>
-          <input type="text" placeholder="e.g. Juan dela Cruz" />
+
+        <!-- PAYMENT VIEW -->
+        <div id="payment-view" class="view-content">
+            <div class="payment-container">
+                <h2>💳 Payment Gateway Management</h2>
+                <p class="subtext">Select a payment method and process the customer transaction securely.</p>
+
+                <div class="payment-section">
+                    <h3>📱 Online Wallets</h3>
+                    <div class="payment-methods">
+                        <div class="payment-method" onclick="selectPayment('gcash', this)"><div class="payment-icon">💜</div><h4>GCash</h4><p>Mobile wallet powered by Globe</p></div>
+                        <div class="payment-method" onclick="selectPayment('maya', this)"><div class="payment-icon">🟡</div><h4>Maya</h4><p>Digital money &amp; online shopping</p></div>
+                    </div>
+                    <div id="gcash-details" class="payment-details">
+                        <h4 style="color:var(--primary);margin-bottom:15px;">GCash Account Details</h4>
+                        <div class="payment-details-row"><span>Account Holder</span><strong>LUDOVICE RESTAURANT PHIL.</strong></div>
+                        <div class="payment-details-row"><span>Mobile Number</span><strong>+63 954 361 8684</strong></div>
+                        <div class="payment-details-row"><span>Reference Code</span><strong id="gcash-ref">GC-2026-001247</strong></div>
+                        <div class="payment-details-row"><span>Amount to Transfer</span><strong id="gcash-amount">₱0.00</strong></div>
+                        <div class="input-group" style="margin-top:15px;"><label>Customer Receipt Number</label><input type="text" placeholder="Enter GCash transaction receipt number"></div>
+                        <button class="btn btn-primary" style="width:100%;" onclick="confirmPayment('GCash')">✅ Confirm Payment</button>
+                    </div>
+                    <div id="maya-details" class="payment-details">
+                        <h4 style="color:var(--primary);margin-bottom:15px;">Maya Account Details</h4>
+                        <div class="payment-details-row"><span>Account Holder</span><strong>LUDOVICE RESTAURANT PHIL.</strong></div>
+                        <div class="payment-details-row"><span>Email</span><strong>payments@ludovice-restaurant.ph</strong></div>
+                        <div class="payment-details-row"><span>Reference Code</span><strong id="maya-ref">MY-2026-005847</strong></div>
+                        <div class="payment-details-row"><span>Amount to Transfer</span><strong id="maya-amount">₱0.00</strong></div>
+                        <div class="input-group" style="margin-top:15px;"><label>Customer Receipt Number</label><input type="text" placeholder="Enter Maya transaction receipt number"></div>
+                        <button class="btn btn-primary" style="width:100%;" onclick="confirmPayment('Maya')">✅ Confirm Payment</button>
+                    </div>
+                </div>
+
+                <div class="payment-section">
+                    <h3>🏦 Bank / ATM Transfer</h3>
+                    <div class="payment-methods">
+                        <div class="payment-method" onclick="selectPayment('atm', this)"><div class="payment-icon">🏧</div><h4>ATM Transfer</h4><p>BDO, BPI, Metrobank, PNB</p></div>
+                        <div class="payment-method" onclick="selectPayment('cash', this)"><div class="payment-icon">💵</div><h4>Cash</h4><p>Over-the-counter cash payment</p></div>
+                    </div>
+                    <div id="atm-details" class="payment-details">
+                        <div style="margin-bottom:16px;padding:15px;background:rgba(255,107,53,.1);border-radius:8px;border-left:4px solid var(--primary);">
+                            <strong>BDO Unibank</strong>
+                            <div class="payment-details-row"><span>Account Number</span><strong>006-142-8845-000</strong></div>
+                            <div class="payment-details-row"><span>Account Name</span><strong>LUDOVICE RESTAURANT PHIL. INC.</strong></div>
+                        </div>
+                        <div class="input-group"><label>Amount Transferred</label><input type="text" id="atm-amount" readonly></div>
+                        <button class="btn btn-primary" style="width:100%;" onclick="confirmPayment('ATM Transfer')">✅ Confirm Payment</button>
+                    </div>
+                    <div id="cash-details" class="payment-details">
+                        <div class="input-group"><label>Amount Due</label><input type="text" id="cash-amount" readonly></div>
+                        <div class="input-group"><label>Cash Received</label><input type="number" id="cashReceived" placeholder="0.00" oninput="calcChange()"></div>
+                        <div class="input-group"><label>Change</label><input type="text" id="cashChange" readonly></div>
+                        <button class="btn btn-primary" style="width:100%;" onclick="confirmPayment('Cash')">✅ Confirm Payment</button>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="form-field">
-          <label>Email Address</label>
-          <input type="email" placeholder="you@email.com" />
+
+        <!-- ORDER HISTORY -->
+        <div id="orders-view" class="view-content">
+            <h2>📋 Order History &amp; Receipts</h2>
+            <p class="subtext">Track completed orders and digital receipts.</p>
+            <div class="orders-grid" id="ordersHistoryGrid"></div>
         </div>
-        <div class="form-field">
-          <label>Message</label>
-          <textarea placeholder="Hi Gimbert, I'd like to collaborate on…"></textarea>
+
+        <!-- KDS VIEW -->
+        <div id="kds-view" class="view-content">
+            <h2>🍳 Kitchen Display System</h2>
+            <p class="subtext">Real-time active order tickets from every POS terminal.</p>
+            <div class="kds-grid" id="kdsGrid"></div>
         </div>
-        <button class="btn-gold" style="align-self:flex-start" onclick="showToast()">&#9993; Send Message</button>
-      </div>
+
+        <!-- INVENTORY VIEW -->
+        <div id="inventory-view" class="view-content">
+            <h2>📦 Stock &amp; Inventory Threshold Panel</h2>
+            <p class="subtext">Real-time ingredient countdown and critical alert system.</p>
+            <table class="data-table">
+                <thead><tr><th>Ingredient</th><th>Remaining Stock</th><th>Critical Level</th><th>Status</th></tr></thead>
+                <tbody>
+                    <tr><td>Wagyu Beef Patties</td><td>14 units</td><td>50 units</td><td><span class="status-pill low">🔴 Critical Low</span></td></tr>
+                    <tr><td>Japanese Wagyu (Prime Cut)</td><td>8 kg</td><td>25 kg</td><td><span class="status-pill low">🔴 Critical Low</span></td></tr>
+                    <tr><td>Truffle Oil (Black)</td><td>2 bottles</td><td>5 bottles</td><td><span class="status-pill low">🔴 Critical Low</span></td></tr>
+                    <tr><td>Thick Cut Potatoes (Idaho)</td><td>12 kg</td><td>20 kg</td><td><span class="status-pill low">⚠️ Low Stock</span></td></tr>
+                    <tr><td>Pork Belly (Lechon Kawali)</td><td>9 kg</td><td>15 kg</td><td><span class="status-pill low">⚠️ Low Stock</span></td></tr>
+                    <tr><td>Brioche Burger Buns</td><td>120 units</td><td>60 units</td><td><span class="status-pill good">✅ Healthy</span></td></tr>
+                    <tr><td>Smoked Salmon Fillet</td><td>3.5 kg</td><td>8 kg</td><td><span class="status-pill low">⚠️ Low Stock</span></td></tr>
+                    <tr><td>Fresh Arugula</td><td>8 bundles</td><td>15 bundles</td><td><span class="status-pill good">✅ Healthy</span></td></tr>
+                    <tr><td>Parmesan Cheese</td><td>5 kg</td><td>10 kg</td><td><span class="status-pill good">✅ Healthy</span></td></tr>
+                    <tr><td>Coconut Milk (Kare-Kare/Sinigang base)</td><td>18 L</td><td>10 L</td><td><span class="status-pill good">✅ Healthy</span></td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- SHIFT VIEW -->
+        <div id="shift-view" class="view-content">
+            <h2>👥 Staff Attendance &amp; Shift Rosters</h2>
+            <p class="subtext">Daily calendar and floor staff assignments.</p>
+            <table class="data-table">
+                <thead><tr><th>Employee</th><th>Assigned Role</th><th>Shift Slot</th><th>Station</th></tr></thead>
+                <tbody>
+                    <tr><td>Juan Dela Cruz</td><td>Senior Cashier</td><td>06:00 AM - 02:00 PM</td><td>Front Counter</td></tr>
+                    <tr><td>Maria Santos</td><td>Kitchen Chef Lead</td><td>08:00 AM - 05:00 PM</td><td>Main Hot Line</td></tr>
+                    <tr><td>Gimbert Ludovice</td><td>System Owner / Admin</td><td>Full Coverage</td><td>Management Overview</td></tr>
+                    <tr><td>Angela Rodriguez</td><td>Floor Server</td><td>10:00 AM - 07:00 PM</td><td>Dining Area</td></tr>
+                    <tr><td>Romeo Pascual</td><td>Line Cook (Prep)</td><td>07:00 AM - 04:00 PM</td><td>Prep Station</td></tr>
+                    <tr><td>Marife Lopez</td><td>Delivery Coordinator</td><td>11:00 AM - 08:00 PM</td><td>Delivery Hub</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ACCOUNTS VIEW -->
+        <div id="accounts-view" class="view-content">
+            <div class="accounts-header">
+                <h2>🔐 Manage User Accounts</h2>
+                <button class="btn-primary-lg" onclick="openAddAccountModal()">➕ Create New Account</button>
+            </div>
+            <table class="data-table">
+                <thead><tr><th>Username</th><th>Email</th><th>Role</th><th>Status</th><th>Created</th><th>Actions</th></tr></thead>
+                <tbody id="accountsTableBody"></tbody>
+            </table>
+        </div>
+
+        <!-- REPORTS VIEW -->
+        <div id="reports-view" class="view-content">
+            <h2>📈 Reports &amp; Analytics</h2>
+            <p class="subtext">Sales performance drawn from your recorded order history.</p>
+            <div class="report-grid">
+                <div class="report-card">
+                    <h3>📊 Revenue by Day</h3>
+                    <div class="bar-chart" id="revenueChart"></div>
+                </div>
+                <div class="report-card">
+                    <h3>🏆 Top Selling Dishes</h3>
+                    <div id="topItemsList"></div>
+                </div>
+            </div>
+            <div class="dashboard-grid">
+                <div class="stat-card"><div class="stat-label">Total Orders Recorded</div><div class="stat-value" id="rptOrders">0</div></div>
+                <div class="stat-card"><div class="stat-label">Total Revenue</div><div class="stat-value success" id="rptRevenue">₱0.00</div></div>
+                <div class="stat-card"><div class="stat-label">Average Order Value</div><div class="stat-value" id="rptAvg">₱0.00</div></div>
+            </div>
+        </div>
+
+        <!-- SETTINGS VIEW -->
+        <div id="settings-view" class="view-content">
+            <h2>⚙️ System Settings</h2>
+            <p class="subtext">Configure restaurant details, billing rates, and manager notifications.</p>
+            <div class="settings-card">
+                <h3 style="margin-bottom:6px;">🏪 Restaurant Profile</h3>
+                <div class="settings-row"><label>Restaurant Name</label><input type="text" id="setRestaurantName" value="LUDOVICE Restaurant"></div>
+                <div class="settings-row"><label>Manager Email<span class="hint">Receives account &amp; password notifications</span></label><input type="text" id="setManagerEmail" value="gimbertludovice@student.trimexcolleges.edu.ph" style="width:260px;"></div>
+            </div>
+            <div class="settings-card">
+                <h3 style="margin-bottom:6px;">💰 Billing Configuration</h3>
+                <div class="settings-row"><label>VAT / Tax Rate (%)</label><input type="number" id="setTaxRate" value="12"></div>
+                <div class="settings-row"><label>Service Charge (%)</label><input type="number" id="setServiceRate" value="5"></div>
+            </div>
+            <div class="settings-card">
+                <h3 style="margin-bottom:6px;">🔔 Preferences</h3>
+                <div class="settings-row"><label>Email notification on new account<span class="hint">Simulated in this demo build</span></label><label class="toggle-switch"><input type="checkbox" id="setEmailNotif" checked><span class="toggle-slider"></span></label></div>
+                <div class="settings-row"><label>Sound alert on new KDS ticket</label><label class="toggle-switch"><input type="checkbox" id="setSoundAlert"><span class="toggle-slider"></span></label></div>
+            </div>
+            <div class="settings-save-bar"><button class="btn-primary-lg" onclick="saveSettings()">💾 Save Settings</button></div>
+        </div>
+
+        <!-- RESTRICTED (fallback) -->
+        <div id="restricted-view" class="view-content">
+            <div class="restricted-message">
+                <h3>⛔ Access Restricted</h3>
+                <p>Your role does not have permission to view this section.</p>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<!-- ========================= ADD ACCOUNT MODAL ========================= -->
+<div id="addAccountModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">➕ Create New Account</div>
+        <div class="error-message" id="modalError"></div>
+        <form class="modal-form" onsubmit="handleCreateAccount(event)">
+            <div class="modal-form-group"><label>Username</label><input type="text" id="newUsername" required placeholder="Choose a username"></div>
+            <div class="modal-form-group"><label>Email Address</label><input type="email" id="newEmail" required placeholder="user@example.com"></div>
+            <div class="modal-form-group"><label>Password</label><input type="password" id="newPassword" required placeholder="Min 6 characters"></div>
+            <div class="modal-form-group">
+                <label>User Role</label>
+                <select id="newRole" required>
+                    <option value="">Select a role</option>
+                    <option value="cashier">Cashier</option>
+                    <option value="kitchen">Kitchen Staff</option>
+                    <option value="server">Server</option>
+                    <option value="manager">Manager (Admin)</option>
+                </select>
+            </div>
+            <div class="modal-buttons">
+                <button type="button" class="btn-cancel" onclick="closeAddAccountModal()">Cancel</button>
+                <button type="submit" class="btn-submit">Create Account</button>
+            </div>
+        </form>
+        <div style="margin-top:18px;padding-top:18px;border-top:1px solid rgba(255,107,53,.2);font-size:.8rem;color:var(--text-muted);">
+            📧 Once created, credentials are simulated to email the new user and the manager address in Settings.
+        </div>
     </div>
-  </section>
+</div>
 
-  <!-- ══ FOOTER ════════════════════════════════════════════════════════ -->
-  <footer>
-    <div class="footer-logo">GL<span style="color:rgba(255,255,255,0.4)">.dev</span></div>
-    <p>&copy; 2026 Gimbert Ludovice &mdash; All rights reserved.</p>
-    <p>Bachelor of Science in Information Technology &bull; Specialized in <a
-        href="https://classroom.google.com/u/0/c/ODYyOTIzMzQ1OTgx" target="_blank">Mobile & Website Development</a></p>
-  </footer>
-
-
-  <!-- ══════════════════════════════════════════════════════════════════ -->
-  <!--  WINDOW OVERLAYS                                                  -->
-  <!-- ══════════════════════════════════════════════════════════════════ -->
-
-  <!-- ABOUT WINDOW -->
-  <div class="window-overlay" id="about-window">
-    <div class="window-panel">
-      <div class="window-titlebar">
-        <div class="window-dots">
-          <div class="window-dot dot-close" onclick="closeWindow('about-window')"></div>
-          <div class="window-dot dot-min"></div>
-          <div class="window-dot dot-max"></div>
-        </div>
-        <span class="window-title">about-me.txt — Gimbert Ludovice</span>
-        <button class="window-close-btn" onclick="closeWindow('about-window')">&times;</button>
-      </div>
-      <div class="window-body">
-        <div class="win-header">
-          <h2>About Gimbert</h2>
-          <p>First-Year BSIT Student &bull; Section WITMWD1M1-S</p>
-        </div>
-        <div class="about-grid">
-          <div class="about-stat">
-            <div class="num">1st</div>
-            <div class="lbl">Year Level</div>
-          </div>
-          <div class="about-stat">
-            <div class="num">3+</div>
-            <div class="lbl">Projects Live</div>
-          </div>
-          <div class="about-stat">
-            <div class="num">2026</div>
-            <div class="lbl">Cohort Year</div>
-          </div>
-          <div class="about-stat">
-            <div class="num">BSIT</div>
-            <div class="lbl">Degree Program</div>
-          </div>
-        </div>
-        <p style="color:rgba(255,255,255,0.55);line-height:1.8;margin-bottom:20px;font-size:0.95rem">
-          Gimbert Ludovice is a driven first-year Bachelor of Science in Information Technology student, specializing in
-          Mobile and Website Development. With a sharp focus on clean code architecture, responsive design, and 3D web
-          interfaces, Gimbert is actively building a portfolio that demonstrates modern front-end engineering skills.
-        </p>
-        <p style="color:rgba(255,255,255,0.4);font-size:0.88rem;line-height:1.7;margin-bottom:24px">
-          Currently exploring HTML5 semantics, CSS3 spatial layouts, Git workflows, and UI/UX design systems. Passionate
-          about making the web beautiful, accessible, and performant.
-        </p>
-        <h4
-          style="color:rgba(255,255,255,0.6);font-size:0.8rem;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:12px">
-          Tech Stack</h4>
-        <div class="about-skills-list">
-          <span class="about-skill-pill">HTML5</span>
-          <span class="about-skill-pill">CSS3</span>
-          <span class="about-skill-pill">Flexbox</span>
-          <span class="about-skill-pill">CSS Grid</span>
-          <span class="about-skill-pill">3D Transforms</span>
-          <span class="about-skill-pill">Responsive Design</span>
-          <span class="about-skill-pill">GitHub Pages</span>
-          <span class="about-skill-pill">Mobile-First</span>
-          <span class="about-skill-pill">UI/UX Principles</span>
-          <span class="about-skill-pill">CyberSec</span>
-        </div>
-      </div>
+<!-- ========================= EDIT ACCOUNT MODAL ========================= -->
+<div id="editAccountModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">✏️ Edit Account</div>
+        <div class="error-message" id="editModalError"></div>
+        <form class="modal-form" onsubmit="handleEditAccount(event)">
+            <input type="hidden" id="editUserId">
+            <div class="modal-form-group"><label>Username</label><input type="text" id="editUsername" required></div>
+            <div class="modal-form-group"><label>Email Address</label><input type="email" id="editEmail" required></div>
+            <div class="modal-form-group">
+                <label>User Role</label>
+                <select id="editRole" required>
+                    <option value="cashier">Cashier</option>
+                    <option value="kitchen">Kitchen Staff</option>
+                    <option value="server">Server</option>
+                    <option value="manager">Manager (Admin)</option>
+                </select>
+            </div>
+            <div class="modal-form-group">
+                <label>Status</label>
+                <select id="editStatus">
+                    <option value="active">Active</option>
+                    <option value="suspended">Suspended</option>
+                </select>
+            </div>
+            <div class="modal-buttons">
+                <button type="button" class="btn-cancel" onclick="closeEditAccountModal()">Cancel</button>
+                <button type="submit" class="btn-submit">Save Changes</button>
+            </div>
+        </form>
     </div>
-  </div>
+</div>
 
-  <!-- PROJECT 1 WINDOW -->
-  <div class="window-overlay" id="proj1-window">
-    <div class="window-panel">
-      <div class="window-titlebar">
-        <div class="window-dots">
-          <div class="window-dot dot-close" onclick="closeWindow('proj1-window')"></div>
-          <div class="window-dot dot-min"></div>
-          <div class="window-dot dot-max"></div>
-        </div>
-        <span class="window-title">project-01 — IT Portfolio Workspace</span>
-        <button class="window-close-btn" onclick="closeWindow('proj1-window')">&times;</button>
-      </div>
-      <div class="window-body">
-        <div class="win-header">
-          <h2>IT Portfolio Workspace</h2>
-          <p>Web Project 01 &bull; HTML5 / CSS3</p>
-        </div>
-        <div class="win-preview">
-          <div class="win-preview-bar">
-            <div class="dot" style="background:#ff5f57"></div>
-            <div class="dot" style="background:#febc2e"></div>
-            <div class="dot" style="background:#28c840"></div>
-            <span class="win-url">gimbertludovice-sketch.github.io/gimbert-it-portfolio/</span>
-          </div>
-          <div class="win-preview-frame">
-            <iframe src="https://gimbertludovice-sketch.github.io/gimbert-it-portfolio/" loading="lazy"
-              title="IT Portfolio Workspace"></iframe>
-          </div>
-        </div>
-        <div class="win-details">
-          <div class="win-detail-box">
-            <h4>Type</h4>
-            <p>Personal Portfolio</p>
-          </div>
-          <div class="win-detail-box">
-            <h4>Tech Stack</h4>
-            <p>HTML5, CSS3</p>
-          </div>
-          <div class="win-detail-box">
-            <h4>Hosting</h4>
-            <p>GitHub Pages</p>
-          </div>
-          <div class="win-detail-box">
-            <h4>Status</h4>
-            <p>&#x2705; Live & Active</p>
-          </div>
-        </div>
-        <p style="color:rgba(255,255,255,0.5);font-size:0.9rem;line-height:1.75;margin-bottom:24px">
-          A simple, responsive web ecosystem created using clean markup structures to outline profiles and student
-          activities. Demonstrates foundational HTML5 semantic structure and CSS layout techniques.
-        </p>
-        <div class="win-actions">
-          <a href="https://gimbertludovice-sketch.github.io/gimbert-it-portfolio/" target="_blank"
-            class="btn-gold">&#127758; Open Live Site</a>
-          <button class="btn-outline" onclick="closeWindow('proj1-window')">&#8592; Back</button>
-        </div>
-      </div>
-    </div>
-  </div>
+<script>
+/* ========================= ROLE ACCESS MAP ========================= */
+const viewAccess = {
+    'dashboard-view':  ['manager','cashier','kitchen','server'],
+    'foh-view':        ['manager','cashier','server'],
+    'kds-view':        ['manager','kitchen'],
+    'payment-view':    ['manager','cashier'],
+    'orders-view':     ['manager','cashier','server'],
+    'inventory-view':  ['manager'],
+    'shift-view':      ['manager'],
+    'accounts-view':   ['manager'],
+    'reports-view':    ['manager'],
+    'settings-view':   ['manager']
+};
 
-  <!-- PROJECT 2 WINDOW -->
-  <div class="window-overlay" id="proj2-window">
-    <div class="window-panel">
-      <div class="window-titlebar">
-        <div class="window-dots">
-          <div class="window-dot dot-close" onclick="closeWindow('proj2-window')"></div>
-          <div class="window-dot dot-min"></div>
-          <div class="window-dot dot-max"></div>
-        </div>
-        <span class="window-title">project-02 — Web System UI/UX</span>
-        <button class="window-close-btn" onclick="closeWindow('proj2-window')">&times;</button>
-      </div>
-      <div class="window-body">
-        <div class="win-header">
-          <h2>Web System UI/UX</h2>
-          <p>Web Project 02 &bull; Interface Design & Layout Engineering</p>
-        </div>
-        <div class="win-preview">
-          <div class="win-preview-bar">
-            <div class="dot" style="background:#ff5f57"></div>
-            <div class="dot" style="background:#febc2e"></div>
-            <div class="dot" style="background:#28c840"></div>
-            <span class="win-url">gimbertludovice-sketch.github.io/myUI-UX/</span>
-          </div>
-          <div class="win-preview-frame">
-            <iframe src="https://gimbertludovice-sketch.github.io/myUI-UX/" loading="lazy"
-              title="Web System UI/UX"></iframe>
-          </div>
-        </div>
-        <div class="win-details">
-          <div class="win-detail-box">
-            <h4>Type</h4>
-            <p>UI/UX Platform</p>
-          </div>
-          <div class="win-detail-box">
-            <h4>Tech Stack</h4>
-            <p>CSS Grid, Flexbox</p>
-          </div>
-          <div class="win-detail-box">
-            <h4>Hosting</h4>
-            <p>GitHub Pages</p>
-          </div>
-          <div class="win-detail-box">
-            <h4>Status</h4>
-            <p>&#x2705; Live & Active</p>
-          </div>
-        </div>
-        <p style="color:rgba(255,255,255,0.5);font-size:0.9rem;line-height:1.75;margin-bottom:24px">
-          An interactive platform deployment exploring the limits of structural layout manipulation. Features advanced
-          CSS interface layouts with modern UI/UX design principles.
-        </p>
-        <div class="win-actions">
-          <a href="https://gimbertludovice-sketch.github.io/myUI-UX/" target="_blank" class="btn-gold">&#127758; Open
-            Live Site</a>
-          <button class="btn-outline" onclick="closeWindow('proj2-window')">&#8592; Back</button>
-        </div>
-      </div>
-    </div>
-  </div>
+/* ========================= USER DATABASE & AUTH ========================= */
+let currentUser = null;
+let userDatabase = JSON.parse(localStorage.getItem('ludovice_users')) || [];
+let appSettings = JSON.parse(localStorage.getItem('ludovice_settings')) || {
+    restaurantName: 'LUDOVICE Restaurant',
+    managerEmail: 'gimbertludovice@student.trimexcolleges.edu.ph',
+    taxRate: 12,
+    serviceRate: 5,
+    emailNotif: true,
+    soundAlert: false
+};
 
-  <!-- PROJECT 3 WINDOW -->
-  <div class="window-overlay" id="proj3-window">
-    <div class="window-panel">
-      <div class="window-titlebar">
-        <div class="window-dots">
-          <div class="window-dot dot-close" onclick="closeWindow('proj3-window')"></div>
-          <div class="window-dot dot-min"></div>
-          <div class="window-dot dot-max"></div>
-        </div>
-        <span class="window-title">project-03 — Personal Web Blog Space</span>
-        <button class="window-close-btn" onclick="closeWindow('proj3-window')">&times;</button>
-      </div>
-      <div class="window-body">
-        <div class="win-header">
-          <h2>Personal Web Blog Space</h2>
-          <p>Web Project 03 &bull; Content Platform</p>
-        </div>
-        <div class="win-preview">
-          <div class="win-preview-bar">
-            <div class="dot" style="background:#ff5f57"></div>
-            <div class="dot" style="background:#febc2e"></div>
-            <div class="dot" style="background:#28c840"></div>
-            <span class="win-url">gimbertludovice-sketch.github.io/MyVlog/</span>
-          </div>
-          <div class="win-preview-frame">
-            <iframe src="https://gimbertludovice-sketch.github.io/MyVlog/" loading="lazy"
-              title="Personal Web Blog Space"></iframe>
-          </div>
-        </div>
-        <div class="win-details">
-          <div class="win-detail-box">
-            <h4>Type</h4>
-            <p>Blog / Content Platform</p>
-          </div>
-          <div class="win-detail-box">
-            <h4>Tech Stack</h4>
-            <p>HTML5, CSS3</p>
-          </div>
-          <div class="win-detail-box">
-            <h4>Hosting</h4>
-            <p>GitHub Pages</p>
-          </div>
-          <div class="win-detail-box">
-            <h4>Status</h4>
-            <p>&#x2705; Live & Active</p>
-          </div>
-        </div>
-        <p style="color:rgba(255,255,255,0.5);font-size:0.9rem;line-height:1.75;margin-bottom:24px">
-          A clean web workspace complete with stylized components constructed to display articles, images, and content
-          feeds. Built with a focus on readability and visual hierarchy.
-        </p>
-        <div class="win-actions">
-          <a href="https://gimbertludovice-sketch.github.io/MyVlog/" target="_blank" class="btn-gold">&#127758; Open
-            Live Site</a>
-          <button class="btn-outline" onclick="closeWindow('proj3-window')">&#8592; Back</button>
-        </div>
-      </div>
-    </div>
-  </div>
+if (userDatabase.length === 0) {
+    userDatabase = [
+        { id: 1, username: 'demo_manager', email: appSettings.managerEmail, password: 'demo123', role: 'manager', status: 'active', created: new Date().toLocaleDateString() },
+        { id: 2, username: 'demo_cashier', email: 'cashier@ludovice.com', password: 'demo123', role: 'cashier', status: 'active', created: new Date().toLocaleDateString() },
+        { id: 3, username: 'demo_kitchen', email: 'kitchen@ludovice.com', password: 'demo123', role: 'kitchen', status: 'active', created: new Date().toLocaleDateString() },
+        { id: 4, username: 'demo_server', email: 'server@ludovice.com', password: 'demo123', role: 'server', status: 'active', created: new Date().toLocaleDateString() }
+    ];
+    localStorage.setItem('ludovice_users', JSON.stringify(userDatabase));
+}
 
-  <!-- SKILL WINDOWS -->
-  <div class="window-overlay" id="skill-web-window">
-    <div class="window-panel">
-      <div class="window-titlebar">
-        <div class="window-dots">
-          <div class="window-dot dot-close" onclick="closeWindow('skill-web-window')"></div>
-          <div class="window-dot dot-min"></div>
-          <div class="window-dot dot-max"></div>
-        </div>
-        <span class="window-title">skill — HTML5 & CSS3</span>
-        <button class="window-close-btn" onclick="closeWindow('skill-web-window')">&times;</button>
-      </div>
-      <div class="window-body">
-        <div class="win-header">
-          <h2>HTML5 & CSS3</h2>
-          <p>Core Web Technologies — Proficiency: 82%</p>
-        </div>
-        <div class="win-preview-frame"
-          style="border-radius:12px;margin-bottom:24px;height:160px;background:linear-gradient(135deg,#0d1b2a,#1a3050);display:flex;align-items:center;justify-content:center;font-size:3rem">
-          &#9996;</div>
-        <p style="color:rgba(255,255,255,0.55);line-height:1.8;margin-bottom:20px">Proficient in writing semantic HTML5
-          markup that is accessible, structured, and SEO-conscious. Advanced CSS3 skills include Flexbox, Grid layout,
-          3D transforms, custom properties, keyframe animations, and responsive design with media queries.</p>
-        <div class="about-skills-list">
-          <span class="about-skill-pill">Semantic HTML5</span><span class="about-skill-pill">CSS Grid</span>
-          <span class="about-skill-pill">Flexbox</span><span class="about-skill-pill">3D CSS Transforms</span>
-          <span class="about-skill-pill">CSS Animations</span><span class="about-skill-pill">Media Queries</span>
-          <span class="about-skill-pill">CSS Custom Properties</span>
-        </div>
-        <div style="margin-top:24px"><button class="btn-outline" onclick="closeWindow('skill-web-window')">&#8592;
-            Close</button></div>
-      </div>
-    </div>
-  </div>
+function persistUsers() { localStorage.setItem('ludovice_users', JSON.stringify(userDatabase)); }
 
-  <div class="window-overlay" id="skill-mobile-window">
-    <div class="window-panel">
-      <div class="window-titlebar">
-        <div class="window-dots">
-          <div class="window-dot dot-close" onclick="closeWindow('skill-mobile-window')"></div>
-          <div class="window-dot dot-min"></div>
-          <div class="window-dot dot-max"></div>
-        </div>
-        <span class="window-title">skill — Mobile Development Concepts</span>
-        <button class="window-close-btn" onclick="closeWindow('skill-mobile-window')">&times;</button>
-      </div>
-      <div class="window-body">
-        <div class="win-header">
-          <h2>Mobile Dev Concepts</h2>
-          <p>Mobile-First UI Engineering — Proficiency: 70%</p>
-        </div>
-        <div class="win-preview-frame"
-          style="border-radius:12px;margin-bottom:24px;height:160px;background:linear-gradient(135deg,#1a1f3a,#2c3e6a);display:flex;align-items:center;justify-content:center;font-size:3rem">
-          &#128241;</div>
-        <p style="color:rgba(255,255,255,0.55);line-height:1.8;margin-bottom:20px">Building clean, interactive user
-          interfaces with a mobile-first development philosophy. Focuses on touch-friendly layouts, performance
-          optimization, and accessibility standards that ensure great experiences across all device sizes.</p>
-        <div class="about-skills-list">
-          <span class="about-skill-pill">Mobile-First Design</span><span class="about-skill-pill">Responsive
-            Layouts</span>
-          <span class="about-skill-pill">Touch UI Patterns</span><span class="about-skill-pill">Viewport
-            Optimization</span>
-          <span class="about-skill-pill">Accessibility (a11y)</span>
-        </div>
-        <div style="margin-top:24px"><button class="btn-outline" onclick="closeWindow('skill-mobile-window')">&#8592;
-            Close</button></div>
-      </div>
-    </div>
-  </div>
+function handleLogin() {
+    const username = document.getElementById('loginUsername').value.trim();
+    const password = document.getElementById('loginPassword').value;
+    const errorEl = document.getElementById('loginError');
+    errorEl.classList.remove('show');
 
-  <div class="window-overlay" id="skill-uiux-window">
-    <div class="window-panel">
-      <div class="window-titlebar">
-        <div class="window-dots">
-          <div class="window-dot dot-close" onclick="closeWindow('skill-uiux-window')"></div>
-          <div class="window-dot dot-min"></div>
-          <div class="window-dot dot-max"></div>
-        </div>
-        <span class="window-title">skill — UI/UX & 3D Design</span>
-        <button class="window-close-btn" onclick="closeWindow('skill-uiux-window')">&times;</button>
-      </div>
-      <div class="window-body">
-        <div class="win-header">
-          <h2>UI/UX & 3D Styling</h2>
-          <p>Visual Design Systems — Proficiency: 75%</p>
-        </div>
-        <div class="win-preview-frame"
-          style="border-radius:12px;margin-bottom:24px;height:160px;background:linear-gradient(135deg,#1a2a1a,#2a4a2a);display:flex;align-items:center;justify-content:center;font-size:3rem">
-          &#127912;</div>
-        <p style="color:rgba(255,255,255,0.55);line-height:1.8;margin-bottom:20px">Designing with modern CSS systems and
-          3D spatial presentation techniques. Creates immersive hover effects, animated transitions, and layered visual
-          depth that elevate standard flat interfaces into engaging experiences.</p>
-        <div class="about-skills-list">
-          <span class="about-skill-pill">3D CSS Layers</span><span class="about-skill-pill">Design Systems</span>
-          <span class="about-skill-pill">Color Theory</span><span class="about-skill-pill">Typography</span>
-          <span class="about-skill-pill">Micro-interactions</span><span class="about-skill-pill">Visual Hierarchy</span>
-        </div>
-        <div style="margin-top:24px"><button class="btn-outline" onclick="closeWindow('skill-uiux-window')">&#8592;
-            Close</button></div>
-      </div>
-    </div>
-  </div>
+    if (!username || !password) { showError(errorEl, '⚠️ Please enter both username and password'); return; }
 
-  <div class="window-overlay" id="skill-git-window">
-    <div class="window-panel">
-      <div class="window-titlebar">
-        <div class="window-dots">
-          <div class="window-dot dot-close" onclick="closeWindow('skill-git-window')"></div>
-          <div class="window-dot dot-min"></div>
-          <div class="window-dot dot-max"></div>
-        </div>
-        <span class="window-title">skill — Version Control & GitHub</span>
-        <button class="window-close-btn" onclick="closeWindow('skill-git-window')">&times;</button>
-      </div>
-      <div class="window-body">
-        <div class="win-header">
-          <h2>Version Control</h2>
-          <p>Git & GitHub Pages — Proficiency: 68%</p>
-        </div>
-        <div class="win-preview-frame"
-          style="border-radius:12px;margin-bottom:24px;height:160px;background:linear-gradient(135deg,#1a0d2a,#2a1a3a);display:flex;align-items:center;justify-content:center;font-size:3rem">
-          &#128279;</div>
-        <p style="color:rgba(255,255,255,0.55);line-height:1.8;margin-bottom:20px">Managing project files, deployments,
-          and version history using Git and GitHub. All three live projects are deployed on GitHub Pages, demonstrating
-          the ability to maintain and publish real-world web projects remotely.</p>
-        <div class="about-skills-list">
-          <span class="about-skill-pill">Git CLI</span><span class="about-skill-pill">GitHub</span>
-          <span class="about-skill-pill">GitHub Pages</span><span class="about-skill-pill">Commits & Branches</span>
-          <span class="about-skill-pill">Remote Repositories</span>
-        </div>
-        <div style="margin-top:24px"><button class="btn-outline" onclick="closeWindow('skill-git-window')">&#8592;
-            Close</button></div>
-      </div>
-    </div>
-  </div>
+    const user = userDatabase.find(u => (u.username === username || u.email === username) && u.password === password);
+    if (!user) { showError(errorEl, '❌ Invalid username or password'); return; }
+    if (user.status === 'suspended') { showError(errorEl, '⛔ This account has been suspended. Contact the manager.'); return; }
 
-  <!-- Toast Notification -->
-  <div id="toast" style="
-    display:none;
-    position:fixed;
-    bottom:32px;right:32px;
-    background:linear-gradient(135deg,#002e5e,#0a4080);
-    border:1px solid rgba(240,165,0,0.3);
-    color:#fff;
-    padding:16px 24px;
-    border-radius:14px;
-    font-size:0.92rem;
-    z-index:9999;
-    box-shadow:0 10px 40px rgba(0,0,0,0.4);
-    animation: panelIn 0.4s ease;
-  ">
-    &#x2705; Message sent! I'll get back to you soon.
-  </div>
+    currentUser = user;
+    localStorage.setItem('ludovice_current_user', JSON.stringify(user));
+    showLoginPage(false);
+    bootApp();
+}
 
-  <script>
-    /* ── Window System ─────────────────────────────────────────────── */
-    function openWindow(id) {
-      const el = document.getElementById(id);
-      if (el) { el.classList.add('open'); document.body.style.overflow = 'hidden'; }
+function handleSignup() {
+    const username = document.getElementById('signupUsername').value.trim();
+    const email = document.getElementById('signupEmail').value.trim();
+    const password = document.getElementById('signupPassword').value;
+    const role = document.getElementById('signupRole').value;
+    const errorEl = document.getElementById('signupError');
+    errorEl.classList.remove('show');
+
+    if (!username || !email || !password || !role) { showError(errorEl, '⚠️ Please fill in all fields'); return; }
+    if (password.length < 6) { showError(errorEl, '⚠️ Password must be at least 6 characters'); return; }
+    if (userDatabase.find(u => u.username === username || u.email === email)) { showError(errorEl, '⚠️ Username or email already exists'); return; }
+
+    userDatabase.push({ id: Math.max(...userDatabase.map(u => u.id), 0) + 1, username, email, password, role, status: 'active', created: new Date().toLocaleDateString() });
+    persistUsers();
+
+    showLoginPage(true);
+    document.getElementById('signupUsername').value = '';
+    document.getElementById('signupEmail').value = '';
+    document.getElementById('signupPassword').value = '';
+    document.getElementById('signupRole').value = '';
+
+    const successEl = document.getElementById('loginSuccess');
+    successEl.innerText = '✅ Account created! You can now log in.';
+    successEl.classList.add('show');
+    setTimeout(() => successEl.classList.remove('show'), 5000);
+}
+
+function handleLogout() {
+    if (!confirm('Are you sure you want to logout?')) return;
+    currentUser = null;
+    localStorage.removeItem('ludovice_current_user');
+    showLoginPage(true);
+    document.getElementById('loginUsername').value = '';
+    document.getElementById('loginPassword').value = '';
+}
+
+function showError(el, msg) { el.innerText = msg; el.classList.add('show'); setTimeout(() => el.classList.remove('show'), 5000); }
+function showLoginPage(show) {
+    document.getElementById('login-container').style.display = show ? 'flex' : 'none';
+    document.getElementById('signup-container').style.display = 'none';
+    document.getElementById('appContainer').classList.toggle('show', !show);
+}
+function showLogin() { document.getElementById('signup-container').style.display = 'none'; document.getElementById('login-container').style.display = 'flex'; }
+function showSignup() { document.getElementById('login-container').style.display = 'none'; document.getElementById('signup-container').style.display = 'flex'; }
+
+/* ========================= NAVIGATION ========================= */
+function switchView(viewId, element) {
+    if (!checkAccess(viewId)) {
+        document.querySelectorAll('.view-content').forEach(v => v.classList.remove('active-view'));
+        document.getElementById('restricted-view').classList.add('active-view');
+        return;
     }
-    function closeWindow(id) {
-      const el = document.getElementById(id);
-      if (el) { el.classList.remove('open'); document.body.style.overflow = ''; }
+    document.querySelectorAll('.view-content').forEach(v => v.classList.remove('active-view'));
+    document.querySelectorAll('.nav-links li').forEach(n => n.classList.remove('active'));
+    document.getElementById(viewId).classList.add('active-view');
+    if (element) element.classList.add('active');
+
+    if (viewId === 'accounts-view') loadAccounts();
+    if (viewId === 'dashboard-view') loadDashboard();
+    if (viewId === 'kds-view') renderKds();
+    if (viewId === 'orders-view') renderOrderHistory();
+    if (viewId === 'reports-view') renderReports();
+}
+
+function checkAccess(viewId) {
+    if (!currentUser) return false;
+    const allowed = viewAccess[viewId];
+    return !allowed || allowed.includes(currentUser.role);
+}
+
+function updateNavigationAccess() {
+    Object.keys(viewAccess).forEach(viewId => {
+        const navId = 'nav-' + viewId.replace('-view', '');
+        const el = document.getElementById(navId);
+        if (el) el.classList.toggle('visible', viewAccess[viewId].includes(currentUser.role));
+    });
+}
+
+/* ========================= DASHBOARD ========================= */
+function loadDashboard() {
+    document.getElementById('currentUsername').innerText = currentUser.username;
+    document.getElementById('currentRole').innerText = currentUser.role.toUpperCase();
+    document.getElementById('statRole').innerText = currentUser.role;
+    document.getElementById('statAccounts').innerText = userDatabase.length;
+
+    const totalToday = Object.values(tableDatabase).reduce((sum, t) => sum + t.order.reduce((s,i) => s + i.price*i.qty, 0), 0)
+        + orderHistory.reduce((s,o) => s + o.total, 0);
+    document.getElementById('statRevenue').innerText = '₱' + totalToday.toFixed(2);
+    document.getElementById('fohRevenue') && (document.getElementById('fohRevenue').innerText = '₱' + totalToday.toFixed(2));
+    document.getElementById('statKds').innerText = initialKdsOrders.length;
+    document.getElementById('fohKds') && (document.getElementById('fohKds').innerText = initialKdsOrders.length + ' Orders');
+
+    const roleWelcome = {
+        manager: ['👋 Welcome back, Manager!', 'You have full administrative access: manage staff accounts, monitor inventory, review sales reports, and configure system settings from the sidebar.'],
+        cashier: ['👋 Welcome back, Cashier!', 'Head to Front of House to take orders and process payments. Order history is available for reviewing past transactions.'],
+        kitchen: ['👋 Welcome back, Kitchen Staff!', 'Check the Kitchen Display System for incoming order tickets. Mark items as prepared once they leave the line.'],
+        server: ['👋 Welcome back, Server!', 'Use Front of House to manage your assigned tables, take orders, and track table status throughout service.']
+    };
+    const [head, text] = roleWelcome[currentUser.role] || roleWelcome.cashier;
+    document.getElementById('welcomeHeading').innerText = head;
+    document.getElementById('welcomeText').innerText = text;
+
+    updateNavigationAccess();
+}
+
+/* ========================= ACCOUNT MANAGEMENT ========================= */
+function openAddAccountModal() {
+    if (currentUser.role !== 'manager') { alert('❌ Only managers can create accounts'); return; }
+    document.getElementById('addAccountModal').classList.add('show');
+}
+function closeAddAccountModal() {
+    document.getElementById('addAccountModal').classList.remove('show');
+    ['newUsername','newEmail','newPassword','newRole'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('modalError').classList.remove('show');
+}
+function handleCreateAccount(event) {
+    event.preventDefault();
+    const username = document.getElementById('newUsername').value.trim();
+    const email = document.getElementById('newEmail').value.trim();
+    const password = document.getElementById('newPassword').value;
+    const role = document.getElementById('newRole').value;
+    const errorEl = document.getElementById('modalError');
+    errorEl.classList.remove('show');
+
+    if (userDatabase.find(u => u.username === username || u.email === email)) { showError(errorEl, '⚠️ Username or email already exists'); return; }
+
+    userDatabase.push({ id: Math.max(...userDatabase.map(u => u.id), 0) + 1, username, email, password, role, status: 'active', created: new Date().toLocaleDateString() });
+    persistUsers();
+
+    alert(`✅ Account created!\n\n📧 Simulated email notification sent to:\n• ${email}\n• ${appSettings.managerEmail}\n\nCredentials:\nUsername: ${username}\nPassword: ${password}`);
+
+    closeAddAccountModal();
+    loadAccounts();
+    loadDashboard();
+}
+function loadAccounts() {
+    const tbody = document.getElementById('accountsTableBody');
+    tbody.innerHTML = '';
+    const roleColor = { manager: 'role-manager', cashier: 'role-cashier', kitchen: 'role-kitchen', server: 'role-server' };
+    userDatabase.forEach(user => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td><strong>${user.username}</strong></td>
+            <td>${user.email}</td>
+            <td><span class="role-badge ${roleColor[user.role]}">${user.role}</span></td>
+            <td><span style="color:${user.status === 'active' ? 'var(--success)' : 'var(--alert)'};">● ${user.status}</span></td>
+            <td>${user.created}</td>
+            <td><div class="action-buttons">
+                <button class="btn-sm btn-edit" onclick="openEditAccountModal(${user.id})">✏️ Edit</button>
+                <button class="btn-sm btn-reset" onclick="resetPassword(${user.id})">🔑 Reset</button>
+                <button class="btn-sm btn-delete" onclick="deleteAccount(${user.id})">🗑️ Delete</button>
+            </div></td>`;
+        tbody.appendChild(row);
+    });
+}
+function openEditAccountModal(userId) {
+    const user = userDatabase.find(u => u.id === userId);
+    if (!user) return;
+    document.getElementById('editUserId').value = user.id;
+    document.getElementById('editUsername').value = user.username;
+    document.getElementById('editEmail').value = user.email;
+    document.getElementById('editRole').value = user.role;
+    document.getElementById('editStatus').value = user.status;
+    document.getElementById('editAccountModal').classList.add('show');
+}
+function closeEditAccountModal() { document.getElementById('editAccountModal').classList.remove('show'); }
+function handleEditAccount(event) {
+    event.preventDefault();
+    const id = parseInt(document.getElementById('editUserId').value);
+    const user = userDatabase.find(u => u.id === id);
+    if (!user) return;
+    const newUsername = document.getElementById('editUsername').value.trim();
+    const newEmail = document.getElementById('editEmail').value.trim();
+    const errorEl = document.getElementById('editModalError');
+
+    if (userDatabase.find(u => u.id !== id && (u.username === newUsername || u.email === newEmail))) {
+        showError(errorEl, '⚠️ Username or email already used by another account'); return;
     }
-    /* Close on overlay click */
-    document.querySelectorAll('.window-overlay').forEach(ov => {
-      ov.addEventListener('click', e => {
-        if (e.target === ov) closeWindow(ov.id);
-      });
-    });
-    /* ESC key to close */
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') {
-        document.querySelectorAll('.window-overlay.open').forEach(ov => {
-          closeWindow(ov.id);
-        });
-      }
-    });
+    user.username = newUsername;
+    user.email = newEmail;
+    user.role = document.getElementById('editRole').value;
+    user.status = document.getElementById('editStatus').value;
+    persistUsers();
+    closeEditAccountModal();
+    loadAccounts();
+    alert('✅ Account updated successfully');
+}
+function resetPassword(userId) {
+    const user = userDatabase.find(u => u.id === userId);
+    if (!user) return;
+    if (!confirm(`Reset password for ${user.username}?`)) return;
+    const newPassword = 'RESET' + Math.random().toString(36).substring(7).toUpperCase();
+    user.password = newPassword;
+    persistUsers();
+    alert(`🔐 Password Reset\n\nNew Password: ${newPassword}\n\n📧 Simulated notification sent to:\n• ${user.email}\n• ${appSettings.managerEmail}`);
+}
+function deleteAccount(userId) {
+    if (userId === currentUser.id) { alert('⚠️ You cannot delete the account you are logged in with.'); return; }
+    if (!confirm('Are you sure you want to delete this account?')) return;
+    userDatabase = userDatabase.filter(u => u.id !== userId);
+    persistUsers();
+    loadAccounts();
+    loadDashboard();
+}
 
-    /* ── Scroll Reveal ─────────────────────────────────────────────── */
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach((entry, i) => {
-        if (entry.isIntersecting) {
-          setTimeout(() => entry.target.classList.add('visible'), i * 80);
-        }
-      });
-    }, { threshold: 0.1 });
-    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+/* ========================= MENU DATABASE (real dish photos) ========================= */
+function img(keyword) { return `https://loremflickr.com/400/300/${keyword}/all?lock=${keyword.length}`; }
 
-    /* ── Active Nav Link ───────────────────────────────────────────── */
-    const sections = document.querySelectorAll('section[id], header');
-    const navLinks = document.querySelectorAll('.nav-links a');
-    window.addEventListener('scroll', () => {
-      let current = '';
-      sections.forEach(sec => {
-        if (window.scrollY >= sec.offsetTop - 100) current = sec.id || 'home';
-      });
-      navLinks.forEach(a => {
-        a.classList.remove('active');
-        if (a.getAttribute('href') === '#' + current || (current === '' && a.getAttribute('href') === '#')) {
-          a.classList.add('active');
-        }
-      });
+const menuDatabase = [
+    // Appetizers
+    { id: 201, category: "appetizers", title: "Crispy Lumpiang Shanghai", desc: "Ground pork spring rolls, sweet chili dip", price: 165, img: img("spring-rolls,lumpia,food"), popular: true },
+    { id: 202, category: "appetizers", title: "Crispy Calamari Rings", desc: "Golden squid rings with garlic aioli", price: 245, img: img("calamari,seafood"), popular: false },
+    { id: 203, category: "appetizers", title: "Loaded Beef Nachos", desc: "Tortilla chips, seasoned beef, melted cheese", price: 285, img: img("nachos,food"), popular: true },
+    { id: 204, category: "appetizers", title: "Buffalo Chicken Wings (6pc)", desc: "Spicy buffalo glaze, ranch dip", price: 235, img: img("chicken-wings,food"), popular: true },
+    { id: 205, category: "appetizers", title: "Sizzling Pork Sisig Bites", desc: "Chopped pork, calamansi, chili, egg", price: 245, img: img("sisig,filipino-food"), popular: true },
+    { id: 206, category: "appetizers", title: "Fresh Caesar Salad", desc: "Romaine, parmesan, garlic croutons", price: 195, img: img("caesar-salad,food"), popular: false },
+
+    // Mains
+    { id: 1,   category: "mains", title: "Classic Wagyu Burger Premium", desc: "100% Japanese Wagyu with truffle mayo", price: 485, img: img("wagyu-burger,burger"), popular: true },
+    { id: 101, category: "mains", title: "Smoked Salmon Burger", desc: "Fresh smoked salmon with dill cream cheese", price: 495, img: img("salmon-burger,burger"), popular: true },
+    { id: 102, category: "mains", title: "Double Stack Wagyu Deluxe", desc: "Twin patties with foie gras & black truffle", price: 725, img: img("double-cheeseburger,burger"), popular: false },
+    { id: 2,   category: "mains", title: "Truffle Pasta Carbonara", desc: "Creamy egg sauce with black truffle shaving", price: 425, img: img("carbonara,pasta"), popular: true },
+    { id: 103, category: "mains", title: "Garlic Butter Shrimp Linguine", desc: "Fresh shrimp in garlic herb butter sauce", price: 395, img: img("shrimp-pasta,seafood"), popular: false },
+    { id: 104, category: "mains", title: "Lobster Tail Risotto", desc: "Creamy arborio rice with fresh Maine lobster", price: 650, img: img("lobster,seafood"), popular: true },
+    { id: 105, category: "mains", title: "Pan-Seared Dory Fillet", desc: "Fresh fish with lemon butter and capers", price: 385, img: img("grilled-fish,seafood"), popular: false },
+    { id: 106, category: "mains", title: "Miso-Glazed Beef Ribs", desc: "Slow-cooked beef ribs in Japanese miso glaze", price: 545, img: img("beef-ribs,bbq"), popular: true },
+    { id: 107, category: "mains", title: "Thai Green Curry Chicken", desc: "Tender chicken in aromatic green curry", price: 325, img: img("green-curry,curry"), popular: false },
+    { id: 108, category: "mains", title: "Kare-Kare (Oxtail Peanut Stew)", desc: "Filipino oxtail stew in rich peanut sauce, bagoong", price: 395, img: img("beef-stew,filipino-food"), popular: true },
+    { id: 109, category: "mains", title: "Crispy Pork Sisig Sizzling Plate", desc: "Chopped grilled pork, onions, chili, egg on a hot plate", price: 315, img: img("sisig,pork"), popular: true },
+    { id: 110, category: "mains", title: "Adobong Manok (Chicken Adobo)", desc: "Braised chicken in soy, vinegar & garlic", price: 275, img: img("braised-chicken,filipino-food"), popular: true },
+    { id: 111, category: "mains", title: "Lechon Kawali (Crispy Pork Belly)", desc: "Deep-fried pork belly, garlic vinegar dip", price: 345, img: img("pork-belly,food"), popular: true },
+    { id: 112, category: "mains", title: "Grilled Bangus Belly", desc: "Marinated milkfish belly grilled to perfection", price: 295, img: img("grilled-fish,fish"), popular: false },
+
+    // Sides
+    { id: 3,   category: "sides", title: "Thick Cut Fries (Idaho)", desc: "Hand-cut fries with sea salt & garlic aioli", price: 145, img: img("french-fries,food"), popular: true },
+    { id: 113, category: "sides", title: "Truffle Parmesan Fries", desc: "Crispy fries with truffle oil & aged parmesan", price: 195, img: img("truffle-fries,food"), popular: true },
+    { id: 114, category: "sides", title: "Roasted Seasonal Vegetables", desc: "Assorted vegetables with herb olive oil", price: 135, img: img("roasted-vegetables,food"), popular: false },
+    { id: 115, category: "sides", title: "Creamed Corn with Bacon", desc: "Sweet corn kernels in rich cream sauce", price: 155, img: img("creamed-corn,food"), popular: false },
+    { id: 116, category: "sides", title: "Loaded Mac & Cheese", desc: "Three-cheese blend with crispy breadcrumb topping", price: 175, img: img("mac-and-cheese,food"), popular: false },
+    { id: 117, category: "sides", title: "Garlic Fried Rice (Sinangag)", desc: "Filipino garlic rice, perfect with any main", price: 65, img: img("fried-rice,rice"), popular: true },
+
+    // Desserts
+    { id: 118, category: "desserts", title: "Chocolate Lava Cake", desc: "Warm molten chocolate cake with vanilla ice cream", price: 185, img: img("chocolate-cake,dessert"), popular: true },
+    { id: 119, category: "desserts", title: "Strawberry Cheesecake", desc: "NY-style cheesecake with fresh strawberries", price: 175, img: img("cheesecake,dessert"), popular: false },
+    { id: 120, category: "desserts", title: "Tiramisu", desc: "Classic Italian dessert with mascarpone cream", price: 165, img: img("tiramisu,dessert"), popular: false },
+    { id: 121, category: "desserts", title: "Mango Sorbet Float", desc: "Fresh mango sorbet with ginger ale", price: 145, img: img("mango-dessert,dessert"), popular: true },
+    { id: 122, category: "desserts", title: "Dark Chocolate Mousse", desc: "Rich dark chocolate mousse with berry coulis", price: 155, img: img("chocolate-mousse,dessert"), popular: false },
+    { id: 123, category: "desserts", title: "Halo-Halo Special", desc: "Shaved ice, ube, leche flan, sweet beans & fruit", price: 175, img: img("shaved-ice,dessert"), popular: true },
+    { id: 124, category: "desserts", title: "Leche Flan", desc: "Silky Filipino caramel custard", price: 125, img: img("caramel-custard,dessert"), popular: false },
+    { id: 125, category: "desserts", title: "Ube Cheesecake", desc: "Purple yam cheesecake with graham crust", price: 195, img: img("purple-cake,dessert"), popular: true },
+
+    // Drinks
+    { id: 4,   category: "drinks", title: "Freshly Brewed Iced Tea", desc: "House-made herbal iced tea blend", price: 85, img: img("iced-tea,drink"), popular: false },
+    { id: 126, category: "drinks", title: "Premium Craft Cola", desc: "Artisanal cola with natural ingredients", price: 95, img: img("cola,drink"), popular: false },
+    { id: 127, category: "drinks", title: "Fresh Mango Juice", desc: "100% fresh mango, no added sugar", price: 125, img: img("mango-juice,drink"), popular: true },
+    { id: 128, category: "drinks", title: "Iced Latte (Specialty)", desc: "Premium espresso with cold milk & foam", price: 115, img: img("iced-latte,coffee"), popular: false },
+    { id: 129, category: "drinks", title: "Watermelon Mint Cooler", desc: "Fresh watermelon juice with mint leaves", price: 105, img: img("watermelon-juice,drink"), popular: true },
+    { id: 130, category: "drinks", title: "Mocha Choco Shake", desc: "Chocolate shake with coffee essence", price: 135, img: img("chocolate-shake,drink"), popular: false },
+    { id: 131, category: "drinks", title: "Calamansi Juice", desc: "Refreshing Filipino citrus cooler", price: 75, img: img("citrus-juice,drink"), popular: true },
+    { id: 132, category: "drinks", title: "Buko Pandan Shake", desc: "Young coconut & pandan blended shake", price: 115, img: img("coconut-drink,drink"), popular: false },
+
+    // Specials
+    { id: 133, category: "specials", title: "Chef's Special: Sinigang Bowl", desc: "Traditional pork sinigang with vegetables", price: 295, img: img("sour-soup,filipino-food"), popular: true },
+    { id: 134, category: "specials", title: "Limited: Truffle Risotto Arancini", desc: "Crispy fried risotto balls with truffle center", price: 245, img: img("arancini,food"), popular: true },
+    { id: 135, category: "specials", title: "Weekend Special: BBQ Platter", desc: "Assorted grilled meats with chimichurri", price: 585, img: img("bbq-platter,bbq"), popular: false },
+    { id: 136, category: "specials", title: "Flash Sale: Grilled Squid (Calamares)", desc: "Fresh squid grilled with garlic & lemon", price: 265, img: img("grilled-squid,seafood"), popular: true },
+    { id: 137, category: "specials", title: "Boodle Fight Feast (Good for 4)", desc: "Grilled meats, seafood & rice on banana leaves", price: 1450, img: img("filipino-feast,food"), popular: true },
+    { id: 138, category: "specials", title: "Seafood Paella for Two", desc: "Saffron rice, shrimp, mussels & chorizo", price: 895, img: img("paella,seafood"), popular: false },
+];
+
+/* ========================= OPERATIONAL DATA ========================= */
+let currentSelectedTable = "T-01";
+let currentPaymentMethod = null;
+
+const tableDatabase = {
+    "T-01": { id: "T-01", label: "Table 01", state: "vacant", order: [] },
+    "T-02": { id: "T-02", label: "Table 02", state: "occupied", order: [
+        { id: 1, title: "Classic Wagyu Burger Premium", price: 485, qty: 1, mods: "No onions, Extra cheddar" },
+        { id: 3, title: "Thick Cut Fries (Idaho)", price: 145, qty: 1, mods: "" }
+    ]},
+    "T-03": { id: "T-03", label: "Table 03", state: "requested", order: [
+        { id: 2, title: "Truffle Pasta Carbonara", price: 425, qty: 2, mods: "Light cream" }
+    ]},
+    "T-04": { id: "T-04", label: "Table 04", state: "dirty", order: [] },
+    "T-05": { id: "T-05", label: "Table 05", state: "vacant", order: [] },
+    "T-06": { id: "T-06", label: "Table 06", state: "vacant", order: [] },
+    "T-07": { id: "T-07", label: "Table 07", state: "vacant", order: [] },
+    "T-08": { id: "T-08", label: "Table 08", state: "vacant", order: [] }
+};
+
+let initialKdsOrders = [
+    { id: "K-102", table: "T-02", items: ["1x Classic Wagyu Burger (No onions, Extra cheddar)", "1x Thick Cut Fries"] },
+    { id: "K-103", table: "T-03", items: ["2x Truffle Pasta Carbonara (Light cream)"] },
+    { id: "K-104", table: "T-02", items: ["1x Chocolate Lava Cake", "2x Iced Latte"] }
+];
+
+let orderHistory = [
+    { id: "ORD-001", table: "T-02", items: ["2x Classic Wagyu Burger", "1x Thick Cut Fries"], total: 1115.00, date: "2026-06-28", status: "completed", payment: "Cash" },
+    { id: "ORD-002", table: "T-01", items: ["1x Truffle Pasta Carbonara", "1x Fresh Mango Juice"], total: 550.00, date: "2026-06-29", status: "completed", payment: "GCash" },
+    { id: "ORD-003", table: "T-03", items: ["3x Thick Cut Fries", "2x Premium Craft Cola"], total: 625.00, date: "2026-06-29", status: "completed", payment: "Card" },
+    { id: "ORD-004", table: "T-05", items: ["1x Lobster Tail Risotto", "1x Fresh Mango Juice", "1x Chocolate Lava Cake"], total: 1067.45, date: "2026-06-30", status: "completed", payment: "Maya" },
+    { id: "ORD-005", table: "T-04", items: ["1x Crispy Pork Sisig Sizzling Plate", "1x Garlic Fried Rice"], total: 460.00, date: "2026-07-01", status: "completed", payment: "Cash" },
+    { id: "ORD-006", table: "T-06", items: ["1x Kare-Kare (Oxtail Peanut Stew)", "2x Calamansi Juice"], total: 545.00, date: "2026-07-01", status: "completed", payment: "GCash" },
+];
+
+/* ========================= RENDER: FLOOR PLAN ========================= */
+function renderFloorPlan() {
+    const grid = document.getElementById("floorPlanGrid");
+    grid.innerHTML = "";
+    Object.values(tableDatabase).forEach(table => {
+        const card = document.createElement("div");
+        card.className = `table-card ${table.state} ${table.id === currentSelectedTable ? 'selected-table' : ''}`;
+        card.onclick = () => selectTable(table.id);
+        const stateText = { vacant: "Vacant", occupied: "Occupied", requested: "Bill Pending", dirty: "Dirty" }[table.state];
+        const statusEmoji = { vacant: "✅", occupied: "🔴", requested: "⚠️", dirty: "🧹" }[table.state];
+        card.innerHTML = `<h4>${table.id}</h4><span>${statusEmoji} ${stateText}</span>`;
+        grid.appendChild(card);
     });
+}
 
-    /* ── Toast ─────────────────────────────────────────────────────── */
-    function showToast() {
-      const t = document.getElementById('toast');
-      t.style.display = 'block';
-      setTimeout(() => { t.style.display = 'none'; }, 3500);
+/* ========================= RENDER: MENU ========================= */
+function renderMenuGrid(itemsToDisplay = menuDatabase) {
+    const grid = document.getElementById("menuGrid");
+    grid.innerHTML = "";
+    document.getElementById('cnt-all').innerText = menuDatabase.length;
+    if (itemsToDisplay.length === 0) {
+        grid.innerHTML = `<div class="receipt-empty" style="grid-column:1/-1;">No dishes matched your search.</div>`;
+        return;
     }
-  </script>
+    itemsToDisplay.forEach(item => {
+        const div = document.createElement("div");
+        div.className = `menu-item ${item.popular ? 'popular' : ''}`;
+        div.onclick = () => addItemToReceipt(item);
+        div.innerHTML = `
+            ${item.popular ? '<div class="menu-item-badge">⭐ Popular</div>' : ''}
+            <div class="menu-item-img-wrap"><img src="${item.img}" alt="${item.title}" loading="lazy" onerror="this.style.display='none'"></div>
+            <div class="menu-item-info">
+                <h5>${item.title}</h5>
+                <p class="menu-item-desc">${item.desc}</p>
+                <div class="menu-item-footer">
+                    <span class="menu-item-price">₱${item.price.toFixed(2)}</span>
+                    <span class="menu-item-rating">⭐ ${(4.4 + (item.id % 6) / 10).toFixed(1)}</span>
+                </div>
+            </div>`;
+        grid.appendChild(div);
+    });
+}
+
+/* ========================= RENDER: RECEIPT ========================= */
+function renderReceipt() {
+    const container = document.getElementById("receiptItemsContainer");
+    container.innerHTML = "";
+    document.getElementById("activeReceiptTitle").innerText = `🧾 Active Order: ${currentSelectedTable}`;
+    document.getElementById("receiptCashier").innerText = currentUser ? currentUser.username : '-';
+
+    const tableOrder = tableDatabase[currentSelectedTable].order;
+    if (tableOrder.length === 0) {
+        container.innerHTML = `<div class="receipt-empty">🍽️ No items yet.<br>Tap a dish from the menu to add it here.</div>`;
+    }
+
+    let subtotal = 0;
+    tableOrder.forEach((item, index) => {
+        const cost = item.price * item.qty;
+        subtotal += cost;
+        const div = document.createElement("div");
+        div.className = "receipt-item";
+        div.innerHTML = `
+            <div class="receipt-item-details">
+                <div class="quantity-controls">
+                    <button class="qty-btn" onclick="adjustQty(${index}, -1)">−</button>
+                    <strong>${item.qty}x</strong>
+                    <button class="qty-btn" onclick="adjustQty(${index}, 1)">+</button>
+                </div>
+                <div><strong>${item.title}</strong>${item.mods ? `<div class="item-mods">📝 ${item.mods}</div>` : ""}</div>
+            </div>
+            <span>₱${cost.toFixed(2)}</span>`;
+        container.appendChild(div);
+    });
+
+    const taxRate = (appSettings.taxRate || 12) / 100;
+    const serviceRate = (appSettings.serviceRate || 5) / 100;
+    const tax = subtotal * taxRate;
+    const service = subtotal * serviceRate;
+    const total = subtotal + tax + service;
+
+    document.getElementById("taxRateLabel").innerText = appSettings.taxRate || 12;
+    document.getElementById("serviceRateLabel").innerText = appSettings.serviceRate || 5;
+    document.getElementById("txtSubtotal").innerText = `₱${subtotal.toFixed(2)}`;
+    document.getElementById("txtTax").innerText = `₱${tax.toFixed(2)}`;
+    document.getElementById("txtService").innerText = `₱${service.toFixed(2)}`;
+    document.getElementById("txtTotal").innerText = `₱${total.toFixed(2)}`;
+
+    ['gcash-amount','maya-amount','atm-amount','cash-amount'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.innerText ? (el.innerText = `₱${total.toFixed(2)}`) : (el.value = `₱${total.toFixed(2)}`);
+    });
+}
+
+/* ========================= RENDER: KDS ========================= */
+function renderKds() {
+    const grid = document.getElementById("kdsGrid");
+    grid.innerHTML = "";
+    if (initialKdsOrders.length === 0) { grid.innerHTML = `<div class="kds-empty">✅ No active tickets. Kitchen is all caught up!</div>`; return; }
+    initialKdsOrders.forEach((ticket, idx) => {
+        const card = document.createElement("div");
+        card.className = "kds-card";
+        card.innerHTML = `
+            <div class="kds-card-header"><span class="kds-ticket-id">#${ticket.id}</span><span class="kds-table">${ticket.table}</span></div>
+            <ul class="kds-items">${ticket.items.map(i => `<li>${i}</li>`).join("")}</ul>
+            <button class="kds-done-btn" onclick="clearKdsTicket(${idx})">✅ Mark Prepared</button>`;
+        grid.appendChild(card);
+    });
+}
+
+/* ========================= RENDER: ORDER HISTORY ========================= */
+function renderOrderHistory() {
+    const grid = document.getElementById("ordersHistoryGrid");
+    grid.innerHTML = "";
+    [...orderHistory].reverse().forEach(order => {
+        const card = document.createElement("div");
+        card.className = "order-card";
+        card.innerHTML = `
+            <div class="order-card-header"><span class="order-id">${order.id}</span><span class="order-status">✅ Completed</span></div>
+            <div class="order-time">📅 ${order.date} | 💳 ${order.payment} | 🪑 ${order.table}</div>
+            <div class="order-items"><ul>${order.items.map(i => `<li>• ${i}</li>`).join("")}</ul></div>
+            <div style="padding-top:12px;border-top:1px solid rgba(255,107,53,.2);font-weight:700;color:var(--primary);">Total: ₱${order.total.toFixed(2)}</div>`;
+        grid.appendChild(card);
+    });
+}
+
+/* ========================= REPORTS ========================= */
+function renderReports() {
+    const byDate = {};
+    orderHistory.forEach(o => { byDate[o.date] = (byDate[o.date] || 0) + o.total; });
+    const dates = Object.keys(byDate).sort();
+    const maxVal = Math.max(...Object.values(byDate), 1);
+    const chart = document.getElementById('revenueChart');
+    chart.innerHTML = dates.map(d => `
+        <div class="bar-col">
+            <span class="bar-value">₱${Math.round(byDate[d])}</span>
+            <div class="bar-fill" style="height:${(byDate[d]/maxVal*160) || 4}px;"></div>
+            <span class="bar-label">${d.slice(5)}</span>
+        </div>`).join("");
+
+    const itemCounts = {};
+    orderHistory.forEach(o => o.items.forEach(i => {
+        const match = i.match(/^(\d+)x\s(.+)$/);
+        if (!match) return;
+        const [, qty, name] = match;
+        itemCounts[name] = (itemCounts[name] || 0) + parseInt(qty);
+    }));
+    const sorted = Object.entries(itemCounts).sort((a,b) => b[1]-a[1]).slice(0,6);
+    document.getElementById('topItemsList').innerHTML = sorted.map(([name, qty], i) => `
+        <div class="top-item-row"><span><span class="top-item-rank">#${i+1}</span>${name}</span><strong>${qty} sold</strong></div>`).join("") || '<p style="color:var(--text-muted);">No sales data yet.</p>';
+
+    const totalOrders = orderHistory.length;
+    const totalRevenue = orderHistory.reduce((s,o) => s + o.total, 0);
+    document.getElementById('rptOrders').innerText = totalOrders;
+    document.getElementById('rptRevenue').innerText = '₱' + totalRevenue.toFixed(2);
+    document.getElementById('rptAvg').innerText = '₱' + (totalOrders ? (totalRevenue/totalOrders).toFixed(2) : '0.00');
+}
+
+/* ========================= SETTINGS ========================= */
+function loadSettingsForm() {
+    document.getElementById('setRestaurantName').value = appSettings.restaurantName;
+    document.getElementById('setManagerEmail').value = appSettings.managerEmail;
+    document.getElementById('setTaxRate').value = appSettings.taxRate;
+    document.getElementById('setServiceRate').value = appSettings.serviceRate;
+    document.getElementById('setEmailNotif').checked = appSettings.emailNotif;
+    document.getElementById('setSoundAlert').checked = appSettings.soundAlert;
+}
+function saveSettings() {
+    appSettings.restaurantName = document.getElementById('setRestaurantName').value.trim() || 'LUDOVICE Restaurant';
+    appSettings.managerEmail = document.getElementById('setManagerEmail').value.trim();
+    appSettings.taxRate = parseFloat(document.getElementById('setTaxRate').value) || 0;
+    appSettings.serviceRate = parseFloat(document.getElementById('setServiceRate').value) || 0;
+    appSettings.emailNotif = document.getElementById('setEmailNotif').checked;
+    appSettings.soundAlert = document.getElementById('setSoundAlert').checked;
+    localStorage.setItem('ludovice_settings', JSON.stringify(appSettings));
+    renderReceipt();
+    alert('✅ Settings saved successfully!');
+}
+
+/* ========================= TABLE & ORDER MANAGEMENT ========================= */
+function selectTable(tableId) { currentSelectedTable = tableId; renderFloorPlan(); renderReceipt(); }
+function changeTableStatus() {
+    const selector = document.getElementById("statusSelector");
+    if (!selector.value) return;
+    tableDatabase[currentSelectedTable].state = selector.value;
+    selector.value = "";
+    renderFloorPlan();
+}
+function filterMenu(category, btnElement) {
+    document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+    btnElement.classList.add('active');
+    renderMenuGrid(category === 'all' ? menuDatabase : menuDatabase.filter(i => i.category === category));
+}
+function searchMenu(query) {
+    document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelector('.category-btn').classList.add('active');
+    renderMenuGrid(menuDatabase.filter(item => item.title.toLowerCase().includes(query.toLowerCase()) || item.desc.toLowerCase().includes(query.toLowerCase())));
+}
+function addItemToReceipt(item) {
+    const currentOrder = tableDatabase[currentSelectedTable].order;
+    const existingItem = currentOrder.find(i => i.id === item.id);
+    if (existingItem) { existingItem.qty++; }
+    else { currentOrder.push({ id: item.id, title: item.title, price: item.price, qty: 1, mods: "" }); }
+    if (tableDatabase[currentSelectedTable].state === "vacant") tableDatabase[currentSelectedTable].state = "occupied";
+    renderFloorPlan();
+    renderReceipt();
+}
+function adjustQty(index, delta) {
+    const currentOrder = tableDatabase[currentSelectedTable].order;
+    currentOrder[index].qty += delta;
+    if (currentOrder[index].qty <= 0) currentOrder.splice(index, 1);
+    renderReceipt();
+}
+function triggerSplitBill() {
+    const floatTotal = parseFloat(document.getElementById("txtTotal").innerText.replace(/[₱,]/g, ''));
+    if (floatTotal <= 0) { alert("⚠️ Receipt must have items before splitting."); return; }
+    const covers = prompt("🧮 Enter number of diners to split the bill:", "2");
+    if (covers && parseInt(covers) > 0) {
+        alert(`✅ Split Bill Result:\nEach diner pays: ₱${(floatTotal/parseInt(covers)).toFixed(2)} (${covers} ways)`);
+    }
+}
+function goToPayment() {
+    const floatTotal = parseFloat(document.getElementById("txtTotal").innerText.replace(/[₱,]/g, ''));
+    if (floatTotal <= 0) { alert("⚠️ Order is empty. Please add items before proceeding."); return; }
+    switchView('payment-view', document.getElementById('nav-payment'));
+}
+function selectPayment(method, element) {
+    document.querySelectorAll('.payment-method').forEach(el => el.classList.remove('selected'));
+    element.classList.add('selected');
+    currentPaymentMethod = method;
+    document.querySelectorAll('.payment-details').forEach(el => el.classList.remove('active'));
+    const detailsEl = document.getElementById(`${method}-details`);
+    if (detailsEl) detailsEl.classList.add('active');
+}
+function calcChange() {
+    const total = parseFloat(document.getElementById("txtTotal").innerText.replace(/[₱,]/g, ''));
+    const received = parseFloat(document.getElementById("cashReceived").value) || 0;
+    document.getElementById("cashChange").value = `₱${Math.max(0, received - total).toFixed(2)}`;
+}
+function confirmPayment(method) {
+    const order = tableDatabase[currentSelectedTable].order;
+    if (order.length === 0) { alert('⚠️ No active order to pay for.'); return; }
+    const total = parseFloat(document.getElementById("txtTotal").innerText.replace(/[₱,]/g, ''));
+
+    orderHistory.push({
+        id: 'ORD-' + String(orderHistory.length + 1).padStart(3, '0'),
+        table: currentSelectedTable,
+        items: order.map(i => `${i.qty}x ${i.title}`),
+        total, date: new Date().toISOString().slice(0,10), status: 'completed', payment: method
+    });
+
+    initialKdsOrders.push({
+        id: 'K-' + (100 + initialKdsOrders.length + orderHistory.length),
+        table: currentSelectedTable,
+        items: order.map(i => `${i.qty}x ${i.title}${i.mods ? ' (' + i.mods + ')' : ''}`)
+    });
+
+    tableDatabase[currentSelectedTable].order = [];
+    tableDatabase[currentSelectedTable].state = 'dirty';
+
+    alert(`✅ Payment of ₱${total.toFixed(2)} confirmed via ${method}!\nReceipt has been logged to Order History.`);
+    document.querySelectorAll('.payment-method').forEach(el => el.classList.remove('selected'));
+    document.querySelectorAll('.payment-details').forEach(el => el.classList.remove('active'));
+    renderFloorPlan();
+    renderReceipt();
+    loadDashboard();
+}
+function clearKdsTicket(index) { initialKdsOrders.splice(index, 1); renderKds(); loadDashboard(); }
+
+/* ========================= BOOT ========================= */
+function bootApp() {
+    renderFloorPlan();
+    renderMenuGrid();
+    renderReceipt();
+    renderKds();
+    renderOrderHistory();
+    loadSettingsForm();
+    loadDashboard();
+
+    const firstAllowed = Object.keys(viewAccess).find(v => viewAccess[v].includes(currentUser.role)) || 'dashboard-view';
+    const navEl = document.getElementById('nav-' + firstAllowed.replace('-view',''));
+    switchView(firstAllowed, navEl);
+}
+
+window.onload = () => {
+    const savedUser = localStorage.getItem('ludovice_current_user');
+    if (savedUser) {
+        currentUser = JSON.parse(savedUser);
+        showLoginPage(false);
+        bootApp();
+    } else {
+        showLoginPage(true);
+    }
+};
+</script>
 </body>
-
 </html>
